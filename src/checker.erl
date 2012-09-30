@@ -4,3 +4,7 @@
 
 -record(state, {source, time_stamp , next_check , items}).
 
+start(Source) ->
+    Pid = spawn(?MODULE , init , [Source]),
+    Pid.
+
