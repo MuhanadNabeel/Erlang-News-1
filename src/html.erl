@@ -22,6 +22,18 @@ loop(#state{}) ->
 	    ok
     end.
 
+%% checking if the URL exists in the database
+check_duplicate(News, URL) ->
+    
+    case db:exist{News, URL} of
+         true -> 'blabla';
+	    %% do something
+       
+         false -> 'bla'
+	    %% return erro
+    end.
+
+
 	
     		       
 
