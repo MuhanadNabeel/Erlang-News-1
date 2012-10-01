@@ -7,6 +7,7 @@
 %%% Created : 30 Sep 2012 by Khashayar <khashayar@localhost.localdomain>
 %%%-------------------------------------------------------------------
 -module(checker).
+-compile(export_all).
 
 -record(state, {source, time_stamp , next_check, items}). 
 
@@ -19,8 +20,10 @@ start_link(Source) ->
     Pid.
 
 init(Source) ->
-    loop(#state{source = Source , time_stamp = {{1990,4,5},{0,0,0}} , 
-		next_check = {{1990,4,5},{0,0,0}} , items = []}).
+    loop(#state{source = Source , 
+		time_stamp = {{1990,4,5},{0,0,0}},
+		next_check = {{1990,4,5},{0,0,0}},
+		items = []}).
 
 loop(State = #state{}) ->
     receive
@@ -41,10 +44,11 @@ loop(State = #state{}) ->
 		    inets:start(),
 		    {ok, {{_Version, 200, _ReasonPhrase}, _Headers, Body}} = 
 			httpc:request(State#state.source),
-		    %% NewItems = parse_rss:run(Body),
-		    loop(State#state{last_check = New_last_check , 
-				     items = NewItems}),
-		_ ->
+		    io:format("~s",[Body]),
+		    NewItems = [], %parse_rss:run(Body),
+		    loop(State#state{next_check = New_last_check , 
+				     items = NewItems});
+		false ->
 		    ok
 	       
 	    end,
