@@ -18,9 +18,27 @@ loop(#state{}) ->
     receive
 	_ ->
 	    ok
-    after T ->
+    after 0 ->
+	    %end url must be here!
+	    %checking if the URL exists
+	    check_duplicate(_message) ->
+		    ok.
+            %% divide to html tags
+            %% get meta data
+            %% write to db
+
+           write_to_db(URL, Description, Title, Image, Icon) ->
+           %% send message to the CHECKER!
+
 	    ok
     end.
+
+
+%% Find the end url
+
+end_url(URL, Description, Title, Image, Icon) ->
+    ok.
+
 
 %% checking if the URL exists in the database
 check_duplicate(News, URL) ->
@@ -30,12 +48,29 @@ check_duplicate(News, URL) ->
 	    %% do something
        
          false -> 'bla'
-	    %% return erro
+	    %% return error
     end.
+%% fetching the html source 
+
+fetch_html_source(URL, Description, Title, Image, Icon) ->
+    ok.
+
+%% Dividing the URL into tags
+
+divide_to_tags(_Sources) ->	
+    ok.
+    		 
+
+%% Getting the meta data
+
+get_meta_data(_Data) ->
+    ok.
 
 
-	
-    		       
 
+%% passing the sources to the database  
+write_to_db(URL, Description, Title, Image, Icon) ->
+    db:write(news, {URL, Description, Title, Image, Icon}) ->
+	ok.					     
     
     
