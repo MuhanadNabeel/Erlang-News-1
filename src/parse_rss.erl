@@ -16,11 +16,9 @@
 get_items(File,Timestamp) ->
 	ok.
 	
-test(Bla) ->
-	%Bla = read("http://coder.io/tag/erlang.rss"),
-	[H|T] = parse(Bla),
-	Tmp = "Mon, 17 Sep 2012 13:53:19 +0000",
-	iterate(T,Tmp,[]).
+devide(List,TimeStamp) ->
+	[H|T] = parse(List),
+	iterate(T,TimeStamp,[]).
 	
 compare_dates(Date1,Date2) ->
 	calendar:datetime_to_gregorian_seconds(convert_pubDate_to_datetime(Date2))
