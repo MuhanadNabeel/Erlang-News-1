@@ -3,43 +3,43 @@
 -module(parse_rss).
 -compile(export_all).
 
--record(item,{link,pubDate}).
+-include("records.hrl").
 
 % Used temporarly
-%read(Src) ->
-%	inets:start(),
-%	{ok, {{_Version, 200, _ReasonPhrase}, _Headers, Body}} =
-%		  httpc:request(Src),
-%	Body.
+read() ->
+	inets:start(),
+	{ok, {{_Version, 200, _ReasonPhrase}, _Headers, Body}} =
+		  httpc:request("http://coder.io/tag/erlang.rss"),
+	Body.
 
 	
-get_items(File,Timestamp) ->
-	ok.
-	
-devide(List,TimeStamp) ->
-	[H|T] = parse(List),
+devide(coder,List,TimeStamp) ->
+	[_|T] = parse(List),
 	iterate(T,TimeStamp,[]).
 	
-compare_dates(Date1,Date2) ->
-	calendar:datetime_to_gregorian_seconds(convert_pubDate_to_datetime(Date2))
-	-
-	calendar:datetime_to_gregorian_seconds(convert_pubDate_to_datetime(Date1)).
-
-iterate([],TimeStamp,List) ->
+iterate([],_TimeStamp,List) ->
 	List;
 	
 iterate([H|T],TimeStamp,List) ->
 	Keys = proplists:get_value("keywords", H),
 	Index = string:rstr(Keys, "erlang"),
-	PubDate = proplists:get_value("pubDate",H),
+	PubDate = proplists:get_value("pubDate",H),	
 	Compare = compare_dates(TimeStamp,PubDate),
 	if 
 		Index > 0, Compare >= 0 ->
 			URL = proplists:get_value("link",H),
-			iterate(T,TimeStamp,[#item{link=URL,pubDate=PubDate}|List]);
+			Tags = proplists:get_value("keywords",H),
+			iterate(T,TimeStamp,[#rss_item{link=URL,
+										pubDate=convert_pubDate_to_datetime(PubDate),
+										tags=Tags}|List]);
 		true ->
 			iterate(T,TimeStamp,List)
 	end.
+
+compare_dates(Date1,Date2) ->
+	calendar:datetime_to_gregorian_seconds(convert_pubDate_to_datetime(Date2))
+	-
+	calendar:datetime_to_gregorian_seconds(convert_pubDate_to_datetime(Date1)).
 
 % Author:  Khashayar
 convert_pubDate_to_datetime(DateTime) ->
