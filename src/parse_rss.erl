@@ -9,8 +9,8 @@
 read() ->
 	inets:start(),
 	{ok, {{_Version, 200, _ReasonPhrase}, _Headers, Body}} =
-%		httpc:request("http://www.planeterlang.org/en/planet/rss_2.0"),
-		httpc:request("http://coder.io/tag/erlang.rss"),
+		httpc:request("http://www.planeterlang.org/en/planet/rss_2.0"),
+%		httpc:request("http://coder.io/tag/erlang.rss"),
 %		httpc:request("http://www.reddit.com/r/erlang.rss"),
 	Body.
 
@@ -25,7 +25,12 @@ iterate(_Atom,[],_TimeStamp,List) ->
 iterate(Atom,[H|T],TimeStamp,List) ->
 	%Keys = proplists:get_value("keywords", H),
 	%Index = string:rstr(Keys, "erlang"),
-	PubDate = proplists:get_value("pubDate",H),	
+	if
+		Atom == planeterlang ->
+			PubDate = proplists:get_value("date",H);
+		true ->
+			PubDate = proplists:get_value("pubDate",H)
+	end,
 	Compare = compare_dates(Atom,TimeStamp,PubDate),
 	if 
 		Compare >= 0 -> % Index > 0, 
@@ -60,25 +65,42 @@ iterate(Atom,[H|T],TimeStamp,List) ->
 %list_tags(coder,String) ->
 %	[_|T] = re:split(String,"[\",\"]",[{return,list}]),
 %	list_tags(coder,T,[]).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 compare_dates(Atom,Date1,Date2) ->
 	calendar:datetime_to_gregorian_seconds(convert_pubDate_to_datetime(Atom,Date2))
 	-
 	calendar:datetime_to_gregorian_seconds(Date1).
 	
-%convert_pubDate_to_datetime([]) ->
-%	[];
 	
-%convert_pubDate_to_datetime([H|T]) ->
-%	[string:to_integer(H)] ++ convert_pubDate_to_datetime(T);
+	%% {{2012,9,17},{13,53,19}}
+	%% 2012-09-18T08:12:29+00:00
+	
+list_string_to_int(L) ->
+	list_string_to_int(L,[]).
+	
+list_string_to_int([H|T],List) ->
+	list_string_to_int(T,[element(1,string:to_integer(H))|List]);
 
-%convert_pubDate_to_datetime(planeterlang,DateTime) ->
-%	[H|T] = re:split(DateTime,"[T]",[{return,list}]),
-%	Date = re:split(H,"[-]",[{return,list}]),
-%	[F|B] = re:split(hd(T),"[+]",[{return,list}]),
-%	Time = re:split(F,"[:]",[{return,list}]),
-%	%TimeTuple = list_to_tuple(Time),
-%	convert_pubDate_to_datetime(Date ++ Time);
+list_string_to_int([],List) ->
+	lists:reverse(List).
+	
+convert_pubDate_to_datetime([]) ->
+	[];
+	
+convert_pubDate_to_datetime([H|T]) ->
+	[string:to_integer(H)] ++ convert_pubDate_to_datetime(T).
+
+convert_pubDate_to_datetime(planeterlang,undefined) ->
+	{{2013,9,17},{13,53,19}};
+	
+convert_pubDate_to_datetime(planeterlang,DateTime) ->
+	[H|T] = re:split(DateTime,"[T]",[{return,list}]),
+	Date = re:split(H,"[-]",[{return,list}]),
+	[F|_] = re:split(hd(T),"[+]",[{return,list}]),
+	Time = re:split(F,"[:]",[{return,list}]),
+	{list_to_tuple(list_string_to_int(Date)),
+	list_to_tuple(list_string_to_int(Time))};
 		
 % Author:  Khashayar
 convert_pubDate_to_datetime(_,DateTime) ->
@@ -111,6 +133,7 @@ convert_pubDate_to_datetime(_,DateTime) ->
 		    12
 	    end,
     {{Year,Month,Date},{HH,MM,SS}}.
+
 
 parse(File) ->
     {ok, {Quotes, _}, _} = xmerl_sax_parser:stream(
