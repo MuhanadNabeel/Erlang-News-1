@@ -20,7 +20,7 @@ test() ->
 %
  %   mysql:fetch(p1, <<"INSERT INTO developer(name, country) VALUES "
 	%	     "('Claes (Klacke) Wikstrom', 'Sweden'),"
-	%	%%%     "('Ulf Wiger', 'USA')">>),
+	%	%%%     "('Ulf Wiger', 'USA')">>),%
 
     %% Execute a query (using a binary)
     Result1 = mysql:fetch(p1, <<"SELECT string FROM test">>),
