@@ -1,79 +1,73 @@
--module(html).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+-module(ernews_html).
 -compile(export_all).
--record(state, {url="", ref="", resource="", ts="", tags=""}).
+-record(state, {url="", source="", ts=""}).
 
 %% Writting the sources required for this module
-start(_URL, _Ref, _Source, _Ts, _Tags) ->
+start(Record) ->
 %% Sending sources to the init() 
-    spawn(?MODULE, init, [_URL, _Ref, _Source, _Ts, _Tags]).
+    spawn(?MODULE, init, [Record]).
    
 %% Init assining the sources to the records received by the loop function
-init(_URL, _Ref, _Source, _Ts, _Tags) ->
-   %% loop(#state{url=URL, ref=Ref, resource=Resource, ts=Ts, tags=Tags}) ->
-					      ok.
+init(Record) ->
+    end_url(Record),
+		      ok.
+    
 
 
+%% parse receives the sources and messages 
+end_url(Record) ->
+   case NewURL = html:end_url(Record#state.url) of
+       bad_url ->
+	   gen_server:cast(ernews_linkerv,{NewURL});
+       _ ->
+	   check_duplicate(Record)
+   end.
 
-%% loop receives the sources and messages 
-loop(#state{}) ->
-   ok.
-   %% receive
-   %%	_ ->
-	   
-   %%  after 0 ->
-	    %end url must be here!
-	    %checking if the URL exists
-	    %%check_duplicate(_message) ->
-		    
-            %% divide to html tags
-            %% get meta data
-            %% write to db
+check_duplicate(Record) ->  
+   case CHECK_DUPLICATE = html:check_duplicate(Record#state.url) of
+       url_exists ->
+	   gen_server:cast(ernews_linkserv, {CHECK_DUPLICATE});
+       _ ->
+	   read_url(Record)
+   end.
+	         
+    
+read_url(Record) ->
+   case READING_URL = html:read_url(Record#state.url) of
+       bad_reading ->
+	   gen_server:cast(ernews_linkserv, {READING_URL});
 
-            %%write_to_db(_URL, _Description, _Title, _Image, _Icon) ->
-            %% send message to the CHECKER!
+       _ ->
+	   relevence(Record)
+   end.
 
+relevence(Record) ->
+    case RELEVENCE = html:relevence(Record#state.url) of
+	bad_relevence ->
+	    gen_server:cast(ernews_linkserv, {RELEVENCE});
+
+	_ ->
+	    write_to_db(Record)
+   end.
+
+write_to_db(Record) ->	      
+    case WRITE_DB = html:write_to_db(Record#state.url) of
+	bad_reading ->
+	    gen_server:cast(ernews_linkserv, {WRITE_DB});
 	    
-   %% end.
+	_ ->
+	    gen_server:cast(ernews_linkserv, {submit, Record#state.source, Record#state.ts})
 
+   end.
+   
+            
 
-%% Find the end url
+            
+            
 
-end_url(_URL, _Description, _Title, _Image, _Icon) ->
-    ok.
+   
 
-
-%% checking if the URL exists in the database
-check_duplicate(_News, _URL) ->
-       ok.  
-   %% case db:exist{_News, _URL} of
-   %%      true -> 'blabla';
-	    %% do something
-       
-   %%       false -> 'bla'
-	    %% return error
-   %%  end.
-%% fetching the html source 
-
-fetch_html_source(_URL, _Description, _Title, _Image, _Icon) ->
-    ok.
-
-%% Dividing the URL into tags
-
-divide_to_tags(_Sources) ->	
-    ok.
-    		 
-
-%% Getting the meta data
-
-get_meta_data(_Data) ->
-    ok.
-
-
-
-%% passing the sources to the database  
-write_to_db(_URL, _Description, _Title, _Image, _Icon) ->
-    ok.
- %% db:write(news, {_URL, _Description, _Title, _Image, _Icon}) ->
 						     
     
     
