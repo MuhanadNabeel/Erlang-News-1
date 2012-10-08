@@ -198,7 +198,6 @@ log(Module, Line, _Level, FormatFun) ->
 %% @doc Starts the MySQL client gen_server process.
 %%
 %% The Port and LogFun parameters are optional.
-%%
 %% @spec start_link(PoolId::atom(), Host::string(), Port::integer(),
 %%   Username::string(), Password::string(), Database::string(),
 %%   LogFun::undefined | function() of arity 4) ->
