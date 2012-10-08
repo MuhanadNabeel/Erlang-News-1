@@ -6,7 +6,7 @@
 %%% @end
 %%% Created :  8 Oct 2012 by Khashayar <khashayar@localhost.localdomain>
 %%%-------------------------------------------------------------------
--module(ernews_jable_linkserv).
+-module(ernews_linkserv).
 
 -behaviour(gen_server).
 
@@ -19,7 +19,6 @@
 
 -define(SERVER, ?MODULE). 
 
--record(state, {}).
 
 %%%===================================================================
 %%% API
@@ -51,7 +50,7 @@ start_link() ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
-    {ok, #state{}}.
+    {ok, dict_init()}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -81,8 +80,33 @@ handle_call(_Request, _From, State) ->
 %%                                  {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_cast(_Msg, State) ->
-    {noreply, State}.
+handle_cast({parse, Source, Url, Ts}, State) ->
+    case ernews_rssfuns:checkdate(Ts , dict:fetch(Source,State)) of
+	true ->
+	    ernews_htmlparser:start(Source,Url,Ts),
+	    {noreply, State};
+	false ->
+	    {noreply, State}
+    end;
+handle_cast({submit, Source, Ts}, State) ->
+    case ernews_rssfuns:checkdate(Ts , dict:fetch(Source,State)) of
+	true ->
+	    {noreply, dict:store(Source, Ts, State)};
+	false ->
+	    {noreplt, State}
+    end;
+handle_cast({error, Url, Ts, Reason}, State) ->
+    case Reason of
+	bad_url ->
+	    %LOG
+	    ok;
+	duplicate ->
+	    ok;
+	not_relevent ->
+	    ok;
+	unknown ->
+	    ok
+    end.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -125,3 +149,12 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+
+dict_init() ->
+    DateTime = {{1990,1,1},{0,0,0}},
+    Dic1 = dict:store(iocoder, DateTime, dict:new()),
+    Dic2 = dict:store(google, DateTime, Dic1),
+    Dic3 = dict:store(reddit, DateTime, Dic2),
+    Dic4 = dict:store(hacker, DateTime, Dic3),
+    Dic4.
+    
