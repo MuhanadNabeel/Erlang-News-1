@@ -5,70 +5,43 @@
 
 -include("records.hrl").
 
-% Used temporarly
+% Used temporarly, not included
 read() ->
 	inets:start(),
 	{ok, {{_Version, 200, _ReasonPhrase}, _Headers, Body}} =
-		httpc:request("http://www.planeterlang.org/en/planet/rss_2.0"),
+%		httpc:request("http://news.google.com/news/feeds?hl=en&gl=us&q=erlang&um=1&ie=UTF-8&output=rss"),
 %		httpc:request("http://coder.io/tag/erlang.rss"),
-%		httpc:request("http://www.reddit.com/r/erlang.rss"),
+		httpc:request("http://www.reddit.com/r/erlang.rss"),
+%		httpc:request("http://news.ycombinator.com/rss"),
 	Body.
 
 	
+%% Called from process, Atom = hacker, else Atom = default
 devide(Atom,List,TimeStamp) ->
 	[_|T] = parse(List),
 	iterate(Atom,T,TimeStamp,[]).
 	
 iterate(_Atom,[],_TimeStamp,List) ->
 	List;
-	
-iterate(Atom,[H|T],TimeStamp,List) ->
-	%Keys = proplists:get_value("keywords", H),
-	%Index = string:rstr(Keys, "erlang"),
-	if
-		Atom == planeterlang ->
-			PubDate = proplists:get_value("date",H);
-		true ->
-			PubDate = proplists:get_value("pubDate",H)
-	end,
-	Compare = compare_dates(Atom,TimeStamp,PubDate),
-	if 
-		Compare >= 0 -> % Index > 0, 
-			URL = proplists:get_value("link",H),
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			%   % If using keywords                                     %
-			%Tags = list_tags(Atom,proplists:get_value("keywords",H)),  %
-			%iterate(Atom,T,TimeStamp,[#rss_item{link=URL, 	            %
-			%	pubDate=convert_pubDate_to_datetime(PubDate),           %
-			%	tags=Tags}|List]);							            %		
-			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			iterate(Atom,T,TimeStamp,[#rss_item{link=URL,
-				pubDate=convert_pubDate_to_datetime(Atom,PubDate)}|List]);
-		true ->
-			iterate(Atom,T,TimeStamp,List)
-	end.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
-% Depricated - keywords will be genereated %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
-%list_tags(coder,[[]|T],List) ->
-%	list_tags(coder,T,List);
-%	
-%list_tags(coder,["]"|T],List) ->
-%	list_tags(coder,T,List);
-%	
-%list_tags(coder,[H|T],List) ->
-%	list_tags(coder,T,[H|List]);
-%	
-%list_tags(coder,[],List) ->
-%	List;
-%	
-%list_tags(coder,String) ->
-%	[_|T] = re:split(String,"[\",\"]",[{return,list}]),
-%	list_tags(coder,T,[]).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-compare_dates(Atom,Date1,Date2) ->
-	calendar:datetime_to_gregorian_seconds(convert_pubDate_to_datetime(Atom,Date2))
+iterate(hacker,[H|T],_TimeStamp,List) ->
+	URL = proplists:get_value("link",H),
+	iterate(hacker,T,_TimeStamp,[#rss_item{link=URL}|List]);
+				
+iterate(_Atom,[H|T],TimeStamp,List) ->
+	PubDate = proplists:get_value("pubDate",H),
+	Compare = compare_dates(TimeStamp,PubDate),
+	if 
+		Compare >= 0 ->
+			URL = proplists:get_value("link",H),
+			iterate(_Atom,T,TimeStamp,[#rss_item{link=URL,
+				pubDate=convert_pubDate_to_datetime(PubDate)}|List]);
+		true ->
+			iterate(_Atom,T,TimeStamp,List)
+	end.
+	
+compare_dates(Date1,Date2) ->
+	calendar:datetime_to_gregorian_seconds(convert_pubDate_to_datetime(Date2))
 	-
 	calendar:datetime_to_gregorian_seconds(Date1).
 	
@@ -76,34 +49,8 @@ compare_dates(Atom,Date1,Date2) ->
 	%% {{2012,9,17},{13,53,19}}
 	%% 2012-09-18T08:12:29+00:00
 	
-list_string_to_int(L) ->
-	list_string_to_int(L,[]).
-	
-list_string_to_int([H|T],List) ->
-	list_string_to_int(T,[element(1,string:to_integer(H))|List]);
-
-list_string_to_int([],List) ->
-	lists:reverse(List).
-	
-convert_pubDate_to_datetime([]) ->
-	[];
-	
-convert_pubDate_to_datetime([H|T]) ->
-	[string:to_integer(H)] ++ convert_pubDate_to_datetime(T).
-
-convert_pubDate_to_datetime(planeterlang,undefined) ->
-	{{2013,9,17},{13,53,19}};
-	
-convert_pubDate_to_datetime(planeterlang,DateTime) ->
-	[H|T] = re:split(DateTime,"[T]",[{return,list}]),
-	Date = re:split(H,"[-]",[{return,list}]),
-	[F|_] = re:split(hd(T),"[+]",[{return,list}]),
-	Time = re:split(F,"[:]",[{return,list}]),
-	{list_to_tuple(list_string_to_int(Date)),
-	list_to_tuple(list_string_to_int(Time))};
-		
 % Author:  Khashayar
-convert_pubDate_to_datetime(_,DateTime) ->
+convert_pubDate_to_datetime(DateTime) ->
     {ok,[_Day, Date, MonthS, Year,HH,MM,SS], _} = 
 	io_lib:fread("~3s, ~2d ~3s ~4d ~2d:~2d:~2d" , DateTime),
     Month = case MonthS of
