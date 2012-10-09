@@ -7,7 +7,7 @@
 %%% @end
 %%% Created :  8 Oct 2012 by Khashayar <khashayar@localhost.localdomain>
 %%%-------------------------------------------------------------------
--module(ernews_jable_supervisor).
+-module(ernews_supervisor).
 
 -behaviour(supervisor).
 
