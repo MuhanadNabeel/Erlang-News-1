@@ -6,7 +6,7 @@
 %%% @end
 %%% Created :  8 Oct 2012 by Khashayar <khashayar@localhost.localdomain>
 %%%-------------------------------------------------------------------
--module(ernews_jable_rsssup).
+-module(ernews_rsssup).
 
 -behaviour(supervisor).
 
