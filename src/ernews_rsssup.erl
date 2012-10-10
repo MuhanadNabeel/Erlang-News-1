@@ -50,6 +50,7 @@ start_link() ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
+    io:format("WE ARE IN SUPER INIT~n" ,[]),
     RestartStrategy = one_for_one,
     MaxRestarts = 1000,
     MaxSecondsBetweenRestarts = 3600,
@@ -66,19 +67,19 @@ init([]) ->
     Hacker_Source = "http://news.ycombinator.com/rss",
 
     Coder = {iocoder_reader, 
-	     {ernews_rssread, start_link, [iocoder, Coder_Source, 60]},
+	     {ernews_rssread, start_link, [iocoder, Coder_Source, 2]},
 	     Restart, Shutdown, Type, [ernews_rssread]},
     Google = {google_reader, 
-	      {ernews_rssread, start_link , [google, Google_Source, 120]},
+	      {ernews_rssread, start_link , [google, Google_Source, 12]},
 	     Restart, Shutdown, Type, [ernews_rssread]},
     Reddit = {reddit_reader, 
-	      {ernews_rssread, start_link, [reddit, Reddit_Source , 90]},
+	      {ernews_rssread, start_link, [reddit, Reddit_Source , 9]},
 	     Restart, Shutdown, Type, [ernews_rssread]},    
     Hacker = {hacker_reader, 
-	      {ernews_rssread, start_link, [hacker, Hacker_Source , 180]},
+	      {ernews_rssread, start_link, [hacker, Hacker_Source , 18]},
 	     Restart, Shutdown, Type, [ernews_rssread]},
-
-    {ok, {SupFlags, [Coder, Google, Reddit, Hacker]}}.
+    io:format("WE ARE IN SUPER INIT Created~n" ,[]),
+    {ok, {SupFlags, [Coder]}}. %, Google, Reddit, Hacker]}}.
 
 %%%===================================================================
 %%% Internal functions

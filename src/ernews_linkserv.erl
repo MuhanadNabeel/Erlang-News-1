@@ -32,6 +32,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start_link() ->
+    io:format("LINK SERVER IS COMING UP ~n",[]),
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
 %%%===================================================================
@@ -81,15 +82,15 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast({parse, Source, Url, Ts}, State) ->
-    case ernews_rssfuns:checkdate(Ts , dict:fetch(Source,State)) of
+    case Ts > dict:fetch(Source,State) of
 	true ->
-	    ernews_htmlparser:start(Source,Url,Ts),
+	    %ernews_htmlparser:start(Source,Url,Ts),
 	    {noreply, State};
 	false ->
 	    {noreply, State}
     end;
 handle_cast({submit, Source, Ts}, State) ->
-    case ernews_rssfuns:checkdate(Ts , dict:fetch(Source,State)) of
+    case Ts > dict:fetch(Source,State) of
 	true ->
 	    {noreply, dict:store(Source, Ts, State)};
 	false ->
