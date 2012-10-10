@@ -60,10 +60,10 @@ init([]) ->
 
     SupFlags = {RestartStrategy, MaxRestarts, MaxSecondsBetweenRestarts},
 
-    Rss_Sup = {rss_sup , {ernews_jable_rsssup , start_link , []},
-	       Restart , Shutdown , supervisor, [ernew_jable_rsssup]},
-    Link_Serv = {link_server , {ernews_jable_linkserv , start_link , []},
-		 Restart , Shutdown , worker , [ernew_jable_linkserv]},
+    Rss_Sup = {ernews_rsssup , {ernews_rsssup , start_link , []},
+	       Restart , Shutdown , supervisor, [ernew_rsssup]},
+    Link_Serv = {ernews_linkserv , {ernews_linkserv , start_link , []},
+		 Restart , Shutdown , worker , [ernew_linkserv]},
     
     {ok, {SupFlags, [Rss_Sup , Link_Serv]}}.
 

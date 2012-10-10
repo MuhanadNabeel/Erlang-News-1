@@ -60,10 +60,25 @@ init([]) ->
     Shutdown = 2000,
     Type = worker,
 
-    AChild = {'AName', {'AModule', start_link, []},
-	      Restart, Shutdown, Type, ['AModule']},
+    Google_Source = "http://news.google.com/news/feeds?hl=en&gl=us&q=erlang&um=1&ie=UTF-8&output=rss", 
+    Coder_Source = "http://coder.io/tag/erlang.rss" ,
+    Reddit_Source = "http://www.reddit.com/r/erlang.rss" ,
+    Hacker_Source = "http://news.ycombinator.com/rss",
 
-    {ok, {SupFlags, [AChild]}}.
+    Coder = {iocoder_reader, 
+	     {ernews_rssread, start_link, [iocoder, Coder_Source, 60]},
+	     Restart, Shutdown, Type, [ernews_rssread]},
+    Google = {google_reader, 
+	      {ernews_rssread, start_link , [google, Google_Source, 120]},
+	     Restart, Shutdown, Type, [ernews_rssread]},
+    Reddit = {reddit_reader, 
+	      {ernews_rssread, start_link, [reddit, Reddit_Source , 90]},
+	     Restart, Shutdown, Type, [ernews_rssread]},    
+    Hacker = {hacker_reader, 
+	      {ernews_rssread, start_link, [hacker, Hacker_Source , 180]},
+	     Restart, Shutdown, Type, [ernews_rssread]},
+
+    {ok, {SupFlags, [Coder, Google, Reddit, Hacker]}}.
 
 %%%===================================================================
 %%% Internal functions
