@@ -50,8 +50,8 @@ start_link(Atom,Source,TimeOut) ->
 %% @end
 %%--------------------------------------------------------------------
 init([Atom,Source,Timeout]) ->
+	io:format("Start RSS parsing: ~p~n",[Atom]),
     read({Atom,Source,Timeout*1000}),
-    io:format("DONE READING~n" , []),
     {ok , []}.
 
 %%--------------------------------------------------------------------
@@ -96,7 +96,6 @@ handle_cast({ok,done}, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info(_Info, State) ->
-    
     {noreply, State}.
 
 %%--------------------------------------------------------------------
@@ -111,7 +110,6 @@ handle_info(_Info, State) ->
 %% @end
 %%--------------------------------------------------------------------
 terminate(Reason, _State) ->
-    io:format("TERMINATEDDDD ~p~n",[Reason]),
     ok.
 
 %%--------------------------------------------------------------------
@@ -135,17 +133,6 @@ read({Atom,Source,Timeout}) ->
 	Read = httpc:request(Source),
 	get_rss(Read,Atom,Timeout).
 	
-read(Atom,[],Timeout) ->
-    timer:sleep(Timeout),
-    io:format("~n~nSUCCESS timeout(~p, ~p) ~n~n With NORMAL",[Timeout,Atom]),
-    gen_server:cast(Atom,{ok,done});
-	
-read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T],Timeout) ->
-	io:format("~p~n",[{Link,PubDate}]),
-	%gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
-	read(Atom,T,Timeout).
-	
-
 get_rss({ok, {{_Version, 200, _ReasonPhrase}, _Headers, Body}},Atom,Timeout) ->
 	read(Atom,iterate(Atom,Body),Timeout);
 	
@@ -153,10 +140,18 @@ get_rss(_,Atom,Timeout) ->
 	timer:sleep(Timeout),
 	io:format("~n~nERROR timeout(~p, ~p) ~n~n",[Timeout,Atom]).
 	
+read(Atom,[],Timeout) ->
+    timer:sleep(Timeout),
+    gen_server:cast(Atom,{ok,done});
+	
+read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T],Timeout) ->
+	gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
+	read(Atom,T,Timeout).
+	
+
 iterate(Atom,List) ->
 	[_|T] = parse(List),
-	iterate(Atom,T,[]).
-	
+	iterate(Atom,T,[]).	
 	
 iterate(_Atom,[],List) ->
 	List;
