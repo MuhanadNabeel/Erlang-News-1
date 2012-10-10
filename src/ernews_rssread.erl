@@ -9,7 +9,7 @@
 % "http://www.reddit.com/r/erlang.rss"
 % "http://news.ycombinator.com/rss"
 
-start(Atom,Source,Timeout) ->
+start_link(Atom,Source,Timeout) ->
 	spawn_link(?MODULE, init,[{Atom,Source,(Timeout*1000)}]).
 	
 	
