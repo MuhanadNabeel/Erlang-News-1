@@ -1,3 +1,14 @@
+%%%-------------------------------------------------------------------
+%%% @author Muhanad Nabeel <Muhanad@Muhanads-MacBook-Pro.local>
+%%% @copyright (C) 2012, Muhanad Nabeel
+%%% @doc
+%%%
+%%% @end
+%%% Created : 10 Oct 2012 by Muhanad Nabeel <Muhanad@Muhanads-MacBook-Pro.local>
+%%%-------------------------------------------------------------------
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 -module(ernews_html).
 -compile(export_all).
@@ -17,15 +28,16 @@ init(Record) ->
 
 %% parse receives the sources and messages 
 end_url(Record) ->
-   case NewURL = html:end_url(Record#state.url) of
+   case NewURL = ernews_htmlfuns:end_url(Record#state.source, Record#state.url) of
        bad_url ->
 	   gen_server:cast(ernews_linkerv,{NewURL});
        _ ->
-	   check_duplicate(Record)
+	   check_duplicate(NewURL)
+	       
    end.
 
-check_duplicate(Record) ->  
-   case CHECK_DUPLICATE = html:check_duplicate(Record#state.url) of
+check_duplicate(NewURL) ->  
+   case CHECK_DUPLICATE = html:check_duplicate(NewURL) of
        url_exists ->
 	   gen_server:cast(ernews_linkserv, {CHECK_DUPLICATE});
        _ ->
@@ -60,14 +72,3 @@ write_to_db(Record) ->
 	    gen_server:cast(ernews_linkserv, {submit, Record#state.source, Record#state.ts})
 
    end.
-   
-            
-
-            
-            
-
-   
-
-						     
-    
-    
