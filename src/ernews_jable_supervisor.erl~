@@ -1,4 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%-------------------------------------------------------------------
 %%% @author Khashayar <khashayar@localhost.localdomain>
 %%% @copyright (C) 2012, Khashayar
@@ -7,7 +6,7 @@
 %%% @end
 %%% Created :  8 Oct 2012 by Khashayar <khashayar@localhost.localdomain>
 %%%-------------------------------------------------------------------
--module(ernews_supervisor).
+-module(ernews_jable_supervisor).
 
 -behaviour(supervisor).
 
@@ -55,17 +54,18 @@ init([]) ->
     MaxRestarts = 1000,
     MaxSecondsBetweenRestarts = 3600,
 
-    Restart = permanent,
-    Shutdown = 2000,
-
     SupFlags = {RestartStrategy, MaxRestarts, MaxSecondsBetweenRestarts},
 
-    Rss_Sup = {ernews_rsssup , {ernews_rsssup , start_link , []},
-	       Restart , Shutdown , supervisor, [ernew_rsssup]},
-    Link_Serv = {ernews_linkserv , {ernews_linkserv , start_link , []},
-		 Restart , Shutdown , worker , [ernew_linkserv]},
+    Restart = permanent,
+    Shutdown = 2000,
+    Type = worker,
+
+    Rss_Sup = {rss_sup , {ernews_jable_rsssup , start_link , []},
+	       Restart , Shutdown , supervisor, [ernew_jable_rsssup]},
+    Link_Serv = {link_server , {ernews_jable_linkserv , start_link , []},
+		 Restart , Shutdown , worker , [ernew_jable_linkserv]},
     
-    {ok, {SupFlags, [Link_Serv, Rss_Sup]}}.
+    {ok, {SupFlags, [Rss_Sup , Link_Serv]}}.
 
 %%%===================================================================
 %%% Internal functions

@@ -67,7 +67,7 @@ init([]) ->
     Hacker_Source = "http://news.ycombinator.com/rss",
 
     Coder = {iocoder_reader, 
-	     {ernews_rssread, start_link, [iocoder, Coder_Source, 2]},
+	     {ernews_rssread, start_link, [iocoder, Coder_Source, 60]},
 	     Restart, Shutdown, Type, [ernews_rssread]},
     Google = {google_reader, 
 	      {ernews_rssread, start_link , [google, Google_Source, 12]},

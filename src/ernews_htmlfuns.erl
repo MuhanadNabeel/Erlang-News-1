@@ -21,8 +21,14 @@ end_url(iocoder,Url)->
     Result = httpc:request(get, {Url, []}, HTTPOptions, []),
     case Result of
 	{ok, {{_, 302, _}, Headers, _}} ->
-	    proplists:get_value("location", Headers);
-
+	    End_Url =proplists:get_value("location", Headers),
+	    case End_Url of
+		[] ->
+		    {error, not_found};
+		_ ->
+		    End_Url
+	    end;
+			    
 	{error,no_scheme}->
 	    {error,broken_html};
 	{error,{failed_connect,_}}->
@@ -32,8 +38,9 @@ end_url(iocoder,Url)->
 	{error,{ehostunreach,_}}->
 	    {error,host_unreachable};
 	{error,{etimedout,_}}->
-	    {error,connection_timed_out}
-
+	    {error,connection_timed_out};
+	_ ->
+	    {error,unknown_ernews}
     end;
 
 end_url(reddit,Url)->
@@ -56,31 +63,33 @@ end_url(reddit,Url)->
 	{error,{ehostunreach,_}}->
 	    {error,host_unreachable};
 	{error,{etimedout,_}}->
-	    {error,connection_timed_out}
+	    {error,connection_timed_out};
+	_ ->
+	    {error,unknown_ernews}	
     end;
 
 end_url(google,Url)->   
     end_url(coder,Url);
        
 end_url(_,_) ->
-    unknown_source. 
+    unknown_source_magnus. 
 
 %----------------------------HTML META DATA-------------------------------------------%
-
 get_description(Url)->
     inets:start(),
-  Result = httpc:request(Url),
+    Result = httpc:request(Url),
     case Result of
 	 {ok, {{_, 200, _}, _, Body}} ->
 	  
 	    Html = mochiweb_html:parse(Body),
 	    List = get_value([Html],"meta" ,[]),
-	    Description = get_content_from_list(List , 
-						{"name" ,"description"} , "content"),
+	    Description = 
+		get_content_from_list(List , 
+				      {"name" ,"description"} , "content"),
 
 	    case Description of
 		[]->
-		    {error,description_null};
+		    null;
 		_ ->
 		    Description
 	    end;	 
@@ -95,11 +104,10 @@ get_description(Url)->
 	{error,{ehostunreach,_}}->
 	    {error,host_unreachable};
 	{error,{etimedout,_}}->
-	    {error,connection_timed_out}	
-
+	    {error,connection_timed_out};	
+	_ ->
+	    {error,unknown_ernews}
    end.
-
-
 
 get_title(Url)->
     inets:start(),
@@ -112,7 +120,7 @@ get_title(Url)->
 
 	    case Title of
 		[]->
-		    {error,title_null};
+		    null;
 		_ ->
 		    Title
 	    end;
@@ -126,8 +134,10 @@ get_title(Url)->
 	{error,{ehostunreach,_}}->
 	    {error,host_unreachable};
 	{error,{etimedout,_}}->
-	    {error,connection_timed_out}
-    end. 
+	    {error,connection_timed_out};
+	_ ->
+	    {error,unknown_ernews}
+    end.
 
 %----------------------------HTML LIST BREAKDOWN----------------------------------------%
 %% @author Khashayar Abdoli 

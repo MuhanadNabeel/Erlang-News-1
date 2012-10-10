@@ -15,10 +15,10 @@
 -record(state, {url="", source="", ts=""}).
 
 %% Writting the sources required for this module
-start(Record) ->
+start(Url,Source,Ts) ->
 %% Sending sources to the init()
-    
-    spawn(?MODULE, init, [Record]).
+    spawn(?MODULE, init, [Url,Source,Ts]).
+
    
 
 start_link(Url,Source,Ts) ->
@@ -34,39 +34,56 @@ init(Url,Source,Ts) ->
 
 %% parse receives the sources and messages 
 end_url(Record= #state{}) ->
-   case NewUrl = ernews_htmlfuns:end_url(Record#state.source, Record#state.url) of
-       {error, Reason} ->
-	   gen_server:cast(ernews_linkerv,{error, Reason, Record#state.url, Record#state.ts});
+    case NewUrl = ernews_htmlfuns:end_url(
+		    Record#state.source, Record#state.url) of
+	{error, Reason} ->
+	    gen_server:cast(ernews_linkerv,
+			    {error, Reason, Record#state.url, Record#state.ts});
        _ ->
-	   check_duplicate(Record#state{url = NewUrl})
+%	    io:format("END URL FINDING = ~p ~n", [NewUrl]), 
+	    check_duplicate(Record#state{url = NewUrl})
 	       
    end.
 
-check_duplicate(Record= #state{}) ->  
-   case CHECK_DUPLICATE = ernews_db:exists(news, {url ,Record#state.url}) of
-       error ->
-	   gen_server:cast(ernews_linkserv, {error, duplicate, Record#state.url, Record#state.ts});
-       _ ->
-	   read_url(Record)
-   end.
+check_duplicate(Record= #state{}) ->
+%    case ernews_db:exists("news", {"URL" ,Record#state.url}) of
+%       false ->
+%	   gen_server:cast(ernews_linkserv, 
+%			   {error, duplicate, Record#state.url, 
+%			    Record#state.ts});
+%      true ->
+	   read_url(Record).
+%   end.
 	         
     
 read_url(Record= #state{}) ->
     Title = ernews_htmlfuns:get_title(Record#state.url),
     Description = ernews_htmlfuns:get_description(Record#state.url),
     case {Title,Description} of
-       {null,null} ->
-	   gen_server:cast(ernews_linkserv, 
-			   {error,no_title_description,Record#state.url,Record#state.ts});
-       {null,_} ->
-	   gen_server:cast(ernews_linkserv, 
-			   {error,no_title,Record#state.url,Record#state.ts});
-       {_,null} ->
-	   gen_server:cast(ernews_linkserv, 
-			   {error,description,Record#state.url,Record#state.ts});
-	
+	{null,null} ->
+	    gen_server:cast(ernews_linkserv, 
+			    {error,no_title_description,
+			     Record#state.url,Record#state.ts});
+	{null,_} ->
+	    gen_server:cast(ernews_linkserv, 
+			    {error,no_title,Record#state.url,Record#state.ts});
+	{_,null} ->
+	    gen_server:cast(ernews_linkserv, 
+			   {error,no_description,Record#state.url,Record#state.ts});
+	{{error,_},{error,_}} ->
+	    gen_server:cast(ernews_linkserv, 
+			    {error,no_title_description,
+			     Record#state.url,Record#state.ts});	
+    	{{error,_},_} ->
+	    gen_server:cast(ernews_linkserv, 
+			    {error,no_description,
+			     Record#state.url,Record#state.ts});	
+    	{_,{error,_}} ->
+	    gen_server:cast(ernews_linkserv, 
+			    {error,no_title,
+			     Record#state.url,Record#state.ts});	    
 
-       {_,_} ->
+	  {_,_} ->
 	    write_to_db(Record,Title,Description)
    end.
 
@@ -80,11 +97,16 @@ read_url(Record= #state{}) ->
 %   end.
 
 write_to_db(Record= #state{} , Description, Title) ->	      
-    case WRITE_DB = ernews_db:write(news, {Record#state.url, Description, Title}) of
+    io:format("In WRITE TO DB ~n", []),
+    case WRITE_DB = ernews_db:write(news,
+				    {Record#state.url, 
+				     Description, Title , " " , " "}) of
 	bad_reading ->
 	    gen_server:cast(ernews_linkserv, {WRITE_DB});
 	    
 	_ ->
 	    gen_server:cast(ernews_linkserv, {submit, Record#state.source, Record#state.ts})
 
-   end.
+    end,
+    io:format("HOOOOOOORAYYYYYYYYY ~n", []).
+    

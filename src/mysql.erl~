@@ -178,7 +178,7 @@
 -define(PORT, 3306).
 
 %% used for debugging
--define(L(Msg), ok).%io:format("~p:~b ~p ~n", [?MODULE, ?LINE, Msg])).
+-define(L(Msg), io:format("~p:~b ~p ~n", [?MODULE, ?LINE, Msg])).
 
 %% Log messages are designed to instantiated lazily only if the logging level
 %% permits a log message to be logged

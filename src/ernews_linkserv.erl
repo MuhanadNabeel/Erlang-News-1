@@ -82,21 +82,24 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast({parse, Source, Url, Ts}, State) ->
+    io:format("Parsing Started~n",[]),
     case Ts > dict:fetch(Source,State) of
 	true ->
-	    %ernews_htmlparser:start(Source,Url,Ts),
+	    ernews_html:start(Url,Source,Ts),
 	    {noreply, State};
 	false ->
 	    {noreply, State}
     end;
 handle_cast({submit, Source, Ts}, State) ->
+    io:format("Parsing Ended~n",[]),
     case Ts > dict:fetch(Source,State) of
 	true ->
 	    {noreply, dict:store(Source, Ts, State)};
 	false ->
-	    {noreplt, State}
+	    {noreply, State}
     end;
-handle_cast({error, Url, Ts, Reason}, State) ->
+handle_cast({error, Reason, Url, Ts}, State) ->
+    io:format("Parsing Crashed because ~p~n",[Reason]),
     case Reason of
 	bad_url ->
 	    %LOG
@@ -105,9 +108,11 @@ handle_cast({error, Url, Ts, Reason}, State) ->
 	    ok;
 	not_relevent ->
 	    ok;
-	unknown ->
+	_ ->
 	    ok
-    end.
+    end,
+    {noreply, State}.
+
 
 %%--------------------------------------------------------------------
 %% @private
