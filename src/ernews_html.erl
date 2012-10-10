@@ -41,7 +41,7 @@ check_duplicate(NewURL) ->
        url_exists ->
 	   gen_server:cast(ernews_linkserv, {CHECK_DUPLICATE});
        _ ->
-	   read_url(Record)
+	   read_url(NewURL)
    end.
 	         
     
