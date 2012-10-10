@@ -1,5 +1,7 @@
 -module(ernews_rssread).
--compile(export_all).
+
+-export([start/3]).
+
 -include("records.hrl").
 
 % "http://news.google.com/news/feeds?hl=en&gl=us&q=erlang&um=1&ie=UTF-8&output=rss"
@@ -7,26 +9,37 @@
 % "http://www.reddit.com/r/erlang.rss"
 % "http://news.ycombinator.com/rss"
 
+start_link(Atom,Source,Timeout) ->
+	spawn_link(?MODULE, init,[{Atom,Source,(Timeout*1000)}]).
+	
+	
+init(Vars) ->
+	read(Vars).
+	
 
-init(Atom,Source) ->
-	spawn_link(?MODULE, read,[{Atom,Source}]).
-
-read({Atom,Source}) ->
+read({Atom,Source,Timeout}) ->
 	inets:start(),
-	{ok, {{_Version, 200, _ReasonPhrase}, _Headers, Body}} =
-		httpc:request(Source),
-	read(Atom,devide(Atom,Body)).
+	Read = httpc:request(Source),
+	get_rss(Read,Atom,Timeout).
 	
-read(_Atom,[]) ->
-	done;
+read(Atom,[],Timeout) ->
+	timer:sleep(Timeout),
+	io:format("~n~nSUCCESS timeout(~p, ~p) ~n~n",[Timeout,Atom]);
 	
-read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T]) ->
+read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T],Timeout) ->
 	io:format("~p~n",[{Link,PubDate}]),
 	gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
-	read(Atom,T).
+	read(Atom,T,Timeout).
 	
 
-devide(Atom,List) ->
+get_rss({ok, {{_Version, 200, _ReasonPhrase}, _Headers, Body}},Atom,Timeout) ->
+	read(Atom,iterate(Atom,Body),Timeout);
+	
+get_rss(_,Atom,Timeout) ->
+	timer:sleep(Timeout),
+	io:format("~n~nERROR timeout(~p, ~p) ~n~n",[Timeout,Atom]).
+	
+iterate(Atom,List) ->
 	[_|T] = parse(List),
 	iterate(Atom,T,[]).
 	
@@ -36,11 +49,11 @@ iterate(_Atom,[],List) ->
 
 iterate(hacker,[H|T],List) ->
 	URL = proplists:get_value("link",H),
-	iterate(hacker,T,[#rss_item{link=URL}|List]);
+	iterate(hacker,T,[#rss_item{link=URL,pubDate=erlang:universaltime()}|List]);
 				
 iterate(_Atom,[H|T],List) ->
 	iterate(_Atom,T,[#rss_item{link=proplists:get_value("link",H),
-		pubDate=ernews_rssfuns:convert_pubDate_to_datetime(proplists:get_value("pubDate",H))}|List]).
+		pubDate=ernews_defuns:convert_pubDate_to_datetime(proplists:get_value("pubDate",H))}|List]).
 		
 		
 		
