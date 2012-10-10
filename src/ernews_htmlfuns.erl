@@ -69,10 +69,10 @@ end_url(reddit,Url)->
     end;
 
 end_url(google,Url)->   
-    end_url(coder,Url);
+    end_url(iocoder,Url);
        
 end_url(_,_) ->
-    unknown_source_magnus. 
+    {error, unknown_source_magnus}. 
 
 %----------------------------HTML META DATA-------------------------------------------%
 get_description(Url)->
@@ -115,14 +115,11 @@ get_title(Url)->
     case Result of
 	 {ok, {{_, 200, _}, _, Body}}->
 	    Html = mochiweb_html:parse(Body),
-	    [{_,_,[Val|_]}] = (get_value([Html],"title" ,[])),
-	    Title = bitstring_to_list(Val),
-
-	    case Title of
-		[]->
-		    null;
+	    case get_value([Html],"title" ,[]) of
+		[{_,_,[Val|_]}] ->
+		    bitstring_to_list(Val);
 		_ ->
-		    Title
+		    null
 	    end;
 
 	{error,no_scheme}->

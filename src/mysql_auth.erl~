@@ -71,7 +71,6 @@ do_old_auth(Sock, RecvPid, SeqNum, User, Password, Salt1, LogFun) ->
 %% Returns : result of mysql_conn:do_recv/3
 %%--------------------------------------------------------------------
 do_new_auth(Sock, RecvPid, SeqNum, User, Password, Salt1, Salt2, LogFun) ->
-    io:format("AUTHORING HERE ~p ~p ~p ~p ~p ~p ~p ~p ~n" , [Sock, RecvPid, SeqNum, User, Password, Salt1, Salt2, LogFun]),
     Auth = password_new(Password, Salt1 ++ Salt2),
     Packet2 = make_new_auth(User, Auth, none),
     do_send(Sock, Packet2, SeqNum, LogFun),

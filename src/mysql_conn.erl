@@ -117,10 +117,10 @@
 %% when bypassing the dispatcher.
 -define(STATE_VAR, mysql_connection_state).
 
--define(Log(LogFun,Level,Msg),
-	LogFun(?MODULE, ?LINE,Level,fun()-> {Msg,[]} end)).
--define(Log2(LogFun,Level,Msg,Params),
-	LogFun(?MODULE, ?LINE,Level,fun()-> {Msg,Params} end)).
+-define(Log(LogFun,Level,Msg), ok).
+%	LogFun(?MODULE, ?LINE,Level,fun()-> {Msg,[]} end)).
+-define(Log2(LogFun,Level,Msg,Params),ok).
+%	LogFun(?MODULE, ?LINE,Level,fun()-> {Msg,Params} end)).
 -define(L(Msg), ok).%io:format("~p:~b ~p ~n", [?MODULE, ?LINE, Msg])).
 
 

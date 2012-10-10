@@ -46,18 +46,19 @@ end_url(Record= #state{}) ->
    end.
 
 check_duplicate(Record= #state{}) ->
-%    case ernews_db:exists("news", {"URL" ,Record#state.url}) of
-%       false ->
-%	   gen_server:cast(ernews_linkserv, 
-%			   {error, duplicate, Record#state.url, 
-%			    Record#state.ts});
-%      true ->
-	   read_url(Record).
-%   end.
+    case ernews_db:exists("news", {"URL" ,Record#state.url}) of
+	true ->
+	    gen_server:cast(ernews_linkserv, 
+			    {error, duplicate, Record#state.url, 
+			     Record#state.ts});
+	false ->
+	    read_url(Record)
+   end.
 	         
     
 read_url(Record= #state{}) ->
     Title = ernews_htmlfuns:get_title(Record#state.url),
+%    io:format("TITLE +++++++++++ = ~p ~n", [Title]), 
     Description = ernews_htmlfuns:get_description(Record#state.url),
     case {Title,Description} of
 	{null,null} ->
@@ -97,16 +98,18 @@ read_url(Record= #state{}) ->
 %   end.
 
 write_to_db(Record= #state{} , Description, Title) ->	      
-    io:format("In WRITE TO DB ~n", []),
+%    io:format("In WRITE TO DB ~n", []),
     case WRITE_DB = ernews_db:write(news,
 				    {Record#state.url, 
-				     Description, Title , " " , " "}) of
+				     Description, Title , 
+				     erlang:atom_to_list(Record#state.source),
+				     " "}) of
 	bad_reading ->
 	    gen_server:cast(ernews_linkserv, {WRITE_DB});
 	    
 	_ ->
 	    gen_server:cast(ernews_linkserv, {submit, Record#state.source, Record#state.ts})
 
-    end,
-    io:format("HOOOOOOORAYYYYYYYYY ~n", []).
+    end.
+ %   io:format("HOOOOOOORAYYYYYYYYY ~n", []).
     

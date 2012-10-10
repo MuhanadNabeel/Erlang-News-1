@@ -67,19 +67,19 @@ init([]) ->
     Hacker_Source = "http://news.ycombinator.com/rss",
 
     Coder = {iocoder_reader, 
-	     {ernews_rssread, start_link, [iocoder, Coder_Source, 60]},
+	     {ernews_rssread, start_link, [iocoder, Coder_Source, 1]},
 	     Restart, Shutdown, Type, [ernews_rssread]},
     Google = {google_reader, 
-	      {ernews_rssread, start_link , [google, Google_Source, 12]},
+	      {ernews_rssread, start_link , [google, Google_Source, 60]},
 	     Restart, Shutdown, Type, [ernews_rssread]},
     Reddit = {reddit_reader, 
-	      {ernews_rssread, start_link, [reddit, Reddit_Source , 9]},
+	      {ernews_rssread, start_link, [reddit, Reddit_Source , 60]},
 	     Restart, Shutdown, Type, [ernews_rssread]},    
     Hacker = {hacker_reader, 
 	      {ernews_rssread, start_link, [hacker, Hacker_Source , 18]},
 	     Restart, Shutdown, Type, [ernews_rssread]},
     io:format("WE ARE IN SUPER INIT Created~n" ,[]),
-    {ok, {SupFlags, [Coder]}}. %, Google, Reddit, Hacker]}}.
+    {ok, {SupFlags, [Coder, Reddit, Google]}}. %, Google, Reddit, Hacker]}}.
 
 %%%===================================================================
 %%% Internal functions

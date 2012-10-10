@@ -6,11 +6,19 @@
 
 %% News-table should also have date and default votes, rank and visits
 write(news,{URL,Description,Title,Image,Icon}) ->			
-    qFunc(write,
-	  "INSERT INTO abdoli.ernews_news(URL, Title, Description, Image, Icon) VALUES('" 
-	  ++ URL ++ "', '" ++ Title ++ "', '" 
-	  ++ Description ++ "', '" ++ Image ++ "', '" 
-	  ++ Icon ++ "')");
+    Query =  "INSERT INTO abdoli.ernews_news(URL, Title, Description, Image, Icon) VALUES(\""
+	++ URL ++ "\", \"" ++ Title ++ "\", \""  
+	++ Description ++ "\", \"" ++ Image ++ "\", \"" 
+	++ Icon ++ "\")",
+    R = qFunc(write,Query),
+   case R of
+	{error,_} ->
+	     io:format("Errrrroooorrrr    ~s~n",
+		      [Query]);
+	_ ->
+	    ok
+    end;
+  
 
 %% Broken-news-table should also have default date
 write(broken,{URL,_Reason}) ->
@@ -45,8 +53,8 @@ qFunc(write, Q) ->
 qFunc(exists, Q) ->	
     mysql:start_link(p1, "db.student.chalmers.se", 
 		     3306, "abdoli", "kgcH8v7c", "abdoli"),
-	{_,{_,_,R,_,_,_,_,_}} = mysql:fetch(p1, Q),
-	R.
+    {_,{_,_,R,_,_,_,_,_}} = mysql:fetch(p1, Q),
+    R.
 	
 %% Get News-link Table-ID
 get(NewsID) ->
@@ -90,9 +98,8 @@ get(broken_single,_Broken_id) ->
 exists(Table,{Column, Keyword}) ->
     Query = "SELECT * FROM abdoli.ernews_" ++ Table 
 	++ " WHERE " ++ Column ++ "='" ++ Keyword ++ "'",
-    io:format("QUERYYYY ~s~n" ,[Query]), 
     L=length(qFunc(exists, Query)),
-	L>0;
+    L>0;
 	
 %% Does URL exist in broken table
 exists(broken,_URL) ->

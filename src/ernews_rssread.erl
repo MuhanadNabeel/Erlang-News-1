@@ -50,7 +50,7 @@ start_link(Atom,Source,TimeOut) ->
 %% @end
 %%--------------------------------------------------------------------
 init([Atom,Source,Timeout]) ->
-	io:format("Start RSS parsing: ~p~n",[Atom]),
+    io:format("Start RSS parsing: ~p~n",[Atom]),
     read({Atom,Source,Timeout*1000}),
     {ok , []}.
 
@@ -128,7 +128,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 
 read({Atom,Source,Timeout}) ->
-        io:format("WE ARE IN READ RSS1~n" ,[]),
+        %io:format("WE ARE IN READ RSS1~n" ,[]),
 	inets:start(),
 	Read = httpc:request(Source),
 	get_rss(Read,Atom,Timeout).
@@ -142,11 +142,12 @@ get_rss(_,Atom,Timeout) ->
 	
 read(Atom,[],Timeout) ->
     timer:sleep(Timeout),
+    io:format("Done Reading ~p~n",[Atom]),
     gen_server:cast(Atom,{ok,done});
 	
 read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T],Timeout) ->
-	gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
-	read(Atom,T,Timeout).
+    gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
+    read(Atom,T,Timeout).
 	
 
 iterate(Atom,List) ->
