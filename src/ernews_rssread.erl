@@ -2,27 +2,34 @@
 -compile(export_all).
 -include("records.hrl").
 
-init(Atom,Source) ->
-	spawn_link(?MODULE, read,[Atom,Source]).
+% "http://news.google.com/news/feeds?hl=en&gl=us&q=erlang&um=1&ie=UTF-8&output=rss"
+% "http://coder.io/tag/erlang.rss"
+% "http://www.reddit.com/r/erlang.rss"
+% "http://news.ycombinator.com/rss"
 
-read(Atom,Source) ->
+
+init(Atom,Source) ->
+	spawn_link(?MODULE, read,[{Atom,Source}]).
+
+read({Atom,Source}) ->
 	inets:start(),
 	{ok, {{_Version, 200, _ReasonPhrase}, _Headers, Body}} =
 		httpc:request(Source),
-	read(devide(Atom,Body)).
+	read(Atom,devide(Atom,Body)).
 	
-read([]) ->
+read(_Atom,[]) ->
 	done;
 	
-	
-read([#rss_item{link=Link,pubDate=PubDate}|T]) ->
+read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T]) ->
 	io:format("~p~n",[{Link,PubDate}]),
-	%% gen_server:cast(ernews_linkserv,{parse,source,Link,PubDate}),
-	read(T).
+	gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
+	read(Atom,T).
+	
 
 devide(Atom,List) ->
 	[_|T] = parse(List),
 	iterate(Atom,T,[]).
+	
 	
 iterate(_Atom,[],List) ->
 	List;
@@ -35,7 +42,9 @@ iterate(_Atom,[H|T],List) ->
 	iterate(_Atom,T,[#rss_item{link=proplists:get_value("link",H),
 		pubDate=ernews_rssfuns:convert_pubDate_to_datetime(proplists:get_value("pubDate",H))}|List]).
 		
-	
+		
+		
+%% <Accumulated from="http://www.1011ltd.com/web/blog/post/elegant_xml_parsing">
 parse(File) ->
     {ok, {Quotes, _}, _} = xmerl_sax_parser:stream(
                              File, 
@@ -43,8 +52,6 @@ parse(File) ->
                               {event_state, {[], ""}}]),
     lists:reverse(Quotes).
 
-%% For the end field event, use the last set of characters 
-%% encountered as the value for that field
 -define(QUOTE_VALUE(Title),
         event(_Event = {endElement, _, Title, _}, 
               _Location, 
@@ -53,14 +60,11 @@ parse(File) ->
                {[Updated|Rest], undefined}).
 
 
-%% Start "FutureQuote" creates a new, empty key-value list
-%% for the quote
 event(_Event = {startElement, _, "item", _, _}, 
       _Location, 
       _State = {Quotes, _}) ->
     {[[]|Quotes], ""};
 
-%% Characters are stores in the parser state
 event(_Event = {characters, Chars}, 
       _Location, 
       _State = {Quotes, _}) ->
@@ -70,6 +74,7 @@ event(_Event = {characters, Chars},
 ?QUOTE_VALUE("link");
 ?QUOTE_VALUE("keywords");
 
-%% Catch-all. Pass state on as-is    
 event(_Event, _Location, State) ->
     State.
+	
+%% </Accumulated>
