@@ -1,6 +1,6 @@
 -module(ernews_rssread).
 
--export([start/3]).
+-export([start_link/3,start/3]).
 
 -include("records.hrl").
 
@@ -10,11 +10,14 @@
 % "http://news.ycombinator.com/rss"
 
 start_link(Atom,Source,Timeout) ->
-	spawn_link(?MODULE, init,[{Atom,Source,(Timeout*1000)}]).
+	spawn_link(?MODULE, init,[Atom,Source,(Timeout*1000)]).
+	
+start(Atom,Source,Timeout) ->
+	spawn_link(?MODULE, init,[Atom,Source,(Timeout*1000)]).
 	
 	
-init(Vars) ->
-	read(Vars).
+init(Atom,Source,Timeout) ->
+	read({Atom,Source,Timeout}).
 	
 
 read({Atom,Source,Timeout}) ->
