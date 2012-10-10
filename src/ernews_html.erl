@@ -16,21 +16,27 @@
 
 %% Writting the sources required for this module
 start(Record) ->
-%% Sending sources to the init() 
+%% Sending sources to the init()
+    
     spawn(?MODULE, init, [Record]).
    
+
+start_link(Url,Source,Ts) ->
+    %%io:format("~s  ~p ~p ~n", [Url,Source,Ts]),
+    spawn_link(?MODULE, init, [Url,Source,Ts]).
+
 %% Init assining the sources to the records received by the loop function
-init(Record) ->
-    end_url(Record),
+init(Url,Source,Ts) ->
+    end_url(#state{url=Url, source=Source, ts=Ts}),
 		      ok.
     
 
 
 %% parse receives the sources and messages 
-end_url(Record) ->
+end_url(Record= #state{}) ->
    case NewURL = ernews_htmlfuns:end_url(Record#state.source, Record#state.url) of
-       bad_url ->
-	   gen_server:cast(ernews_linkerv,{NewURL});
+       {error, Reason} ->
+	   gen_server:cast(ernews_linkerv,{error, Reason, Record#state.url, Record#state.ts});
        _ ->
 	   check_duplicate(NewURL)
 	       

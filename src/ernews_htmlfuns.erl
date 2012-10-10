@@ -15,15 +15,25 @@
     
 %----------------------------END URL-------------------------------------------------%
 
-end_url(coder,Url)->    
+end_url(iocoder,Url)->    
     inets:start(),   
     HTTPOptions = [{autoredirect, false}],
     Result = httpc:request(get, {Url, []}, HTTPOptions, []),
     case Result of
-	{ok, {{_Version, 302, _StatusMsg}, Headers, Body}} ->
-	    Location = proplists:get_value("location", Headers);
-	{_,_}->
-	    broken_link
+	{ok, {{_, 302, _}, Headers, _}} ->
+	    proplists:get_value("location", Headers);
+
+	{error,no_scheme}->
+	    {error,broken_html};
+	{error,{failed_connect,_}}->
+	    {error,connection_failed}; % broken link 
+	{error,{ehostdown,_}}->
+	    {error,host_is_down};
+	{error,{ehostunreach,_}}->
+	    {error,host_unreachable};
+	{error,{etimedout,_}}->
+	    {error,connection_timed_out}
+
     end;
 
 end_url(reddit,Url)->
@@ -31,37 +41,63 @@ end_url(reddit,Url)->
     Tag = ".xml",
     Result  = httpc:request(Url ++ Tag),
     case Result of
-	{ ok, {Status, Headers, Body }} ->
-	    { Xml, Rest } = xmerl_scan:string(Body),
+	{ ok, {_, _, Body }} ->
+	    { Xml, _ } = xmerl_scan:string(Body),
 	    Extract ="//channel/item/description[1]/text()[11]",
 	    [{_,_,_,_,[_|Link],_}] = xmerl_xpath:string(Extract, Xml),
 	    Link;
-	{_,_}->
-	    broken_link
+
+	{error,no_scheme}->
+	    {error,broken_html};
+	{error,{failed_connect,_}}->
+	    {error,connection_failed}; % broken link 
+	{error,{ehostdown,_}}->
+	    {error,host_is_down};
+	{error,{ehostunreach,_}}->
+	    {error,host_unreachable};
+	{error,{etimedout,_}}->
+	    {error,connection_timed_out}
     end;
 
 end_url(google,Url)->   
     end_url(coder,Url);
        
-end_url(_,Url) ->
+end_url(_,_) ->
     unknown_source. 
 
 %----------------------------HTML META DATA-------------------------------------------%
- 
+
 get_description(Url)->
     inets:start(),
-    Result = httpc:request(Url),
+  Result = httpc:request(Url),
     case Result of
-	 {ok, {{Version, 200, ReasonPhrase}, Headers, Body}} ->
+	 {ok, {{_, 200, _}, _, Body}} ->
+	  
 	    Html = mochiweb_html:parse(Body),
 	    List = get_value([Html],"meta" ,[]),
-	    lists:concat(get_content_from_list(List , {"name" ,"description"} , "content"));
-	{_,_}->
-	    broken_html
-    end;
-get_description([]) ->
-    description/title_not_exist.
+	    Description = get_content_from_list(List , 
+						{"name" ,"description"} , "content"),
 
+	    case Description of
+		[]->
+		    {error,description_null};
+		_ ->
+		    Description
+	    end;	 
+			
+
+	{error,no_scheme}->
+	    {error,broken_html};
+	{error,{failed_connect,_}}->
+	    {error,connection_failed}; % broken link 
+	{error,{ehostdown,_}}->
+	    {error,host_is_down};
+	{error,{ehostunreach,_}}->
+	    {error,host_unreachable};
+	{error,{etimedout,_}}->
+	    {error,connection_timed_out}	
+
+   end.
 
 
 
@@ -69,24 +105,36 @@ get_title(Url)->
     inets:start(),
     Result = httpc:request(Url),
     case Result of
-	 {ok, {{Version, 200, ReasonPhrase}, Headers, Body}}->
+	 {ok, {{_, 200, _}, _, Body}}->
 	    Html = mochiweb_html:parse(Body),
-	    [{K,Attr,[Val|T]}] = (get_value([Html],"title" ,[])),
-	    bitstring_to_list(Val);
-	{_,_}->
-	    broken_html
-    end;
-get_title([]) ->
-    description/title_not_exist.
+	    [{_,_,[Val|_]}] = (get_value([Html],"title" ,[])),
+	    Title = bitstring_to_list(Val),
 
-    
+	    case Title of
+		[]->
+		    {error,title_null};
+		_ ->
+		    Title
+	    end;
+
+	{error,no_scheme}->
+	    {error,broken_html};
+	{error,{failed_connect,_}}->
+	    {error,connection_failed}; % broken link 
+	{error,{ehostdown,_}}->
+	    {error,host_is_down};
+	{error,{ehostunreach,_}}->
+	    {error,host_unreachable};
+	{error,{etimedout,_}}->
+	    {error,connection_timed_out}
+    end. 
 
 %----------------------------HTML LIST BREAKDOWN----------------------------------------%
 %% @author Khashayar Abdoli 
 get_content_from_list(List,Filter,Value) ->
     get_content_from_list(List,Filter,Value,[]).
 
-get_content_from_list([{Key,Attr,Val} | T] , Filter , Value , Buff) ->
+get_content_from_list([{_,Attr,_} | T] , Filter , Value , Buff) ->
     case check_content(Attr,Filter) of 
 	true ->
 	    Res = pull_content(Attr,Value),
@@ -98,15 +146,15 @@ get_content_from_list([{Key,Attr,Val} | T] , Filter , Value , Buff) ->
 get_content_from_list([],_,_ , Buff) ->
     Buff. 
 						     
-get_content([Attr|T] , Filter , Value) ->
-    case check_content(Attr , Filter) of
-	true ->
-	    pull_content(Attr , Value);
-	false ->
-	    get_content(T,Filter,Value)
-    end;
-get_content([] , _ , _) ->
-    not_fount.
+%get_content([Attr|T] , Filter , Value) ->
+%   case check_content(Attr , Filter) of
+%	true ->
+%	    pull_content(Attr , Value);
+%	false ->
+%	    get_content(T,Filter,Value)
+%    end;
+%get_content([] , _ , _) ->
+%    not_fount.
 
 pull_content([{Key,Val}|T] , FKey) ->
     case bitstring_to_list(Key) == FKey of
@@ -147,5 +195,7 @@ get_value([{Key,Attr,Val}|T] , Filter , Buff) ->
 	false ->
 	    get_value(T,Filter,Buff)
     end;
-get_value(_ , Filter , Buff) ->
+get_value([_|T] , Filter , Buff) ->
+    get_value(T,Filter,Buff);
+get_value([] , _ , Buff) ->
     Buff.
