@@ -34,43 +34,53 @@ init(Url,Source,Ts) ->
 
 %% parse receives the sources and messages 
 end_url(Record= #state{}) ->
-   case NewURL = ernews_htmlfuns:end_url(Record#state.source, Record#state.url) of
+   case NewUrl = ernews_htmlfuns:end_url(Record#state.source, Record#state.url) of
        {error, Reason} ->
 	   gen_server:cast(ernews_linkerv,{error, Reason, Record#state.url, Record#state.ts});
        _ ->
-	   check_duplicate(NewURL)
+	   check_duplicate(Record#state{url = NewUrl})
 	       
    end.
 
-check_duplicate(NewURL) ->  
-   case CHECK_DUPLICATE = html:check_duplicate(NewURL) of
-       url_exists ->
-	   gen_server:cast(ernews_linkserv, {CHECK_DUPLICATE});
+check_duplicate(Record= #state{}) ->  
+   case CHECK_DUPLICATE = ernews_db:exists(news, {url ,Record#state.url}) of
+       error ->
+	   gen_server:cast(ernews_linkserv, {error, duplicate, Record#state.url, Record#state.ts});
        _ ->
-	   read_url(NewURL)
+	   read_url(Record)
    end.
 	         
     
-read_url(Record) ->
-   case READING_URL = html:read_url(Record#state.url) of
-       bad_reading ->
-	   gen_server:cast(ernews_linkserv, {READING_URL});
+read_url(Record= #state{}) ->
+    Title = ernews_htmlfuns:get_title(Record#state.url),
+    Description = ernews_htmlfuns:get_description(Record#state.url),
+    case {Title,Description} of
+       {null,null} ->
+	   gen_server:cast(ernews_linkserv, 
+			   {error,no_title_description,Record#state.url,Record#state.ts});
+       {null,_} ->
+	   gen_server:cast(ernews_linkserv, 
+			   {error,no_title,Record#state.url,Record#state.ts});
+       {_,null} ->
+	   gen_server:cast(ernews_linkserv, 
+			   {error,description,Record#state.url,Record#state.ts});
+	
 
-       _ ->
-	   relevence(Record)
+       {_,_} ->
+	    write_to_db(Record,Title,Description)
    end.
 
-relevence(Record) ->
-    case RELEVENCE = html:relevence(Record#state.url) of
-	bad_relevence ->
-	    gen_server:cast(ernews_linkserv, {RELEVENCE});
+%relevence(Record) ->
+%    case RELEVENCE = html:relevence(Record#state.url) of
+%	bad_relevence ->
+%	    gen_server:cast(ernews_linkserv, {RELEVENCE});
+%
+%	_ ->
+%	    write_to_db(Record)
+%   end.
 
-	_ ->
-	    write_to_db(Record)
-   end.
-
-write_to_db(Record) ->	      
-    case WRITE_DB = html:write_to_db(Record#state.url) of
+write_to_db(Record= #state{} , Description, Title) ->	      
+    case WRITE_DB = ernews_db:write(news, {Record#state.url, Description, Title}) of
 	bad_reading ->
 	    gen_server:cast(ernews_linkserv, {WRITE_DB});
 	    
