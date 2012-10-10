@@ -1,12 +1,13 @@
 -module(ernews_rssread).
--compile(export_all).
+
+-export([start/3]).
+
 -include("records.hrl").
 
 % "http://news.google.com/news/feeds?hl=en&gl=us&q=erlang&um=1&ie=UTF-8&output=rss"
 % "http://coder.io/tag/erlang.rss"
 % "http://www.reddit.com/r/erlang.rss"
 % "http://news.ycombinator.com/rss"
-
 
 start(Atom,Source,Timeout) ->
 	spawn_link(?MODULE, init,[{Atom,Source,(Timeout*1000)}]).
