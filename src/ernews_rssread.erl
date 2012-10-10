@@ -2,6 +2,8 @@
 
 -export([start_link/3,start/3]).
 
+-export([init/3]).
+
 -include("records.hrl").
 
 % "http://news.google.com/news/feeds?hl=en&gl=us&q=erlang&um=1&ie=UTF-8&output=rss"
