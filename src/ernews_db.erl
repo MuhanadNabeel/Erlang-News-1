@@ -1,84 +1,91 @@
 %% Interface written by Ingimar Samuelsson, Lantbruksgatan 20	
 
--module(db).
+-module(ernews_db).
 -compile(export_all).
 
+
 %% News-table should also have date and default votes, rank and visits
-write(news,{URL,Description,Title,Image,Icon}) ->
-	ok;
-	
+write(news,{URL,Description,Title,Image,Icon}) ->			
+	qFunc(write, "INSERT INTO abdoli.ernews_news(URL, Title, Description, Image, Icon) VALUES('" ++ URL ++ "', '" ++ Title ++ "', '" ++ Description ++ "', '" ++ Image ++ "', '" ++ Icon ++ "')");
+		
 %% Broken-news-table should also have default date
-write(broken,{URL,Reason}) ->
-	ok;
+write(broken,{URL,_Reason}) ->
+	qFunc(write, "INSERT INTO abdoli.ernews_broken(URL) VALUES('" ++ URL ++ "')").
 	
 %% Add new tag to Tag-table
-write(tag,Tag_name) ->
-	ok;
-	
-%% Subscripe table
-write(subscribe,Email) ->
-	ok;
+%%write(tag,_Tag_name) ->
+%%	ok;
 	
 %% Add News-ID to News-Tag-table
-write(assign_tag,{News_ID,Tag_ID}) ->
-	ok.
+%%write(assign_tag,{_News_ID,_Tag_ID}) ->
+%%	ok.
+	
+qFunc(get, Q) ->
+	mysql:start_link(p1, "db.student.chalmers.se", 3306, "abdoli", "kgcH8v7c", "abdoli"),
+	{_,{_,_,Result,_,_,_,_,_}} = mysql:fetch(p1, Q),
+	Result;
+	
+qFunc(write, Q) ->
+	mysql:start_link(p1, "db.student.chalmers.se", 3306, "abdoli", "kgcH8v7c", "abdoli"),
+	mysql:fetch(p1, Q);
+
+qFunc(exists, Q) ->	
+	mysql:start_link(p1, "db.student.chalmers.se", 3306, "abdoli", "kgcH8v7c", "abdoli"),
+	{_,{_,_,R,_,_,_,_,_}} = mysql:fetch(p1, Q),
+	R.
 	
 %% Get News-link Table-ID
-get(news_id,URL) ->
-	ok;
-	
+get(NewsID) ->
+	qFunc(get, "SELECT * FROM abdoli.ernews_news WHERE newsID=" ++ NewsID).	
+
 %% Get news order by rank
-get(news_ranked,{Limit,Offset}) ->
+get(news_ranked,{_Limit,_Offset}) ->
 	ok;
 	
 %% Get news order by date
-get(news_dated,{Limit,Offset}) ->
+get(news_dated,{_Limit,_Offset}) ->
 	ok;
 	
 %% Get news order by visits
-get(news_visits,{Limit,Offset}) ->
+get(news_visits,{_Limit,_Offset}) ->
 	ok;
 	
 %% Get news - 1 item
-get(news_single,News_id) ->
+get(news_single,_News_id) ->
 	ok;
 	
 %% Get broken-link Table ID
-get(broken_id,URL) ->
+get(broken_id,_URL) ->
 	ok;
 	
 %% Get broken news order by dates
-get(broken,{Limit,Offset}) ->
+get(broken,{_Limit,_Offset}) ->
 	ok;
 	
 %% Get broken news - 1 item
-get(broken_single,Broken_id) ->
+get(broken_single,_Broken_id) ->
 	ok.
 	
 %% Does URL exist in news table
 exists(news,URL) ->
-	ok;
+	qFunc(exists, "SELECT 'newsID' FROM abdoli.ernews_news WHERE URL='" ++ URL ++ "'");
 	
 %% Does URL exist in broken table
-exists(broken,URL) ->
+exists(broken,_URL) ->
 	ok.
 	
 %% Delete subscribe
-delete(subscribe,Subscribe_id) ->
+delete(subscribe,_Subscribe_id) ->
 	ok;
 	
 %% Delete from news table
-delete(news,News_id) ->
+delete(news,_News_id) ->
 	ok;
 	
 %% Delete from broken table
-delete(broken,News_id) ->
+delete(broken,_News_id) ->
 	ok.
 	
 %% Update news info
-update(news,News_id,{URL,Description,Title,Image,Icon}) ->
+update(news,_News_id,{_URL,_Description,_Title,_Image,_Icon}) ->
 	ok.
-
-	
-
-	
