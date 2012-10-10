@@ -10,8 +10,11 @@ write(news,{URL,Description,Title,Image,Icon}) ->
 		
 %% Broken-news-table should also have default date
 write(broken,{URL,_Reason}) ->
-	qFunc(write, "INSERT INTO abdoli.ernews_broken(URL) VALUES('" ++ URL ++ "')").
+	qFunc(write, "INSERT INTO abdoli.ernews_broken(URL) VALUES('" ++ URL ++ "')");
 	
+write(time,{Source, URL, Time_stamp}) ->
+	qFunc(write, "INSERT INTO abdoli.ernews_Time(Source, URL, Time_stamp) VALUES('" ++ Source ++ "','" ++ URL ++ "','" ++ Time_stamp ++ "')").
+				 
 %% Add new tag to Tag-table
 %%write(tag,_Tag_name) ->
 %%	ok;
@@ -38,6 +41,10 @@ qFunc(exists, Q) ->
 get(NewsID) ->
 	qFunc(get, "SELECT * FROM abdoli.ernews_news WHERE newsID=" ++ NewsID).	
 
+%% General Get
+get(Table, {Column, Keyword}) ->
+	qFunc(get, "SELECT * FROM abdoli.ernews_" ++ Table ++ " WHERE " ++ Column ++ "=" ++ Keyword);	
+	
 %% Get news order by rank
 get(news_ranked,{_Limit,_Offset}) ->
 	ok;
@@ -67,8 +74,9 @@ get(broken_single,_Broken_id) ->
 	ok.
 	
 %% Does URL exist in news table
-exists(news,URL) ->
-	qFunc(exists, "SELECT 'newsID' FROM abdoli.ernews_news WHERE URL='" ++ URL ++ "'");
+exists(Table,{Column, Keyword}) ->
+	L=length(qFunc(exists, "SELECT * FROM abdoli.ernews_" ++ Table ++ " WHERE " ++ Column ++ "='" ++ Keyword ++ "'")),
+	L>0;
 	
 %% Does URL exist in broken table
 exists(broken,_URL) ->
