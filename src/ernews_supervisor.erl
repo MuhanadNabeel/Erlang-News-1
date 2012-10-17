@@ -60,12 +60,12 @@ init([]) ->
 
     SupFlags = {RestartStrategy, MaxRestarts, MaxSecondsBetweenRestarts},
 
-    Rss_Sup = {ernews_rsssup , {ernews_rsssup , start_link , []},
-	       Restart , Shutdown , supervisor, [ernew_rsssup]},
+    Rss_Agent = {ernews_rssagent , {ernews_rssagent , start_link , []},
+	       Restart , Shutdown , worker, [ernew_rssagent]},
     Link_Serv = {ernews_linkserv , {ernews_linkserv , start_link , []},
 		 Restart , Shutdown , worker , [ernew_linkserv]},
     
-    {ok, {SupFlags, [Link_Serv, Rss_Sup]}}.
+    {ok, {SupFlags, [Link_Serv, Rss_Agent]}}.
 
 %%%===================================================================
 %%% Internal functions
