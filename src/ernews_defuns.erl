@@ -1,16 +1,22 @@
 -module(ernews_defuns).
 -compile(export_all).
 
-read_web({ok, {{_Version, 200, _ReasonPhrase}, Headers, Body}}) ->
-	{Headers,Body}.
+read_web({ok, {{_Version, _, _ReasonPhrase}, Headers, Body}}) ->
+	{success,{Headers,Body}};
+	
+read_web({error,blabla}) ->
+	something;
 	
 read_web(_) ->
 	{error,reason}.
 
-read_web(check,Src) ->
+read_web(default,Src) ->
 	inets:start(),
-	read_web(httpc:request(Src)).
-
+	read_web(httpc:request(Src));
+	
+read_web(iocoder,Src) ->
+	inets:start(),
+	read_web(httpc:request(get, {Src, []}, [{autoredirect, false}], [])).
 	
 compare_dates(Date1,Date2) ->
 	calendar:datetime_to_gregorian_seconds(convert_pubDate_to_datetime(Date2))
