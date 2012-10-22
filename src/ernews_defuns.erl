@@ -1,14 +1,23 @@
 -module(ernews_defuns).
 -compile(export_all).
 
+
+% read_web Authors: Magnus and Ingimar
 read_web({ok, {{_Version, _, _ReasonPhrase}, Headers, Body}}) ->
 	{success,{Headers,Body}};
 	
-read_web({error,blabla}) ->
-	something;
-	
+read_web({error,no_scheme})->
+	{error,broken_html};
+read_web({error,{failed_connect,_}})->
+	{error,connection_failed}; % broken link
+read_web({error,{ehostdown,_}})->
+	{error,host_is_down};
+read_web({error,{ehostunreach,_}})->
+	{error,host_unreachable};
+read_web({error,{etimedout,_}})->
+	{error,connection_timed_out};
 read_web(_) ->
-	{error,reason}.
+	{error,unkown_error}.
 
 read_web(default,Src) ->
 	inets:start(),
