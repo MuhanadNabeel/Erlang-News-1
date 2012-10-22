@@ -211,6 +211,9 @@ setup([S=#rss_source{} | T], Delay, New_List) ->
     Run_Time = S#rss_source.time - Now,
     case Run_Time =< 0 of
 	true ->
+	    ernews_rssread:start(S#rss_source.name, 
+				 S#rss_source.source,
+				 0),
 	    io:format("spawing Rss Read ~p -- ~p~n",
 		      [S#rss_source.name, S#rss_source.source]),
 	    Next_Time = Now + S#rss_source.delay;
