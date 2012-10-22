@@ -8,112 +8,74 @@
 %%%-------------------------------------------------------------------
 
 -module(ernews_htmlfuns).
--export([get_description/1, get_title/1, end_url/2]).
--export([get_content_from_list/4,get_content_from_list/3,
-	 check_content/2,pull_content/2]).
-
+%-export([get_description/1, get_title/1, end_url/2]).
+%-export([get_content_from_list/4,get_content_from_list/3,
+%	 check_content/2,pull_content/2]).
+-compile(export_all).
     
 %----------------------------END URL-------------------------------------------------%
 
-end_url(iocoder,Url)->    
-    inets:start(),   
-    HTTPOptions = [{autoredirect, false}],
-    Result = httpc:request(get, {Url, []}, HTTPOptions, []),
+end_url(iocoder,Url)->   
+    Result  = ernews_defuns:read_web(iocoder, Url),
     case Result of
-	{ok, {{_, 302, _}, Headers, _}} ->
-	    End_Url =proplists:get_value("location", Headers),
+	{success,{Header, _}}->
+	    End_Url =proplists:get_value("location", Header),
 	    case End_Url of
 		[] ->
 		    {error, not_found};
 		_ ->
 		    End_Url
 	    end;
-			    
-	{error,no_scheme}->
-	    {error,broken_html};
-	{error,{failed_connect,_}}->
-	    {error,connection_failed}; % broken link 
-	{error,{ehostdown,_}}->
-	    {error,host_is_down};
-	{error,{ehostunreach,_}}->
-	    {error,host_unreachable};
-	{error,{etimedout,_}}->
-	    {error,connection_timed_out};
-	_ ->
-	    {error,unknown_ernews}
+	{error, Reason}->
+	    {error, Reason}
+
     end;
 
 end_url(reddit,Url)->
-    inets:start(),
     Tag = ".xml",
-    Result  = httpc:request(Url ++ Tag),
+    Result = ernews_defuns:read_web(default, Url++Tag),
     case Result of
-	{ ok, {_, _, Body }} ->
+	{success,{_,Body}}->
 	    { Xml, _ } = xmerl_scan:string(Body),
 	    Extract ="//channel/item/description[1]/text()[11]",
 	    [{_,_,_,_,[_|Link],_}] = xmerl_xpath:string(Extract, Xml),
 	    Link;
 
-	{error,no_scheme}->
-	    {error,broken_html};
-	{error,{failed_connect,_}}->
-	    {error,connection_failed}; % broken link 
-	{error,{ehostdown,_}}->
-	    {error,host_is_down};
-	{error,{ehostunreach,_}}->
-	    {error,host_unreachable};
-	{error,{etimedout,_}}->
-	    {error,connection_timed_out};
-	_ ->
-	    {error,unknown_ernews}	
+	{error,Reason}->
+	   {error, Reason}
     end;
 
 end_url(google,Url)->   
     end_url(iocoder,Url);
        
 end_url(_,_) ->
-    {error, unknown_source_magnus}. 
+    {error, unknown_source}. 
 
 %----------------------------HTML META DATA-------------------------------------------%
 get_description(Url)->
-    inets:start(),
-    Result = httpc:request(Url),
+    Result = ernews_defuns:read_web(default,Url),
     case Result of
-	 {ok, {{_, 200, _}, _, Body}} ->
-	  
+	{success, {_, Body}}->
 	    Html = mochiweb_html:parse(Body),
 	    List = get_value([Html],"meta" ,[]),
 	    Description = 
 		get_content_from_list(List , 
 				      {"name" ,"description"} , "content"),
-
 	    case Description of
 		[]->
 		    null;
 		_ ->
 		    Description
-	    end;	 
-			
-
-	{error,no_scheme}->
-	    {error,broken_html};
-	{error,{failed_connect,_}}->
-	    {error,connection_failed}; % broken link 
-	{error,{ehostdown,_}}->
-	    {error,host_is_down};
-	{error,{ehostunreach,_}}->
-	    {error,host_unreachable};
-	{error,{etimedout,_}}->
-	    {error,connection_timed_out};	
-	_ ->
-	    {error,unknown_ernews}
-   end.
+	    end;
+	{error, Reason} ->
+	    {error,Reason}
+		
+    end.
 
 get_title(Url)->
-    inets:start(),
-    Result = httpc:request(Url),
+    Result = ernews_defuns:read_web(default,Url),
     case Result of
-	 {ok, {{_, 200, _}, _, Body}}->
+	{success, {_, Body}}->
 	    Html = mochiweb_html:parse(Body),
 	    case get_value([Html],"title" ,[]) of
 		[{_,_,[Val|_]}] ->
@@ -122,18 +84,8 @@ get_title(Url)->
 		    null
 	    end;
 
-	{error,no_scheme}->
-	    {error,broken_html};
-	{error,{failed_connect,_}}->
-	    {error,connection_failed}; % broken link 
-	{error,{ehostdown,_}}->
-	    {error,host_is_down};
-	{error,{ehostunreach,_}}->
-	    {error,host_unreachable};
-	{error,{etimedout,_}}->
-	    {error,connection_timed_out};
-	_ ->
-	    {error,unknown_ernews}
+	{error,Reason}->
+	    {error,Reason}
     end.
 
 %----------------------------HTML LIST BREAKDOWN----------------------------------------%
