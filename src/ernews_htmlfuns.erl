@@ -8,10 +8,10 @@
 %%%-------------------------------------------------------------------
 
 -module(ernews_htmlfuns).
-%-export([get_description/1, get_title/1, end_url/2]).
-%-export([get_content_from_list/4,get_content_from_list/3,
-%	 check_content/2,pull_content/2]).
--compile(export_all).
+-export([get_description/1, get_title/1, end_url/2]).
+-export([get_content_from_list/4,get_content_from_list/3,
+	 check_content/2,pull_content/2]).
+%-compile(export_all).
     
 %----------------------------END URL-------------------------------------------------%
 
@@ -52,6 +52,16 @@ end_url(_,_) ->
     {error, unknown_source}. 
 
 %----------------------------HTML META DATA-------------------------------------------%
+
+%break_list([])->
+%    [];
+
+%break_list([{_,_,[V|_]}|T])->		
+%    break_list().
+
+		  
+
+
 get_description(Url)->
     Result = ernews_defuns:read_web(default,Url),
     case Result of
@@ -63,9 +73,11 @@ get_description(Url)->
 				      {"name" ,"description"} , "content"),
 	    case Description of
 		[]->
-		    null;
+		    Result= get_value([Html],"p" ,[]);
+	%	    break_list(Result);
+
 		_ ->
-		    Description
+		    {ok,Description}
 	    end;
 	{error, Reason} ->
 	    {error,Reason}
@@ -79,9 +91,9 @@ get_title(Url)->
 	    Html = mochiweb_html:parse(Body),
 	    case get_value([Html],"title" ,[]) of
 		[{_,_,[Val|_]}] ->
-		    bitstring_to_list(Val);
+		    {ok,bitstring_to_list(Val)};
 		_ ->
-		    null
+		    {error, not_found}
 	    end;
 
 	{error,Reason}->
