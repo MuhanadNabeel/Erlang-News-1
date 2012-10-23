@@ -14,8 +14,8 @@ start(Atom,Source) ->
 
 
 %% Start process
-%% Reads the RSS source using function from ernews_defuns
-%% Sends the result from the read to function
+%% Reads the RSS source using ernews_defuns:read_web/2
+%% Sends the result to read/3
 init(Atom,Source) ->
 	read(start,ernews_defuns:read_web(default,Source),Atom).
 	
@@ -26,44 +26,47 @@ read(start,{error,Reason},_Atom) ->
 	{error,Reason};
 	
 %% Receives success atom when reading RSS
-%% Starts parsing of document with get_rss
-read(start,{success,{Head,Body}},Atom) ->
-	read({Head,Body},Atom).
-	
-	
-read({_Headers, Body},Atom) ->
-	read(Atom,iterate(Atom,Body));
+%% Parses document with iterate/2
+read(start,{success,{_Head,Body}},Atom) ->
+	read(Atom,iterate(Atom,Body)).
 
+%% Iterate through the parsed list
+%% Sends message to gen_server with URL and PubDate
 read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T]) ->
 	io:format("~p~n",[{Link,PubDate}]),
 	gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
 	read(Atom,T);
 
+%% Iterating through parsed list done
 read(_Atom,[]) ->
 	ok.
 	
-
+%% Start iterating through parsed RSS doc
 iterate(Atom,List) ->
-	[_|T] = parse(List),
-	iterate(Atom,T,[]).
+	iterate(Atom,parse(List),[]).
 
-
-iterate(_Atom,[],List) ->
-	List;
-
+%% Iterating through parsed RSS doc
+%% Hacker RSS does not have pubDate - date is added
 iterate(hacker,[H|T],List) ->
 	URL = proplists:get_value("link",H),
 	iterate(hacker, T,
 		[#rss_item{link=URL, pubDate=erlang:universaltime()}
 		 |List]);
 
+%% Iterating through parsed RSS doc
+%% For default Atoms
 iterate(_Atom,[H|T],List) ->
 	iterate(_Atom, T,
 		[#rss_item{link=proplists:get_value("link",H),
 			   pubDate=ernews_defuns:convert_pubDate_to_datetime(
 				     proplists:get_value("pubDate",H))
 			  }
-		 |List]).
+		 |List]);
+		 
+%% Iteration done
+%% Return List of #rss_item
+iterate(_Atom,[],List) ->
+	List.
 
 
 %% <Accumulated from="http://www.1011ltd.com/web/blog/post/elegant_xml_parsing">
