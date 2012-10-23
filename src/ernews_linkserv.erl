@@ -51,7 +51,7 @@ start_link() ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
-    {ok, dict_init()}.
+    {ok, []}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -82,35 +82,13 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast({parse, Source, Url, Ts}, State) ->
-    %io:format("Parsing Started ~p~n",[Url]),
-%    case Ts > dict:fetch(Source,State) of
-%	true ->
-	    ernews_html:start(Url,Source,Ts),
-	    {noreply, State};
-%	false ->
-%	    {noreply, State}
- %   end;
-handle_cast({submit, Source, Ts}, State) ->
-    io:format("Parsing Ended From ~p~n",[Source]),
-    case Ts > dict:fetch(Source,State) of
-	true ->
-	    {noreply, dict:store(Source, Ts, State)};
-	false ->
-	    {noreply, State}
-    end;
-handle_cast({error, Reason, Url, Ts}, State) ->
-    %io:format("Parsing Crashed because ~p ~n",[Reason]),
-    case Reason of
-	bad_url ->
-	    %LOG
-	    ok;
-	duplicate ->
-	    ok;
-	not_relevent ->
-	    ok;
-	_ ->
-	    ok
-    end,
+    ernews_html:start_link(Url,Source,Ts),
+    {noreply, State};
+handle_cast({submit, _Source, _Ts}, State) ->
+    {noreply, State};
+handle_cast({error, _Reason, _Url, _Ts}, State) ->
+    {noreply, State};
+handle_cast(_ ,State) ->
     {noreply, State}.
 
 
@@ -156,11 +134,4 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
-dict_init() ->
-    DateTime = {{1990,1,1},{0,0,0}},
-    Dic1 = dict:store(iocoder, DateTime, dict:new()),
-    Dic2 = dict:store(google, DateTime, Dic1),
-    Dic3 = dict:store(reddit, DateTime, Dic2),
-    Dic4 = dict:store(hacker, DateTime, Dic3),
-    Dic4.
     

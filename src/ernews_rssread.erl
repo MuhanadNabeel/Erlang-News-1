@@ -42,7 +42,7 @@ read(start,{success,{_Head,Body}},Atom) ->
 %% Iterate through the parsed list
 %% Sends message to gen_server with URL and PubDate
 read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T]) ->
-	io:format("~p~n",[{Link,PubDate}]),
+%	io:format("~p~n",[{Link,PubDate}]),
 	gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
 	read(Atom,T);
 

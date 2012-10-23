@@ -24,7 +24,7 @@ write(broken,{URL, Reason, Source}) ->
     qFunc(write, 
 	  "INSERT INTO abdoli.ernews_broken(URL, Reason, Source) 
 	  VALUES('" 
-	  ++ URL ++ "','" ++ Reason ++ "','" ++ Source ++ "')");
+	  ++ URL ++ "','" ++ Reason ++ "','" ++ atom_to_list(Source) ++ "')");
 	
 write(time,{Source, URL, Time_stamp}) ->
     qFunc(write, 

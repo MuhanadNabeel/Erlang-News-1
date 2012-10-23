@@ -64,16 +64,16 @@ init([]) ->
     Hacker_Source = "http://news.ycombinator.com/rss",
 
     Coder = #rss_source{name = iocoder , source = Coder_Source ,
-		    delay = 10 , time = Now},
+		    delay = 3600 , time = Now},
     Reddit = #rss_source{name = reddit , source = Reddit_Source ,
-		    delay = 7 , time = Now},
+		    delay = 900 , time = Now},
     Google = #rss_source{name = google , source = Google_Source ,
-		    delay = 3 , time = Now},
+		    delay = 900 , time = Now},
     Hacker = #rss_source{name = hacker , source = Hacker_Source ,
 		    delay = 3 , time = Now},
     
     gen_fsm:send_event(?RSSAGENT, run),
-    {ok, run, [Coder, Reddit, Google]}.
+    {ok, run, [Reddit, Google]}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -212,8 +212,7 @@ setup([S=#rss_source{} | T], Delay, New_List) ->
     case Run_Time =< 0 of
 	true ->
 	    ernews_rssread:start(S#rss_source.name, 
-				 S#rss_source.source,
-				 0),
+				 S#rss_source.source),
 	    io:format("spawing Rss Read ~p -- ~p~n",
 		      [S#rss_source.name, S#rss_source.source]),
 	    Next_Time = Now + S#rss_source.delay;

@@ -48,7 +48,9 @@ end_url(end_url, Record=#state{}) ->
 	{error, Reason} ->
 	    %gen_server:cast(ernews_linkerv,
 	%		    {error, Reason, Record#state.url, Record#state.ts}),
-	    {stop, {error, atom_to_list(Reason), Record#state.url, Record#state.source}, Record};
+	    {stop, {error, 
+		    atom_to_list(Reason), Record#state.url, Record#state.source},
+	     Record};
        _ ->
 %	    io:format("END URL FINDING = ~p ~n", [NewUrl]), 
 	   % check_duplicate(Record#state{url = NewUrl})
@@ -64,10 +66,9 @@ end_url(end_url, Record=#state{}) ->
 duplicate(duplicate, Record=#state{}) ->
     case ernews_db:exists("news", {"URL" ,Record#state.url}) of
 	true ->
-	    %gen_server:cast(ernews_linkserv, 
-	%		    {error, duplicate, Record#state.url, 
-	%		     Record#state.ts});
-	    {stop, {error, "already_exists", Record#state.url, Record#state.source}, Record};
+	    {stop, {error, "already_exists", 
+		    Record#state.url, Record#state.source}, 
+	     Record};
 	false ->
 	    gen_fsm:send_event(self(), read_url),
 	    {next_state, read_url, Record}
@@ -78,24 +79,28 @@ duplicate(duplicate, Record=#state{}) ->
 %------------------------------------------------------------------------
 read_url(read_url, Record=#state{}) ->
     Title_Tuple = ernews_htmlfuns:get_title(Record#state.url),
-    
     Description_Tuple = ernews_htmlfuns:get_description(Record#state.url),
- 
     case {Title_Tuple, Description_Tuple} of
 	{{ok,Title}, {ok,Description}} ->
 	    gen_fsm:send_event(self() , {write, Title, Description}),
 	    {next_state, write_to_db, Record};
 	{{error,Reason_Title} , {error, Reason_Desc}} ->
-	    {stop, {error,atom_to_list(Reason_Title) ++ atom_to_list(Reason_Desc), Record#state.url,Record#state.source} , Record};
+	    {stop, {error,
+		    atom_to_list(Reason_Title) ++ atom_to_list(Reason_Desc), 
+		    Record#state.url,Record#state.source} , 
+	     Record};
 	{{error,Reason} , _} ->
-	    {stop, {error,atom_to_list(Reason), Record#state.url,Record#state.source} , Record};
+	    {stop, {error,
+		    atom_to_list(Reason), Record#state.url,Record#state.source},
+	     Record};
 	{_ , {error,Reason}} ->
-	    {stop, {error, atom_to_list(Reason), Record#state.url,Record#state.source} , Record}
+	    {stop, {error,
+		    atom_to_list(Reason), Record#state.url,Record#state.source},
+	     Record}
     end.
 
 %------------------------------------------------------------------------
 write_to_db({write, Title, Description} , Record= #state{}) ->	      
-    
     case ernews_db:write(news,{Record#state.url, 
 				     Description, Title , 
 				     erlang:atom_to_list(Record#state.source),
@@ -103,7 +108,9 @@ write_to_db({write, Title, Description} , Record= #state{}) ->
 	bad_reading ->
 	    {stop, {error,{error, bad_db}} , Record};
 	_ ->
-	    {stop, {submit, {submit, Record#state.source, Record#state.ts}} , Record}
+	    {stop, {submit, 
+		    {submit, Record#state.source, Record#state.ts}}, 
+	     Record}
     end.
  
 %------------------------------------------------------------------------
@@ -131,13 +138,20 @@ handle_info(_Info, StateName, State) ->
 %------------------------------------------------------------------------
 
 terminate({error,Reason ,URL, Source}, _StateName , _State) ->
-    
+    io:format("========================================================~n", []),
+    io:format(" STATE CRASHING IN ~p : ERRORR URL ~p , Reason ~p , Source ~p ~n" , [_StateName, URL,Reason,Source]),
+    io:format("========================================================~n", []),
     ernews_db:write(broken, {URL, Reason, Source});
     
 terminate({submit, Message}, _StateName, _State) ->
-    
+    io:format("========================================================~n", []),
+    io:format("Submited -- ~p~n", [Message]),
+    io:format("========================================================~n", []), 
     ok;
-terminate(_ , _ , _ ) ->
+terminate(Reason , _ , _ ) ->
+    io:format("========================================================~n", []),
+    io:format("UNKNOWN --  ~p~n", [Reason]),
+    io:format("========================================================~n", []), 
     ok.
 
 %------------------------------------------------------------------------
