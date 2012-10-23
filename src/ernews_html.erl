@@ -132,7 +132,7 @@ handle_info(_Info, StateName, State) ->
 
 terminate({error,Reason ,URL, Source}, _StateName , _State) ->
     
-    ernews_db:write(broken, {URL, Reason, Source}).
+    ernews_db:write(broken, {URL, Reason, Source});
     
 terminate({submit, Message}, _StateName, _State) ->
     
