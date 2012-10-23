@@ -1,11 +1,30 @@
+%%%-------------------------------------------------------------------
+%%% @author Ingimar <ingimar@student.gu.se>
+%%% @author Khashayar <khashayar@localhost.localdomain>
+%%% @author Magnus <magnus@localhost.localdomain>
+%%% @copyright (C) 2012, Ingimar
+%%% @copyright (C) 2012, Khashayar
+%%% @copyright (C) 2012, Magnus
+%%% @doc
+%%%
+%%% @end
+%%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
+%%%-------------------------------------------------------------------
 -module(ernews_defuns).
 -compile(export_all).
 
 
-% read_web Authors: Magnus and Ingimar
+%% <function author="Magnus & Ingimar">
+%% read_web: Attempts to fetch and read a document from an URL
+
+%% Reading document was a success
+%% Return Header and Body tuple with success Atom
 read_web({ok, {{_Version, _, _ReasonPhrase}, Headers, Body}}) ->
 	{success,{Headers,Body}};
 	
+%% read_web/2 - next 5 functions:
+%% Reading document returns errors
+%% Return tuple with error Atom and associated reason Atom
 read_web({error,no_scheme})->
 	{error,broken_html};
 read_web({error,{failed_connect,_}})->
@@ -16,23 +35,24 @@ read_web({error,{ehostunreach,_}})->
 	{error,host_unreachable};
 read_web({error,{etimedout,_}})->
 	{error,connection_timed_out};
+	
+%% For anything else - return unkown_error
 read_web(_) ->
 	{error,unkown_error}.
 
+%% Default reader
 read_web(default,Src) ->
 	inets:start(),
 	read_web(httpc:request(Src));
 	
+%% Reader for coder.io
 read_web(iocoder,Src) ->
 	inets:start(),
 	read_web(httpc:request(get, {Src, []}, [{autoredirect, false}], [])).
-	
-compare_dates(Date1,Date2) ->
-	calendar:datetime_to_gregorian_seconds(convert_pubDate_to_datetime(Date2))
-	-
-	calendar:datetime_to_gregorian_seconds(Date1).
-	
-% Author:  Khashayar Two
+%% </function>
+
+% <function author="Khashayar">
+% Converts pubDate from RSS document to Erlang date
 convert_pubDate_to_datetime(DateTime) ->
     {ok,[_Day, Date, MonthS, Year,HH,MM,SS], _} = 
 	io_lib:fread("~3s, ~2d ~3s ~4d ~2d:~2d:~2d" , DateTime),
@@ -63,3 +83,4 @@ convert_pubDate_to_datetime(DateTime) ->
 		    12
 	    end,
     {{Year,Month,Date},{HH,MM,SS}}.
+%% </function>
