@@ -1,3 +1,12 @@
+%%%-------------------------------------------------------------------
+%%% @author Ingimar <ingimar@student.gu.se>
+%%% @copyright (C) 2012, Ingimar Samuelsson
+%%% @doc
+%%%
+%%% @end
+%%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
+%%%-------------------------------------------------------------------
+
 -module(ernews_rssread).
 
 -export([start_link/2,start/2]).
