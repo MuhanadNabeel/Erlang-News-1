@@ -66,9 +66,9 @@ init([]) ->
     Coder = #rss_source{name = iocoder , source = Coder_Source ,
 		    delay = 3600 , time = Now},
     Reddit = #rss_source{name = reddit , source = Reddit_Source ,
-		    delay = 900 , time = Now},
+		    delay = 300 , time = Now},
     Google = #rss_source{name = google , source = Google_Source ,
-		    delay = 900 , time = Now},
+		    delay = 300 , time = Now},
     Hacker = #rss_source{name = hacker , source = Hacker_Source ,
 		    delay = 3 , time = Now},
     
