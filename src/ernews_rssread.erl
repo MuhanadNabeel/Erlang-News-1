@@ -1,43 +1,47 @@
 -module(ernews_rssread).
 
--export([start_link/3,start/3]).
+-export([start_link/2,start/2]).
 
--export([init/3]).
+-export([init/2]).
 
 -include("records.hrl").
 
-start_link(Atom,Source,Timeout) ->
-	spawn_link(?MODULE, init,[Atom,Source,(Timeout*1000)]).
+start_link(Atom,Source) ->
+	spawn_link(?MODULE, init,[Atom,Source]).
 
-start(Atom,Source,Timeout) ->
-	spawn(?MODULE, init,[Atom,Source,(Timeout*1000)]).
-
-
-init(Atom,Source,Timeout) ->
-	read({Atom,Source,Timeout}).
+start(Atom,Source) ->
+	spawn(?MODULE, init,[Atom,Source]).
 
 
-read({Atom,Source,Timeout}) ->
-	inets:start(),
-	Read = httpc:request(Source),
-	get_rss(Read,Atom,Timeout).
+%% Start process
+%% Reads the RSS source using function from ernews_defuns
+%% Sends the result from the read to function
+init(Atom,Source) ->
+	read(start,ernews_defuns:read_web(default,Source),Atom).
+	
 
-read(Atom,[],Timeout) ->
-	timer:sleep(Timeout),
-	io:format("~n~nSUCCESS timeout(~p, ~p) ~n~n",[Timeout,Atom]);
+%% Receives error atom when reading RSS
+%% Returns error message
+read(start,{error,Reason},_Atom) ->
+	{error,Reason};
+	
+%% Receives success atom when reading RSS
+%% Starts parsing of document with get_rss
+read(start,{success,{Head,Body}},Atom) ->
+	read({Head,Body},Atom).
+	
+	
+read({_Headers, Body},Atom) ->
+	read(Atom,iterate(Atom,Body));
 
-read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T],Timeout) ->
+read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T]) ->
 	io:format("~p~n",[{Link,PubDate}]),
 	gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
-	read(Atom,T,Timeout).
+	read(Atom,T);
 
-
-get_rss({ok, {{_Version, 200, _ReasonPhrase}, _Headers, Body}},Atom,Timeout) ->
-	read(Atom,iterate(Atom,Body),Timeout);
-
-get_rss(_,Atom,Timeout) ->
-	timer:sleep(Timeout),
-	io:format("~n~nERROR timeout(~p, ~p) ~n~n",[Timeout,Atom]).
+read(_Atom,[]) ->
+	ok.
+	
 
 iterate(Atom,List) ->
 	[_|T] = parse(List),
