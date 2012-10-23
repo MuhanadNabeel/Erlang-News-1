@@ -8,10 +8,10 @@
 %%%-------------------------------------------------------------------
 
 -module(ernews_htmlfuns).
--export([get_description/1, get_title/1, end_url/2]).
--export([get_content_from_list/4,get_content_from_list/3,
-	 check_content/2,pull_content/2]).
-%-compile(export_all).
+%-export([get_description/1, get_title/1, end_url/2]).
+%-export([get_content_from_list/4,get_content_from_list/3,
+	 %check_content/2,pull_content/2]).
+-compile(export_all).
     
 %----------------------------END URL-------------------------------------------------%
 
@@ -53,18 +53,36 @@ end_url(_,_) ->
 
 %----------------------------HTML META DATA-------------------------------------------%
 
-%break_list([])->
-%    [];
+%%--------------------------------------------------------------------
+%% @doc
+% Get's the description from the HTML in the following casses:
+% a) First ensure connectivity to the host is successful (Inets does not catch any errors)
+% b) Get the description from the description tag (the most common)
+% c) If it doesnt exist, then get the description from the og:description tag
+% d) If that doesnt return anything, get the descirption from the <p> tags
+%    According to the Facebooks' implementation of posting URL's, <p> tags must contain
+%    More than 120 characters (breaklist function) to return the article
+% e) Catch an error message if no description is found in all cases
+%% @spec
+%% @end
+%%--------------------------------------------------------------------
 
-%break_list([{_,_,[V|_]}|T])->		
-%    break_list().
 
-		  
-
+break_list([])->
+    [];
+break_list([{_,_,V}|T])->
+    case counter(V , 0 ) > 120  of
+	true ->
+	    V;
+	false ->
+	    break_list(T)
+    end.
 
 get_description(Url)->
     Result = ernews_defuns:read_web(default,Url),
+   
     case Result of
+
 	{success, {_, Body}}->
 	    Html = mochiweb_html:parse(Body),
 	    List = get_value([Html],"meta" ,[]),
@@ -73,22 +91,42 @@ get_description(Url)->
 				      {"name" ,"description"} , "content"),
 	    case Description of
 		[]->
-		    Result= get_value([Html],"p" ,[]);
-	%	    break_list(Result);
-
-		_ ->
-		    {ok,Description}
+		    
+		    NextDescription = get_content_from_list(List , 
+				      {"name" ,"og:description"} , "content"),
+		    
+		    case NextDescription of
+		      	[]->
+			    PTags= get_value([Html],"p" ,[]),
+			    PTagArticle = break_list(lists:reverse(PTags)),
+			    
+			    case PTagArticle of
+				[] ->
+				    {error, not_found};
+				_ ->
+				    ParsedArticle = 
+					mochiweb_html:to_html({"html",[],PTagArticle}),
+				    {ok, bitstring_to_list(iolist_to_binary(ParsedArticle))}
+		        
+			    end;
+			
+			_ -> {ok,NextDescription}
+		    end;
+		
+			_ ->
+			    {ok,Description}
 	    end;
+
 	{error, Reason} ->
 	    {error,Reason}
 		
     end.
-
 get_title(Url)->
     Result = ernews_defuns:read_web(default,Url),
     case Result of
 	{success, {_, Body}}->
 	    Html = mochiweb_html:parse(Body),
+	    
 	    case get_value([Html],"title" ,[]) of
 		[{_,_,[Val|_]}] ->
 		    {ok,bitstring_to_list(Val)};
@@ -117,15 +155,6 @@ get_content_from_list([{_,Attr,_} | T] , Filter , Value , Buff) ->
 get_content_from_list([],_,_ , Buff) ->
     Buff. 
 						     
-%get_content([Attr|T] , Filter , Value) ->
-%   case check_content(Attr , Filter) of
-%	true ->
-%	    pull_content(Attr , Value);
-%	false ->
-%	    get_content(T,Filter,Value)
-%    end;
-%get_content([] , _ , _) ->
-%    not_fount.
 
 pull_content([{Key,Val}|T] , FKey) ->
     case bitstring_to_list(Key) == FKey of
@@ -170,3 +199,40 @@ get_value([_|T] , Filter , Buff) ->
     get_value(T,Filter,Buff);
 get_value([] , _ , Buff) ->
     Buff.
+
+
+
+counter([H|T] , Acc) ->
+    case is_bitstring(H) of
+	true ->
+	    counter(T , Acc + length(bitstring_to_list(H)));
+	false ->
+	    counter(T , Acc)
+    end;
+counter([] , Acc) ->
+    Acc.
+
+
+
+
+%%-------------------------------------------------------------%%
+
+test(Url)->
+    
+    {success, {_, Body}} = ernews_defuns:read_web(default,Url),
+    Html = mochiweb_html:parse(Body).
+   % io:format("~s",[Html]).
+    %PTags= get_value([Html],"p" ,[]).
+
+test2()->
+    Test = {<<"html">>,[],[{pi, <<"xml:namespace">>,[{<<"prefix">>,<<"o">>},
+{<<"ns">>,<<"urn:schemas-microsoft-com:office:office">>}]}]},
+
+    T2 = {"",[],[<<"We have finally released ">>,{<<"a">>,[{<<"href">>,
+<<"http://elixir-lang.org/">>}],[<<"Elixir">>]},<<" v0.5.0! This marks 
+the first release since the language was rewritten. In this blog post, we will discu">>]},
+
+bitstring_to_list(iolist_to_binary(mochiweb_html:to_html(T2))).
+
+%%-------------------------------------------------------------%%
+

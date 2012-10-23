@@ -42,13 +42,15 @@ read_web(_) ->
 
 %% Default reader
 read_web(default,Src) ->
-	inets:start(),
-	read_web(httpc:request(Src));
+    ssl:start(),
+    inets:start(),
+    read_web(httpc:request(Src));
 	
 %% Reader for coder.io
 read_web(iocoder,Src) ->
-	inets:start(),
-	read_web(httpc:request(get, {Src, []}, [{autoredirect, false}], [])).
+    ssl:start(),
+    inets:start(),
+    read_web(httpc:request(get, {Src, []}, [{autoredirect, false}], [])).
 %% </function>
 
 % <function author="Khashayar">
