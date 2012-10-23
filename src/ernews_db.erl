@@ -18,12 +18,13 @@ write(news,{URL,Description,Title,Image,Icon}) ->
 	_ ->
 	    ok
     end;
-  
-
+	
 %% Broken-news-table should also have default date
-write(broken,{URL,_Reason}) ->
+write(broken,{URL, Reason, Source}) ->
     qFunc(write, 
-	  "INSERT INTO abdoli.ernews_broken(URL) VALUES('" ++ URL ++ "')");
+	  "INSERT INTO abdoli.ernews_broken(URL, Reason, Source) 
+	  VALUES('" 
+	  ++ URL ++ "','" ++ Reason ++ "','" ++ Source ++ "')");
 	
 write(time,{Source, URL, Time_stamp}) ->
     qFunc(write, 
