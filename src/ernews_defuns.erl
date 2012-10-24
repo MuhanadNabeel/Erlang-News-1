@@ -37,8 +37,8 @@ read_web({error,{etimedout,_}})->
 	{error,connection_timed_out};
 	
 %% For anything else - return unkown_error
-read_web(_) ->
-	{error,unkown_error}.
+read_web(Reason) ->
+	{error,Reason}.
 
 %% Default reader
 read_web(default,Src) ->
