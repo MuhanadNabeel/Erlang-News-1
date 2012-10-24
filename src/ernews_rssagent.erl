@@ -64,7 +64,7 @@ init([]) ->
     Hacker_Source = "http://news.ycombinator.com/rss",
 
     Coder = #rss_source{name = iocoder , source = Coder_Source ,
-		    delay = 3600 , time = Now},
+		    delay = 300 , time = Now},
     Reddit = #rss_source{name = reddit , source = Reddit_Source ,
 		    delay = 300 , time = Now},
     Google = #rss_source{name = google , source = Google_Source ,
@@ -73,7 +73,7 @@ init([]) ->
 		    delay = 3 , time = Now},
     
     gen_fsm:send_event(?RSSAGENT, run),
-    {ok, run, [Reddit, Google]}.
+    {ok, run, [Coder, Reddit, Google]}.
 
 %%--------------------------------------------------------------------
 %% @private
