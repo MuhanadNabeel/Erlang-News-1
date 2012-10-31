@@ -11,7 +11,7 @@
 -behaviour(gen_fsm).
 
 %% API
--export([start_link/5]).
+-export([start_link/6]).
 
 %% gen_fsm callbacks
 -export([init/1, duplicate/2 , read_url/2, end_url/2, handle_event/3,
@@ -19,23 +19,25 @@
 
 -define(SERVER, ?MODULE).
 
--record(state, {url="", source="", ts="", title="", description=""}).
+-record(state, {init_url = "" ,url="", source="", ts="", 
+		title="", description="", check_counter}).
 
 %%%===================================================================
 %%% API
 %%%===================================================================
 
 
-start_link(Url,Source,Ts, Title, Description) ->
-    gen_fsm:start(?MODULE, [Url,Source,Ts,Title,Description], []).
+start_link(Url,Source,Ts, Title, Description, Counter) ->
+    gen_fsm:start(?MODULE, [Url,Source,Ts,Title,Description, Counter], []).
 
 %%%===================================================================
 %%% gen_fsm callbacks
 %%%===================================================================
 
 
-init([Url, Source, Ts, Title, Description]) ->
-    State = #state{url=Url, source=Source, ts=Ts},
+init([Url, Source, Ts, Title, Description, Counter]) ->
+    State = #state{init_url=Url, url=Url, source=Source, 
+		   ts=Ts , check_counter= Counter},
     gen_fsm:send_event(self(), end_url),
     {ok, end_url, State}.
 
@@ -49,7 +51,9 @@ end_url(end_url, Record=#state{}) ->
 	    %gen_server:cast(ernews_linkerv,
 	%		    {error, Reason, Record#state.url, Record#state.ts}),
 	    {stop, {error, 
-		    atom_to_list(Reason), Record#state.url, Record#state.source, Record#state.ts},
+		    atom_to_list(Reason), Record#state.init_url, 
+		    Record#state.source, Record#state.ts, 
+		    Record#state.check_counter} ,
 	     Record};
        _ ->
 %	    io:format("END URL FINDING = ~p ~n", [NewUrl]), 
@@ -67,7 +71,8 @@ duplicate(duplicate, Record=#state{}) ->
     case ernews_db:exists("news", {"URL" ,Record#state.url}) of
 	true ->
 	    {stop, {error, "already_exists", 
-		    Record#state.url, Record#state.source, Record#state.ts}, 
+		    Record#state.init_url, Record#state.source, Record#state.ts,
+		    Record#state.check_counter}, 
 	     Record};
 	false ->
 	    gen_fsm:send_event(self(), read_url),
@@ -83,23 +88,29 @@ read_url(read_url, Record=#state{}) ->
     case {Title_Tuple, Description_Tuple} of
 	{{ok,Title}, {ok,Description}} ->
 	     
-	    {stop, {submit, {Record#state.url, Description, Title, Record#state.ts,  
-			     erlang:atom_to_list(Record#state.source)}},Record};
+	    {stop, {submit, Record#state.url, Description, Title, Record#state.ts,  
+			     erlang:atom_to_list(Record#state.source)},Record};
 	    
 	    %gen_fsm:send_event(self() , {write, Title, Description}),
 	    %{next_state, write_to_db, Record};
 	{{error,Reason_Title} , {error, Reason_Desc}} ->
 	    {stop, {error,
-		    atom_to_list(Reason_Title) ++ atom_to_list(Reason_Desc), 
-		    Record#state.url,Record#state.source, Record#state.ts} , 
+		    "Title" ++ atom_to_list(Reason_Title) 
+		    ++ " -- Description" ++ atom_to_list(Reason_Desc), 
+		    Record#state.init_url,Record#state.source, Record#state.ts,
+		    Record#state.check_counter} , 
 	     Record};
 	{{error,Reason} , _} ->
 	    {stop, {error,
-		    atom_to_list(Reason), Record#state.url,Record#state.source, Record#state.ts},
+		    "Title" ++ atom_to_list(Reason), Record#state.init_url,
+		    Record#state.source, Record#state.ts , 
+		    Record#state.check_counter},
 	     Record};
 	{_ , {error,Reason}} ->
 	    {stop, {error,
-		    atom_to_list(Reason), Record#state.url,Record#state.source, Record#state.ts},
+		    "Description" ++ atom_to_list(Reason), Record#state.init_url,
+		    Record#state.source, Record#state.ts,
+		    Record#state.check_counter},
 	     Record}
     end.
 
@@ -143,23 +154,17 @@ handle_info(_Info, StateName, State) ->
 
 %------------------------------------------------------------------------
 
-terminate({error,Reason ,URL, Source, Ts}, _StateName , _State) ->
-    io:format("========================================================~n", []),
-    io:format(" STATE CRASHING IN ~p : ERRORR URL ~p , Reason ~p , Source ~p ~n" , [_StateName, URL,Reason,Source]),
-    io:format("========================================================~n", []),
-    gen_server:cast(ernews_linkerv,
-		    {error, Reason, URL, Source, Ts});
+terminate({error,Reason ,URL, Source, Ts , Counter}, _StateName , _State) ->
+    gen_server:cast(ernews_linkserv,
+		    {error, Reason, URL, Source, Ts , Counter});
     
 terminate({submit, URL, Description, Title, Ts, Source}, _StateName, _State) ->
-    io:format("========================================================~n", []),
-    io:format("Submited -- ~p~n", [URL]),
-    io:format("========================================================~n", []),   
-    gen_server:cast(ernews_linkerv,
+    gen_server:cast(ernews_linkserv,
 		    {submit, Source , URL, Title, Description, Ts});
 terminate(Reason , _ , _ ) ->
-    io:format("========================================================~n", []),
-    io:format("UNKNOWN --  ~p~n", [Reason]),
-    io:format("========================================================~n", []), 
+ %   io:format("========================================================~n", []),
+ %   io:format("UNKNOWN --  ~p~n", [Reason]),
+ %   io:format("========================================================~n", []), 
     ok.
 
 %------------------------------------------------------------------------

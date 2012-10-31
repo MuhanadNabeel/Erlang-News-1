@@ -51,6 +51,7 @@ start_link() ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
+    %ernews_db:connect(),
     {ok, []}.
 
 %%--------------------------------------------------------------------
@@ -82,11 +83,25 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast({parse, Source, Url, Ts, Title, Description}, State) ->
-    ernews_html:start_link(Url,Source,Ts, Title, Description),
+    ernews_html:start_link(Url,Source,Ts, Title, Description , 0),
     {noreply, State};
-handle_cast({submit, _Source, _Ts}, State) ->
+handle_cast({submit, Source, Url, Title, Description, Ts}, State) ->
+%    io:format("========================================================~n", []),
+%    io:format("Submited -- ~p~n", [Url]),
+%    io:format("========================================================~n", []),
+    ernews_db:write(news, {Url, Description, Title , Source, " "}),
     {noreply, State};
-handle_cast({error, _Reason, _Url, _Ts}, State) ->
+handle_cast({error, Reason, Url, Source, _Ts, 3}, State) ->
+%    io:format("========================================================~n", []),
+%    io:format("ERRORR URL ~p , Reason ~p , Source ~p ~n" , [Url,Reason,Source]),
+%    io:format("========================================================~n", []),
+    ernews_db:write(broken, {Url, Reason, Source}),
+    {noreply, State};
+handle_cast({error, _Reason, Url, Source, Ts, Counter}, State) ->
+    io:format("========================================================~n", []),
+    io:format("RESPAWNIG YOOOHOOOO~p~n", [Url]),
+    io:format("========================================================~n", []),
+    ernews_html:start_link(Url,Source,Ts, undef, undef , Counter+1),
     {noreply, State};
 handle_cast(_ ,State) ->
     {noreply, State}.

@@ -46,7 +46,7 @@ end_url(reddit,Url)->
 	    % Think link redirects to another wepage
 	    % If it doesn't, then the link is originating from self.reddit 
 	    % Return the Url from rssfuns 
-	    case lists:sublist(Link, 7) =:= "http://" of 
+	    case lists:sublist(Link, 4) =:= "http" of 
 	        true ->
 		    Link;
 		_ ->

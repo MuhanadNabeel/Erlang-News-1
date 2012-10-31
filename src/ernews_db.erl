@@ -44,6 +44,8 @@ qFix([], Buff) ->
 	Buff;
 qFix([$'|T], Buff) ->
 	qFix(T, Buff ++ [92, 39]);
+qFix([$"|T], Buff) ->
+	qFix(T, Buff ++ [92, $"]);
 qFix([H|T], Buff) ->
 	qFix(T, Buff ++ [H]).
 qFix(Str) ->
