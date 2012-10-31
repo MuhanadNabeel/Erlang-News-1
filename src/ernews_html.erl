@@ -19,22 +19,22 @@
 
 -define(SERVER, ?MODULE).
 
--record(state, {url="", source="", ts=""}).
+-record(state, {url="", source="", ts="", title="", description=""}).
 
 %%%===================================================================
 %%% API
 %%%===================================================================
 
 
-start_link(Url,Source,Ts) ->
-    gen_fsm:start(?MODULE, [Url,Source,Ts], []).
+start_link(Url,Source,Ts, Title, Description) ->
+    gen_fsm:start(?MODULE, [Url,Source,Ts,Title,Description], []).
 
 %%%===================================================================
 %%% gen_fsm callbacks
 %%%===================================================================
 
 
-init([Url, Source, Ts]) ->
+init([Url, Source, Ts, Title, Description]) ->
     State = #state{url=Url, source=Source, ts=Ts},
     gen_fsm:send_event(self(), end_url),
     {ok, end_url, State}.
