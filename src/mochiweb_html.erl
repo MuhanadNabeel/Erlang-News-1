@@ -276,9 +276,9 @@ tokens(B, S=#decoder{offset=O}, Acc) ->
 	    %io:format("~p -- ~p~n", [Tag,S1]),
             case parse_flag(Tag) of
                 script ->
-                    %{Tag2, S2} = tokenize_script(B, S1),
+                    {Tag2, S2} = tokenize_script(B, S1),
                     %tokens(B, S2, [Tag2, Tag | Acc]);
-		    tokens(B,S1,Acc);
+		    tokens(B,S2,Acc);
                 textarea ->
                     {Tag2, S2} = tokenize_textarea(B, S1),
                     tokens(B, S2, [Tag2, Tag | Acc]);

@@ -119,9 +119,9 @@ get_description(Url)->
 				    {error, not_found};
 				_ ->
 				    
-					mochiweb_html:to_html({"html",[],PTagArticle}),
+		        	ParsedToHtml = mochiweb_html:to_html({"html",[],PTagArticle}),
 				  
-				    {ok, bitstring_to_list(iolist_to_binary(PTagArticle))}
+				    {ok, bitstring_to_list(iolist_to_binary(ParsedToHtml))}
 		        
 			    end;
 			
@@ -237,12 +237,22 @@ counter([] , Acc) ->
 test()->
     
    % {success, {_, Body}} = ernews_defuns:read_web(default,Url),
-    Html = mochiweb_html:parse(readlines("/Users/magnus/Desktop/html.txt")),
+   % get_description(readlines("/Users/magnus/Desktop/html.txt")).
+   Html = mochiweb_html:parse(readlines("/Users/magnus/Desktop/html.txt")),
+    PTags= get_value([Html],"p" ,[]),
+    PTagArticle = break_list(lists:reverse(PTags)),
     
-   %% %    io:format("~p~n",[Html]),
-  	[{_,_,[Val|_]}] =  get_value([Html],"title" ,[]),
+    
+    T = mochiweb_html:to_html({"html",[],PTagArticle}),
+    
+    {ok, bitstring_to_list(iolist_to_binary(T))}.
+		        
+    % io:format("~p~n",[Html]),
+%    [{_,_,[Val|_]}] =  get_value([Html],"title" ,[]),
+%    Val.
+	
 
-	    {ok,bitstring_to_list(Val)}.
+	   % {ok,bitstring_to_list(Val)}.
    % PTags = get_value([Html],"p" ,[]),
    % PTagArticle = break_list(lists:reverse(PTags)),
    % case PTagArticle of
