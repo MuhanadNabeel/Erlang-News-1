@@ -100,16 +100,18 @@ read_url(read_url, Record=#state{}) ->
     end.
 
 %------------------------------------------------------------------------
-write_to_db({write, Title, Description} , Record= #state{}) ->	      
+write_to_db({write, Title, Description} , Record= #state{}) ->
+   
     case ernews_db:write(news,{Record#state.url, 
 				     Description, Title , 
 				     erlang:atom_to_list(Record#state.source),
 				     " "}) of
-	bad_reading ->
+	{error, Reason} ->
+	    io:format("-----------------------~s~n", [Title]),
 	    {stop, {error,{error, bad_db}} , Record};
 	_ ->
-	    {stop, {submit, 
-		    {submit, Record#state.source, Record#state.ts}}, 
+	    io:format("+++++++++++++++++++++++~s~n", [Title]),
+	    {stop, {submit, {Record#state.source, Record#state.ts}}, 
 	     Record}
     end.
  
