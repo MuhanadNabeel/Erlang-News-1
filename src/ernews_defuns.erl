@@ -86,3 +86,18 @@ convert_pubDate_to_datetime(DateTime) ->
 	    end,
     {{Year,Month,Date},{HH,MM,SS}}.
 %% </function>
+
+tag_remover(List, iocoder) ->
+    coder_tag_remover(List,[] , false).
+
+coder_tag_remover([] , Buff , _) ->
+    Buff;
+coder_tag_remover([$<,$/,$b,$l,$o,$c,$k,$q,$u,$o,$t,$e,$>|_T] , Buff , _) ->
+    Buff;
+coder_tag_remover([$<,$b,$l,$o,$c,$k,$q,$u,$o,$t,$e,$>|T] , Buff , _) ->
+    coder_tag_remover(T, Buff, true);
+coder_tag_remover([H|T], Buff, true) ->
+    coder_tag_remover(T, Buff ++ [H], true);
+coder_tag_remover([_|T], Buff, false) ->
+    coder_tag_remover(T, Buff, false).
+				     
