@@ -19,6 +19,7 @@
 
 -include("records.hrl").
 
+%% Start link
 start_link(Atom,Source) ->
 	spawn_link(?MODULE, init,[Atom,Source]).
 
