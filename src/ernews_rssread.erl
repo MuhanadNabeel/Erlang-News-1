@@ -67,12 +67,22 @@ iterate(hacker,[H|T],List) ->
 		 |List]);
 		 
 %% Iterating through parsed RSS doc
-%% For default Atoms
-iterate(_Atom,[H|T],List) ->
-	iterate(_Atom, T,
+%% Reddit does not have valid description
+iterate(reddit,[H|T],List) ->
+	iterate(reddit, T,
 		[#rss_item{link=proplists:get_value("link",H),
 				   pubDate=ernews_defuns:convert_pubDate_to_datetime(proplists:get_value("pubDate",H)),
-				   description=proplists:get_value("description",H),
+				   title=proplists:get_value("title",H)
+			  }
+		 |List]);
+		 
+%% Iterating through parsed RSS doc
+%% For default Atoms
+iterate(Atom,[H|T],List) ->
+	iterate(Atom, T,
+		[#rss_item{link=proplists:get_value("link",H),
+				   pubDate=ernews_defuns:convert_pubDate_to_datetime(proplists:get_value("pubDate",H)),
+				   description=ernews_defuns:get_description(proplists:get_value("description",H),Atom),
 				   title=proplists:get_value("title",H)
 			  }
 		 |List]);
