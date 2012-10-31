@@ -37,9 +37,21 @@ end_url(reddit,Url)->
     case Result of
 	{success,{_,Body}}->
 	    { Xml, _ } = xmerl_scan:string(Body),
+
 	    Extract ="//channel/item/description[1]/text()[11]",
 	    [{_,_,_,_,[_|Link],_}] = xmerl_xpath:string(Extract, Xml),
-	    Link;
+	    Link,
+	
+	    % If the XML returns a link that starts with http:// 
+	    % Think link redirects to another wepage
+	    % If it doesn't, then the link is originating from self.reddit 
+	    % Return the Url from rssfuns 
+	    case lists:sublist(Link, 7) =:= "http://" of 
+	        true ->
+		    Link;
+		_ ->
+		    Url
+	    end;
 
 	{error,Reason}->
 	   {error, Reason}
@@ -47,7 +59,7 @@ end_url(reddit,Url)->
 
 end_url(google,Url)->   
     end_url(iocoder,Url);
-       
+      
 end_url(_,_) ->
     {error, unknown_source}. 
 
@@ -56,7 +68,7 @@ end_url(_,_) ->
 
 
 %%--------------------------------------------------------------------
-%% @doc pinis
+%% @doc 
 % Get's the description from the HTML in the following casses:
 % a) First ensure connectivity to the host is successful (Inets does not catch any errors)
 % b) Get the description from the description tag (the most common)
@@ -106,9 +118,10 @@ get_description(Url)->
 				[] ->
 				    {error, not_found};
 				_ ->
-				    ParsedArticle = 
+				    
 					mochiweb_html:to_html({"html",[],PTagArticle}),
-				    {ok, bitstring_to_list(iolist_to_binary(ParsedArticle))}
+				  
+				    {ok, bitstring_to_list(iolist_to_binary(PTagArticle))}
 		        
 			    end;
 			
@@ -123,6 +136,8 @@ get_description(Url)->
 	    {error,Reason}
 		
     end.
+
+
 get_title(Url)->
     Result = ernews_defuns:read_web(default,Url),
     case Result of
@@ -219,12 +234,43 @@ counter([] , Acc) ->
 
 %%-------------------------------------------------------------%%
 
-test(Url)->
+test()->
     
-    {success, {_, Body}} = ernews_defuns:read_web(default,Url),
-    Html = mochiweb_html:parse(Body).
-   % io:format("~s",[Html]).
+   % {success, {_, Body}} = ernews_defuns:read_web(default,Url),
+    Html = mochiweb_html:parse(readlines("/Users/magnus/Desktop/html.txt")),
+    
+   %% %    io:format("~p~n",[Html]),
+  	[{_,_,[Val|_]}] =  get_value([Html],"title" ,[]),
+
+	    {ok,bitstring_to_list(Val)}.
+   % PTags = get_value([Html],"p" ,[]),
+   % PTagArticle = break_list(lists:reverse(PTags)),
+   % case PTagArticle of
+%	[] ->
+%	    {error, not_found};
+%	_ ->
+%	    ParsedArticle = 
+%		mochiweb_html:to_html({"html",[],PTagArticle}),
+%	    io:format("~s~n", [bitstring_to_list(iolist_to_binary(ParsedArticle))])
+%	    
+		
+ %   end.
+   %io:format("~s",[Html]).
     %PTags= get_value([Html],"p" ,[]).
+
+readlines(FileName) ->
+    {ok, Device} = file:open(FileName, [read]),
+    try get_all_lines(Device)
+      after file:close(Device)
+    end.
+
+get_all_lines(Device) ->
+    case io:get_line(Device, "") of
+        eof  -> [];
+        Line -> Line ++ get_all_lines(Device)
+    end.
+
+
 
 test2()->
     Test = {<<"html">>,[],[{pi, <<"xml:namespace">>,[{<<"prefix">>,<<"o">>},

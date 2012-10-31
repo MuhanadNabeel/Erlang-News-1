@@ -148,7 +148,8 @@ to_html([{pi, Tag, Attrs} | Rest], Acc) ->
             <<"?>">>],
     to_html(Rest, [Open | Acc]);
 to_html([{comment, Comment} | Rest], Acc) ->
-    to_html(Rest, [[<<"<!--">>, Comment, <<"-->">>] | Acc]);
+%    to_html(Rest, Acc);
+   to_html(Rest, [[<<"<!--">>, Comment, <<"-->">>] | Acc]);
 to_html([{doctype, Parts} | Rest], Acc) ->
     Inside = doctype_to_html(Parts, Acc),
     to_html(Rest, [[<<"<!DOCTYPE">>, Inside, <<">">>] | Acc]);
@@ -225,7 +226,8 @@ to_tokens([{Tag0, [T0={'=', _C0} | R1]} | Rest], Acc) ->
     to_tokens([{Tag0, R1} | Rest], [T0 | Acc]);
 to_tokens([{Tag0, [T0={comment, _C0} | R1]} | Rest], Acc) ->
     %% Allow {comment, iolist()}
-    to_tokens([{Tag0, R1} | Rest], [T0 | Acc]);
+%    to_tokens([{Tag0, R1} | Rest], [T0 | Acc]);
+    to_tokens(Rest,Acc);
 to_tokens([{Tag0, [T0={pi, _S0} | R1]} | Rest], Acc) ->
     %% Allow {pi, binary()}
     to_tokens([{Tag0, R1} | Rest], [T0 | Acc]);
@@ -271,15 +273,19 @@ tokens(B, S=#decoder{offset=O}, Acc) ->
             lists:reverse(Acc);
         _ ->
             {Tag, S1} = tokenize(B, S),
+	    %io:format("~p -- ~p~n", [Tag,S1]),
             case parse_flag(Tag) of
                 script ->
-                    {Tag2, S2} = tokenize_script(B, S1),
-                    tokens(B, S2, [Tag2, Tag | Acc]);
+                    %{Tag2, S2} = tokenize_script(B, S1),
+                    %tokens(B, S2, [Tag2, Tag | Acc]);
+		    tokens(B,S1,Acc);
                 textarea ->
                     {Tag2, S2} = tokenize_textarea(B, S1),
                     tokens(B, S2, [Tag2, Tag | Acc]);
                 none ->
-                    tokens(B, S1, [Tag | Acc])
+                    tokens(B, S1, [Tag | Acc]);
+		comment ->
+		    tokens(B,S1,Acc)
             end
     end.
 
@@ -292,13 +298,15 @@ parse_flag({start_tag, B, _, false}) ->
         _ ->
             none
     end;
+parse_flag({comment, _}) ->
+    comment;
 parse_flag(_) ->
     none.
 
 tokenize(B, S=#decoder{offset=O}) ->
     case B of
         <<_:O/binary, "<!--", _/binary>> ->
-            tokenize_comment(B, ?ADV_COL(S, 4));
+	tokenize_comment(B, ?ADV_COL(S, 4));
         <<_:O/binary, "<!DOCTYPE", _/binary>> ->
             tokenize_doctype(B, ?ADV_COL(S, 10));
         <<_:O/binary, "<![CDATA[", _/binary>> ->
