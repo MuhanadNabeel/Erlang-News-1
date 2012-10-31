@@ -87,17 +87,45 @@ convert_pubDate_to_datetime(DateTime) ->
     {{Year,Month,Date},{HH,MM,SS}}.
 %% </function>
 
-tag_remover(List, iocoder) ->
-    coder_tag_remover(List,[] , false).
+get_description(List, iocoder) ->
+    coder_description(List,[] , false);
+get_description(List, google) ->
+    Desc = google_description(List,[] , 0),
+    %io:format("DESC : ~s~n", [Desc]),
+    google_tag_remover(Desc, [] , true).
 
-coder_tag_remover([] , Buff , _) ->
+coder_description([] , Buff , _) ->
     Buff;
-coder_tag_remover([$<,$/,$b,$l,$o,$c,$k,$q,$u,$o,$t,$e,$>|_T] , Buff , _) ->
+coder_description([$<,$/,$b,$l,$o,$c,$k,$q,$u,$o,$t,$e,$>|_T] , Buff , _) ->
     Buff;
-coder_tag_remover([$<,$b,$l,$o,$c,$k,$q,$u,$o,$t,$e,$>|T] , Buff , _) ->
-    coder_tag_remover(T, Buff, true);
-coder_tag_remover([H|T], Buff, true) ->
-    coder_tag_remover(T, Buff ++ [H], true);
-coder_tag_remover([_|T], Buff, false) ->
-    coder_tag_remover(T, Buff, false).
+coder_description([$<,$b,$l,$o,$c,$k,$q,$u,$o,$t,$e,$>|T] , Buff , _) ->
+    coder_description(T, Buff, true);
+coder_description([H|T], Buff, true) ->
+    coder_description(T, Buff ++ [H], true);
+coder_description([_|T], Buff, false) ->
+    coder_description(T, Buff, false).
+
+
+google_description([], Buff, _) ->
+    Buff;
+google_description([$&,$l,$t,$;,$f,$o,$n,$t,$ ,
+		    $s,$i,$z,$e,$=,$",$-,$1,$",$>|T], Buff, Counter) ->
+    google_description(T, Buff, Counter+1);
+google_description([$&,$l,$t,$;,$/,$f,$o,$n,$t,$>|_T], Buff, 2) ->
+    Buff;
+google_description([H|T], Buff, 2) ->
+    google_description(T, Buff ++ [H], 2);
+google_description([_H|T], Buff, Counter) ->
+    google_description(T, Buff, Counter).
 				     
+
+google_tag_remover([], Buff, _) ->
+    Buff;
+google_tag_remover([$&,$l,$t,$;|T], Buff , _) ->
+    google_tag_remover(T, Buff, false);
+google_tag_remover([$>|T], Buff, _) ->
+    google_tag_remover(T, Buff, true);
+google_tag_remover([H|T], Buff, true) ->
+    google_tag_remover(T, Buff ++ [H], true);
+google_tag_remover([_H|T] , Buff, false) ->
+    google_tag_remover(T, Buff, false).
