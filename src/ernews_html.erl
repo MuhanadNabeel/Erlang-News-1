@@ -14,7 +14,7 @@
 -export([start_link/5]).
 
 %% gen_fsm callbacks
--export([init/1, duplicate/2 , write_to_db/2, read_url/2, end_url/2, handle_event/3,
+-export([init/1, duplicate/2 , read_url/2, end_url/2, handle_event/3,
 	 handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
 
 -define(SERVER, ?MODULE).
@@ -84,7 +84,7 @@ read_url(read_url, Record=#state{}) ->
 	{{ok,Title}, {ok,Description}} ->
 	     
 	    {stop, {submit, {Record#state.url, Description, Title, Record#state.ts,  
-			     erlang:atom_to_list(Record#state.source)}},Record}
+			     erlang:atom_to_list(Record#state.source)}},Record};
 	    
 	    %gen_fsm:send_event(self() , {write, Title, Description}),
 	    %{next_state, write_to_db, Record};
@@ -155,8 +155,7 @@ terminate({submit, URL, Description, Title, Ts, Source}, _StateName, _State) ->
     io:format("Submited -- ~p~n", [URL]),
     io:format("========================================================~n", []),   
     gen_server:cast(ernews_linkerv,
-		    {submit, URL, Description, Title, Ts, Source});
-    ok;
+		    {submit, Source , URL, Title, Description, Ts});
 terminate(Reason , _ , _ ) ->
     io:format("========================================================~n", []),
     io:format("UNKNOWN --  ~p~n", [Reason]),
