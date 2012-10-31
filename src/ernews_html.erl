@@ -49,7 +49,7 @@ end_url(end_url, Record=#state{}) ->
 	    %gen_server:cast(ernews_linkerv,
 	%		    {error, Reason, Record#state.url, Record#state.ts}),
 	    {stop, {error, 
-		    atom_to_list(Reason), Record#state.url, Record#state.source},
+		    atom_to_list(Reason), Record#state.url, Record#state.source, Record#state.ts},
 	     Record};
        _ ->
 %	    io:format("END URL FINDING = ~p ~n", [NewUrl]), 
@@ -67,7 +67,7 @@ duplicate(duplicate, Record=#state{}) ->
     case ernews_db:exists("news", {"URL" ,Record#state.url}) of
 	true ->
 	    {stop, {error, "already_exists", 
-		    Record#state.url, Record#state.source}, 
+		    Record#state.url, Record#state.source, Record#state.ts}, 
 	     Record};
 	false ->
 	    gen_fsm:send_event(self(), read_url),
@@ -82,38 +82,42 @@ read_url(read_url, Record=#state{}) ->
     Description_Tuple = ernews_htmlfuns:get_description(Record#state.url),
     case {Title_Tuple, Description_Tuple} of
 	{{ok,Title}, {ok,Description}} ->
-	    gen_fsm:send_event(self() , {write, Title, Description}),
-	    {next_state, write_to_db, Record};
+	     
+	    {stop, {submit, {Record#state.url, Description, Title, Record#state.ts,  
+			     erlang:atom_to_list(Record#state.source)}},Record}
+	    
+	    %gen_fsm:send_event(self() , {write, Title, Description}),
+	    %{next_state, write_to_db, Record};
 	{{error,Reason_Title} , {error, Reason_Desc}} ->
 	    {stop, {error,
 		    atom_to_list(Reason_Title) ++ atom_to_list(Reason_Desc), 
-		    Record#state.url,Record#state.source} , 
+		    Record#state.url,Record#state.source, Record#state.ts} , 
 	     Record};
 	{{error,Reason} , _} ->
 	    {stop, {error,
-		    atom_to_list(Reason), Record#state.url,Record#state.source},
+		    atom_to_list(Reason), Record#state.url,Record#state.source, Record#state.ts},
 	     Record};
 	{_ , {error,Reason}} ->
 	    {stop, {error,
-		    atom_to_list(Reason), Record#state.url,Record#state.source},
+		    atom_to_list(Reason), Record#state.url,Record#state.source, Record#state.ts},
 	     Record}
     end.
 
 %------------------------------------------------------------------------
-write_to_db({write, Title, Description} , Record= #state{}) ->
+%write_to_db({write, Title, Description} , Record= #state{}) ->
    
-    case ernews_db:write(news,{Record#state.url, 
-				     Description, Title , 
-				     erlang:atom_to_list(Record#state.source),
-				     " "}) of
-	{error, Reason} ->
-	    io:format("-----------------------~s~n", [Title]),
-	    {stop, {error,{error, bad_db}} , Record};
-	_ ->
-	    io:format("+++++++++++++++++++++++~s~n", [Title]),
-	    {stop, {submit, {Record#state.source, Record#state.ts}}, 
-	     Record}
-    end.
+ %   case ernews_db:write(news,{Record#state.url, 
+%				     Description, Title , 
+%				     erlang:atom_to_list(Record#state.source),
+%				     " "}) of
+%	{error, _} ->
+%	    io:format("-----------------------~s~n", [Title]),
+%	    {stop, {error,{error, bad_db}} , Record};
+%	_ ->
+%	    io:format("+++++++++++++++++++++++~s~n", [Title]),
+%	    {stop, {submit, {Record#state.source, Record#state.ts}}, 
+%	     Record}
+ %   end.
  
 %------------------------------------------------------------------------
 
@@ -139,16 +143,19 @@ handle_info(_Info, StateName, State) ->
 
 %------------------------------------------------------------------------
 
-terminate({error,Reason ,URL, Source}, _StateName , _State) ->
+terminate({error,Reason ,URL, Source, Ts}, _StateName , _State) ->
     io:format("========================================================~n", []),
     io:format(" STATE CRASHING IN ~p : ERRORR URL ~p , Reason ~p , Source ~p ~n" , [_StateName, URL,Reason,Source]),
     io:format("========================================================~n", []),
-    ernews_db:write(broken, {URL, Reason, Source});
+    gen_server:cast(ernews_linkerv,
+		    {error, Reason, URL, Source, Ts});
     
-terminate({submit, Message}, _StateName, _State) ->
+terminate({submit, URL, Description, Title, Ts, Source}, _StateName, _State) ->
     io:format("========================================================~n", []),
-    io:format("Submited -- ~p~n", [Message]),
-    io:format("========================================================~n", []), 
+    io:format("Submited -- ~p~n", [URL]),
+    io:format("========================================================~n", []),   
+    gen_server:cast(ernews_linkerv,
+		    {submit, URL, Description, Title, Ts, Source});
     ok;
 terminate(Reason , _ , _ ) ->
     io:format("========================================================~n", []),
