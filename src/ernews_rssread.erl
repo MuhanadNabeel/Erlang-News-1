@@ -7,6 +7,10 @@
 %%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
 %%%-------------------------------------------------------------------
 
+%% http://news.google.com/news/feeds?hl=en&gl=us&q=erlang&um=1&ie=UTF-8&output=rss
+%% http://coder.io/tag/erlang.rss
+%% http://www.reddit.com/r/erlang.rss
+
 -module(ernews_rssread).
 
 -export([start_link/2,start/2]).
@@ -41,9 +45,9 @@ read(start,{success,{_Head,Body}},Atom) ->
 
 %% Iterate through the parsed list
 %% Sends message to gen_server with URL and PubDate
-read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T]) ->
-%	io:format("~p~n",[{Link,PubDate}]),
-	gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
+read(Atom,[#rss_item{link=Link,pubDate=PubDate,title=Title,description=Description}|T]) ->
+	io:format("~p~n",[{Link,PubDate,Title,Description}]),
+	%%gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
 	read(Atom,T);
 
 %% Iterating through parsed list done
@@ -55,20 +59,21 @@ iterate(Atom,List) ->
 	iterate(Atom,parse(List),[]).
 
 %% Iterating through parsed RSS doc
-%% Hacker RSS does not have pubDate - date is added
+%% Hacker RSS only has links - date is added
 iterate(hacker,[H|T],List) ->
 	URL = proplists:get_value("link",H),
 	iterate(hacker, T,
 		[#rss_item{link=URL, pubDate=erlang:universaltime()}
 		 |List]);
-
+		 
 %% Iterating through parsed RSS doc
 %% For default Atoms
 iterate(_Atom,[H|T],List) ->
 	iterate(_Atom, T,
 		[#rss_item{link=proplists:get_value("link",H),
-			   pubDate=ernews_defuns:convert_pubDate_to_datetime(
-				     proplists:get_value("pubDate",H))
+				   pubDate=ernews_defuns:convert_pubDate_to_datetime(proplists:get_value("pubDate",H)),
+				   description=proplists:get_value("description",H),
+				   title=proplists:get_value("title",H)
 			  }
 		 |List]);
 		 
@@ -106,7 +111,8 @@ event(_Event = {characters, Chars},
 
 ?QUOTE_VALUE("pubDate");
 ?QUOTE_VALUE("link");
-?QUOTE_VALUE("keywords");
+?QUOTE_VALUE("description");
+?QUOTE_VALUE("title");
 
 event(_Event, _Location, State) ->
     State.
