@@ -7,9 +7,9 @@
 %% News-table should also have date and default votes, rank and visits
 write(news,{URL,Description,Title,Image,Icon}) ->			
     Query =  "INSERT INTO abdoli.ernews_news(URL, Title, Description, Image, Icon) VALUES(\""
-	++ URL ++ "\", \"" ++ Title ++ "\", \""  
-	++ Description ++ "\", \"" ++ Image ++ "\", \"" 
-	++ Icon ++ "\")",
+	++ qFix(URL) ++ "\", \"" ++ qFix(Title) ++ "\", \""  
+	++ qFix(Description) ++ "\", \"" ++ qFix(Image) ++ "\", \"" 
+	++ qFix(Icon) ++ "\")",
     R = qFunc(write,Query),
    case R of
 	{error,_} ->
@@ -24,12 +24,12 @@ write(broken,{URL, Reason, Source}) ->
     qFunc(write, 
 	  "INSERT INTO abdoli.ernews_broken(URL, Reason, Source) 
 	  VALUES('" 
-	  ++ URL ++ "','" ++ Reason ++ "','" ++ atom_to_list(Source) ++ "')");
+	  ++ qFix(URL) ++ "','" ++ qFix(Reason) ++ "','" ++ atom_to_list(Source) ++ "')");
 	
 write(time,{Source, URL, Time_stamp}) ->
     qFunc(write, 
-	  "INSERT INTO abdoli.ernews_Time(Source, URL, Time_stamp) VALUES('" 
-	  ++ Source ++ "','" ++ URL ++ "','" ++ Time_stamp ++ "')").
+	  "INSERT INTO abdoli.ernews_time(Source, URL, Time_stamp) VALUES('" 
+	  ++ qFix(Source) ++ "','" ++ qFix(URL) ++ "','" ++ qFix(Time_stamp) ++ "')").
 				 
 %% Add new tag to Tag-table
 %%write(tag,_Tag_name) ->
@@ -38,6 +38,16 @@ write(time,{Source, URL, Time_stamp}) ->
 %% Add News-ID to News-Tag-table
 %%write(assign_tag,{_News_ID,_Tag_ID}) ->
 %%	ok.
+
+
+qFix([], Buff) ->
+	Buff;
+qFix([$'|T], Buff) ->
+	qFix(T, Buff ++ [92, 39]);
+qFix([H|T], Buff) ->
+	qFix(T, Buff ++ [H]).
+qFix(Str) ->
+	qFix(Str, []).	
 	
 qFunc(get, Q) ->
     mysql:start_link(p1, "db.student.chalmers.se", 
@@ -54,7 +64,7 @@ qFunc(write, Q) ->
 qFunc(exists, Q) ->	
     mysql:start_link(p1, "db.student.chalmers.se", 
 		     3306, "abdoli", "kgcH8v7c", "abdoli"),
-    {_,{_,_,R,_,_,_,_,_}} = mysql:fetch(p1, Q),
+    {_,{_,_,R,_,_,_,_,_}} = mysql:fetch(p1,Q),
     R.
 	
 %% Get News-link Table-ID
