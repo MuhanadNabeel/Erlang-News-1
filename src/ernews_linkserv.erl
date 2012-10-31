@@ -81,8 +81,8 @@ handle_call(_Request, _From, State) ->
 %%                                  {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_cast({parse, Source, Url, Ts}, State) ->
-    ernews_html:start_link(Url,Source,Ts),
+handle_cast({parse, Source, Url, Ts, Title, Description}, State) ->
+    ernews_html:start_link(Url,Source,Ts, Title, Description),
     {noreply, State};
 handle_cast({submit, _Source, _Ts}, State) ->
     {noreply, State};
