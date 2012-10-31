@@ -11,7 +11,7 @@
 -behaviour(gen_fsm).
 
 %% API
--export([start_link/3]).
+-export([start_link/5]).
 
 %% gen_fsm callbacks
 -export([init/1, duplicate/2 , write_to_db/2, read_url/2, end_url/2, handle_event/3,
