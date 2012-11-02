@@ -26,15 +26,29 @@ read_web({ok, {{_Version, _, _ReasonPhrase}, Headers, Body}}) ->
 %% Reading document returns errors
 %% Return tuple with error Atom and associated reason Atom
 read_web({error,no_scheme})->
-	{error,broken_html};
+    {error,broken_html};
 read_web({error,{failed_connect,_}})->
-	{error,connection_failed}; % broken link
+    {error,connection_failed}; % broken link
 read_web({error,{ehostdown,_}})->
-	{error,host_is_down};
+    {error,host_is_down};
 read_web({error,{ehostunreach,_}})->
-	{error,host_unreachable};
+    {error,host_unreachable};
 read_web({error,{etimedout,_}})->
-	{error,connection_timed_out};
+    {error,connection_timed_out};
+read_web({error,{ebadrqc,_}})->
+    {error,bad_request_code};
+read_web({error,{ecomm,_}})->
+    {error, communication_error};
+read_web({error,{econnrefused,_}})->
+    {error, connection_refused};
+read_web({error,{enetdown,_}})->
+    {error, network_down};
+read_web({error,{enetunreach,_}})->
+    {error, network_unreachable};
+
+
+
+
 	
 %% For anything else - return unkown_error
 read_web(Reason) ->
