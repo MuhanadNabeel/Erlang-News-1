@@ -3,7 +3,9 @@
 -module(ernews_db).
 -compile(export_all).
 
-
+connect() ->
+	 mysql:start(p1, "db.student.chalmers.se", 3306, "abdoli", "kgcH8v7c", "abdoli").
+	 
 %% News-table should also have date and default votes, rank and visits
 write(news,{URL,Description,Title,Image,Icon}) ->			
     Query =  "INSERT INTO abdoli.ernews_news(URL, Title, Description, Image, Icon) VALUES(\""
@@ -24,7 +26,7 @@ write(broken,{URL, Reason, Source}) ->
     qFunc(write, 
 	  "INSERT INTO abdoli.ernews_broken(URL, Reason, Source) 
 	  VALUES('" 
-	  ++ qFix(URL) ++ "','" ++ qFix(Reason) ++ "','" ++ atom_to_list(Source) ++ "')");
+	  ++ qFix(URL) ++ "','" ++ qFix(Reason) ++ "','" ++ qFix(Source) ++ "')");
 	
 write(time,{Source, URL, Time_stamp}) ->
     qFunc(write, 
@@ -44,30 +46,38 @@ qFix([], Buff) ->
 	Buff;
 qFix([$'|T], Buff) ->
 	qFix(T, Buff ++ [92, 39]);
-qFix([$"|T], Buff) ->
-	qFix(T, Buff ++ [92, $"]);
 qFix([H|T], Buff) ->
 	qFix(T, Buff ++ [H]).
 qFix(Str) ->
 	qFix(Str, []).	
 	
 qFunc(get, Q) ->
-    mysql:start_link(p1, "db.student.chalmers.se", 
-		     3306, "abdoli", "kgcH8v7c", "abdoli"),
 	{_,{_,_,Result,_,_,_,_,_}} = mysql:fetch(p1, Q),
 	Result;
 	
 qFunc(write, Q) ->
-    mysql:start_link(p1, 
-		     "db.student.chalmers.se", 3306, 
-		     "abdoli", "kgcH8v7c", "abdoli"),
-    mysql:fetch(p1, Q);
-
+	try mysql:fetch(p1, Q) of 
+		Result ->
+			{R,{_,_,_,_,_,_,_,_}} = Result,
+			
+			case R of 
+				updated -> {ok, updated};
+				error -> {error, sql_syntax};
+				_ -> else
+			end
+	catch 
+		exit:Exit -> 
+			%{Res, _} = Exit,
+			{error, no_connection}
+	end;
+	
+	%io:format("~s~n", [Tag]);
+	
+	
 qFunc(exists, Q) ->	
-    mysql:start_link(p1, "db.student.chalmers.se", 
-		     3306, "abdoli", "kgcH8v7c", "abdoli"),
     {_,{_,_,R,_,_,_,_,_}} = mysql:fetch(p1,Q),
-    R.
+	R.
+
 	
 %% Get News-link Table-ID
 get(NewsID) ->
