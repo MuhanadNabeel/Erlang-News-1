@@ -13,7 +13,11 @@
     <body>
         <table class="leftTable">
             <tr>
-                <td class="left">One</td>
+                <td id="joe">
+                    <?php
+                    
+                    ?>
+                </td>
                 <td class="left">
                     <div id="recent"></div>
                     <div id="archive"></div>
