@@ -13,10 +13,13 @@
     <body>
         <table class="leftTable">
             <tr>
-                <td id="joe">
-                    <?php
-                    
-                    ?>
+                <td class="left">
+                    <table>
+                        <tr>
+                            <td style="width:50%;vertical-align: top;" id="news_article_left"></td>
+                            <td style="width:50%;vertical-align: top;" id="news_article_right"></td>
+                        </tr>
+                    </table>
                 </td>
                 <td class="left">
                     <div id="recent"></div>
