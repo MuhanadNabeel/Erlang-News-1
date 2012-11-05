@@ -1,0 +1,16 @@
+                   <div class="newsTemp"> 
+                       <p class="head">
+                           $title
+                       </p>
+                       
+                       <p class="main">
+                           <img src="$image" align="left">
+                           $description
+                       </p>
+                       <p class="btm">
+                           <img src="http://google-chrome.sjbn.co/wp-content/uploads/2011/03/Facebook-icon-64x64.png">
+                           <img src="http://www.nosm.ca/uploadedImages/About_Us/Library/Home/Home_-_Students/twitter_button.gif">
+                           <img src="http://trickvilla.com/wp-content/uploads/gplus-icon.png">
+                           
+                       </p>    
+                   </div>
