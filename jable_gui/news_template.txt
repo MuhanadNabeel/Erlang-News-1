@@ -1,4 +1,5 @@
-                   <div class="newsTemp"> 
+                     <div class="bd">
+                      <div class="newsTemp"> 
                        <p class="head">
                            $title
                        </p>
@@ -14,4 +15,5 @@
                            <td><img src="icon_report_48.png" class="thumb3"></td>
                        </tr>    
                       </table> 
+                   </div>
                    </div>
