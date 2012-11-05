@@ -4,6 +4,10 @@ table.leftTable{
     vertical-align: top;
 }
 
+div.bd{
+    background-color: #F8F8FF;
+}
+
 td.left{
     /*background-color: lightgrey;*/
     width: 65%;
@@ -15,7 +19,7 @@ td.left{
 }
 
 div.newsTemp{
-    background-color: #F8F8FF;
+    /*background-color: #F8F8FF;*/
 }
 
 div.newsTemp p.head{
@@ -43,22 +47,54 @@ div.newsTemp img{
     padding-bottom:10px;
 }
 
-div.newsTemp p.btm{
+table.btm{
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 10px;
     padding-bottom:10px;
-    position: relative;
-    /*background-color: black;*/
+    width: 100%;
+    /*background-color: #F8F8FF;*/
 }
 
-div.newsTemp p.btm img{
+table.btm img{
   width: 30px;
   height: 30px;
   padding-top: 20px;
   opacity: 0.4;
 }
 
-div.newsTemp p.btm img:hover {
+table.btm td.up{
+    width: 10%;
+}
+
+td.down{
+    width: 10%;
+}
+
+td.report{
+    width: 80%;
+}
+
+table.btm img.thumb1{
+  opacity:1;
+}
+
+table.btm img.thumb2{
+  float: left;
+  opacity:1;
+}
+
+table.btm img.thumb3{
+  opacity: 1;
+  float: right;
+  padding-right: 10px;
+}
+
+table.btm img.thumb3:hover{
+  opacity: 1;
+  
+}
+
+table.btm img:hover {
     opacity:1;
 }
