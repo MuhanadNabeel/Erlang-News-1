@@ -1,0 +1,13 @@
+table.leftTable{
+    width: 70%;
+    border-style: none;
+}
+
+td.left{
+    background-color: lightgrey;
+    width: 50%;
+}
+
+#archive{
+    
+}
