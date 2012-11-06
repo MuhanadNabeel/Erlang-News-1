@@ -21,6 +21,20 @@ h1{
     border-bottom: solid thin;
 }
 
+h1 a{
+    color:black;
+    text-decoration: none;
+    font-style: normal;
+}
+
+h1 a:visited{
+    color:black;
+}
+
+h1 a:hover{
+    color:grey;
+}
+
 div.newsTemp p.main{
     font-family: sans-serif;
     padding-right: 10px;
@@ -71,4 +85,17 @@ div.newsTemp img{
 
 .right_recent a:visited{
     color:black;
+}
+
+.right_recent a:hover{
+    color:grey;
+}
+
+.up_down_div{
+    
+}
+
+.up_down_span{
+    position: relative;
+    left: 80px;
 }
