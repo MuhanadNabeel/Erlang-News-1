@@ -1,12 +1,15 @@
 var newsTemplate = '';
+var newsRightTemplate = '';
 $(document).ready(function() {
-    $.post('news_template.txt',function(str){
-        newsTemplate = str;
+    $.get('_get_templates.php',function(str){
+        var split = str.split('<split_between_templates>')
+        newsRightTemplate = split[0];
+        newsTemplate = split[1];
         getNewsJSON();
     });
 });
 function getNewsJSON() {
-    $.post('_get_news.php',function(outcome) {
+    $.get('_get_news.php',function(outcome) {
         var json = jQuery.parseJSON(outcome);
         for( var i = 0 ; i < json.length ; i++ ) {
             // URL, image, description, title, PubDate
@@ -25,25 +28,20 @@ function getNewsArticle(json) {
     var image = json.Image;
     if( image.length < 10 )
         image = 'http://www.erlang-services.com/images/erlang_studiok.bmp';
-    var article = newsTemplate.replace('$title',json.Title)
-                    .replace('$description',json.Description)
-                    .replace('$image',image);
-    return article;
+    return newsTemplate.replace('$title',json.Title)
+                        .replace('$description',json.Description)
+                        .replace('$image',image)
+                        .replace('$URL',json.URL);
 }
 
 function addNewsLink(json) {
-    var tmp = '<div>';
-    tmp += '<table><tr>';
-    tmp += '<td><a href="' + json.URL + '">';
-
+    var title = '';
     if( json.Title.length < 60 )
-        tmp += json.Title;
+        title = json.Title;
     else
-        tmp += json.Title.substring(0,55) + ' ...';
+        title = json.Title.substring(0,55) + ' ...';
 
-    tmp += '</a></td>';
-    tmp += '</tr></table>';
-    tmp += '</div>';
-    return tmp;
+    return newsRightTemplate.replace('$title',title)
+                            .replace('$URL',json.URL);
 }
 
