@@ -70,12 +70,18 @@ iterate(hacker,[H|T],List) ->
 %% Iterating through parsed RSS doc
 %% Reddit does not have valid description
 iterate(reddit,[H|T],List) ->
+	case proplists:get_value("link",H) of
+		undefined ->
+			iterate(reddit, T, List);
+		_Else ->
+			
 	iterate(reddit, T,
 		[#rss_item{link=proplists:get_value("link",H),
 				   pubDate=ernews_defuns:convert_pubDate_to_datetime(proplists:get_value("pubDate",H)),
 				   title=proplists:get_value("title",H)
 			  }
-		 |List]);
+		 |List])
+	 end.
 		 
 %% Iterating through parsed RSS doc
 %% For default Atoms
