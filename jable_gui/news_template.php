@@ -3,7 +3,7 @@
        <a href="redirect.php?id={id}&url={URL}" onmouseover="JavaScript:windows.status='this link blaber';
            return true;" onmouseout="window.status=''";><h1>{title}</h1></a>
    </p>
-   <p class="main" style="min-height: 70px;">
+   <p class="main" style="min-height: 90px;">
        <img src="{image}" align="left">
        {description}
    </p>  
@@ -25,8 +25,14 @@
          style="background-image: url('http://icons.iconarchive.com/icons/kyo-tux/aeon/16/Sign-Alert-icon.png');right:10px;"
          id="{id}_report" onclick="articleAction(this,2,false)"></div>
     <div class="up_down_div">
-        <span class="up_down_span" >
-            up/down
+        <span class="up_count_span" id="{id}_count_vote_up">
+            {up}
+        </span>
+        <span class="slash_count_span" id="">
+            /
+        </span>
+        <span class="down_count_span" id="{id}_count_vote_down">
+            {down}
         </span>
     </div>
 </div>

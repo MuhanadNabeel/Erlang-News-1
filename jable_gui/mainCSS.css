@@ -92,10 +92,22 @@ div.newsTemp img{
 }
 
 .up_down_div{
-    
-}
-
-.up_down_span{
+    padding-top: 4px;
     position: relative;
     left: 80px;
+}
+
+.up_count_span{
+    
+    
+    color:darkgreen;
+}
+
+.down_count_span{
+    
+    color: darkred;
+}
+
+.slash_count_span{
+   
 }
