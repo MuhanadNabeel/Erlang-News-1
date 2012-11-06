@@ -4,34 +4,35 @@
 -compile(export_all).
 
 connect() ->
-	 mysql:start(p1, "db.student.chalmers.se", 3306, "abdoli", "kgcH8v7c", "abdoli").
+    mysql:start(p1, "db.student.chalmers.se", 3306, 
+		"abdoli", "kgcH8v7c", "abdoli").
 	 
 %% News-table should also have date and default votes, rank and visits
-write(news,{URL,Description,Title,Image,Icon}) ->			
-    Query =  "INSERT INTO abdoli.ernews_news(URL, Title, Description, Image, Icon) VALUES(\""
-	++ qFix(URL) ++ "\", \"" ++ qFix(Title) ++ "\", \""  
-	++ qFix(Description) ++ "\", \"" ++ qFix(Image) ++ "\", \"" 
-	++ qFix(Icon) ++ "\")",
-    R = qFunc(write,Query),
-   case R of
-	{error,_} ->
-	     io:format("Errrrroooorrrr    ~s~n",
-		      [Query]);
-	_ ->
-	    ok
-    end;
+write(news, {Source, Url, Title, Description , Icon , Image , PubDate}) ->
+    Now = calendar:local_time(),
+    Query =  "insert into abdoli.ernews_news " ++
+	"(Source, Url, Title, Description, Icon, "++
+	"Image, PubDate, TimeStamp, LastClicked) Values('"
+	++ qFix(Source) ++ "', '" ++ qFix(Url) ++ "', '" 
+	++ qFix(Title) ++ "', '" ++ qFix(Description) ++ "', '" 
+	++ qFix(Icon) ++ "', '" ++ qFix(Image) ++ "', '"
+	++ qFix(PubDate) ++ "', '" ++ qFix(Now) ++ "', '"
+	++ qFix(Now) ++ "')", 
+    qFunc(write,Query);
 	
 %% Broken-news-table should also have default date
 write(broken,{URL, Reason, Source}) ->
     qFunc(write, 
 	  "INSERT INTO abdoli.ernews_broken(URL, Reason, Source) 
 	  VALUES('" 
-	  ++ qFix(URL) ++ "','" ++ qFix(Reason) ++ "','" ++ qFix(Source) ++ "')");
+	  ++ qFix(URL) ++ "','" ++ qFix(Reason) ++ "','" 
+	  ++ qFix(Source) ++ "')");
 	
 write(time,{Source, URL, Time_stamp}) ->
     qFunc(write, 
 	  "INSERT INTO abdoli.ernews_time(Source, URL, Time_stamp) VALUES('" 
-	  ++ qFix(Source) ++ "','" ++ qFix(URL) ++ "','" ++ qFix(Time_stamp) ++ "')").
+	  ++ qFix(Source) ++ "','" ++ qFix(URL) ++ "','" 
+	  ++ qFix(Time_stamp) ++ "')").
 				 
 %% Add new tag to Tag-table
 %%write(tag,_Tag_name) ->
@@ -41,42 +42,52 @@ write(time,{Source, URL, Time_stamp}) ->
 %%write(assign_tag,{_News_ID,_Tag_ID}) ->
 %%	ok.
 
+qFix(A) when is_atom(A) ->
+    atom_to_list(A);
+qFix({{YY,MM,DD},{HH,Mm,SS}}) ->
+    integer_to_list(YY) ++ "-" ++
+        integer_to_list(MM) ++ "-" ++
+	integer_to_list(DD) ++ " " ++
+	integer_to_list(HH) ++ ":" ++
+	integer_to_list(Mm) ++ ":" ++
+	integer_to_list(SS);
+qFix(Str) ->
+    qFix(Str, []).	
 
 qFix([], Buff) ->
-	Buff;
+    Buff;
 qFix([$'|T], Buff) ->
-	qFix(T, Buff ++ [92, 39]);
+    qFix(T, Buff ++ [92, 39]);
+qFix([$"|T], Buff) ->
+    qFix(T, Buff ++ [92, 34]);
 qFix([H|T], Buff) ->
-	qFix(T, Buff ++ [H]).
-qFix(Str) ->
-	qFix(Str, []).	
+    qFix(T, Buff ++ [H]).
 	
 qFunc(get, Q) ->
-	{_,{_,_,Result,_,_,_,_,_}} = mysql:fetch(p1, Q),
-	Result;
+    {_,{_,_,Result,_,_,_,_,_}} = mysql:fetch(p1, Q),
+    Result;
 	
 qFunc(write, Q) ->
-	try mysql:fetch(p1, Q) of 
-		Result ->
-			{R,{_,_,_,_,_,_,_,_}} = Result,
-			
-			case R of 
-				updated -> {ok, updated};
-				error -> {error, sql_syntax};
-				_ -> else
-			end
-	catch 
-		exit:Exit -> 
-			%{Res, _} = Exit,
-			{error, no_connection}
-	end;
-	
+    try mysql:fetch(p1, Q) of 
+	Result ->
+	    {R,{_,_,_,_,_,_,_,_}} = Result,
+	    
+	    case R of 
+		updated -> {ok, updated};
+		error -> {error, sql_syntax};
+		_ -> else
+	    end
+    catch 
+	exit:Exit -> 
+	    %{Res, _} = Exit,
+	    {error, no_connection}
+    end;
 	%io:format("~s~n", [Tag]);
-	
-	
+
+
 qFunc(exists, Q) ->	
     {_,{_,_,R,_,_,_,_,_}} = mysql:fetch(p1,Q),
-	R.
+    R.
 
 	
 %% Get News-link Table-ID

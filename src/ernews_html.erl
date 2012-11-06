@@ -11,7 +11,7 @@
 -behaviour(gen_fsm).
 
 %% API
--export([start_link/6]).
+-export([start_link/5]).
 
 %% gen_fsm callbacks
 -export([init/1, duplicate/2 , read_url/2, end_url/2, handle_event/3,
@@ -19,7 +19,7 @@
 
 -define(SERVER, ?MODULE).
 
--record(state, {init_url = "" ,url="", source="", ts="", 
+-record(state, {url="", source="", ts="", 
 		title="", description="", check_counter}).
 
 %%%===================================================================
@@ -27,17 +27,17 @@
 %%%===================================================================
 
 
-start_link(Url,Source,Ts, Title, Description, Counter) ->
-    gen_fsm:start(?MODULE, [Url,Source,Ts,Title,Description, Counter], []).
+start_link(Url,Source,Ts, Title, Description) ->
+    gen_fsm:start(?MODULE, [Url,Source,Ts,Title,Description], []).
 
 %%%===================================================================
 %%% gen_fsm callbacks
 %%%===================================================================
 
 
-init([Url, Source, Ts, Title, Description, Counter]) ->
-    State = #state{init_url=Url, url=Url, source=Source, 
-		   ts=Ts , check_counter= Counter},
+init([Url, Source, Ts, Title, Description]) ->
+    State = #state{url=Url, source=Source, 
+		   ts=Ts , check_counter = 0},
     gen_fsm:send_event(self(), end_url),
     {ok, end_url, State}.
 
@@ -45,19 +45,18 @@ init([Url, Source, Ts, Title, Description, Counter]) ->
 %------------------------------------------------------------------------
 
 end_url(end_url, Record=#state{}) ->
-    case NewUrl = ernews_htmlfuns:end_url(
+    case ernews_htmlfuns:end_url(
 		    Record#state.source, Record#state.url) of
 	{error, Reason} ->
-	    %gen_server:cast(ernews_linkerv,
-	%		    {error, Reason, Record#state.url, Record#state.ts}),
-	    {stop, {error, 
-		    atom_to_list(Reason), Record#state.init_url, 
-		    Record#state.source, Record#state.ts, 
-		    Record#state.check_counter} ,
-	     Record};
-       _ ->
-%	    io:format("END URL FINDING = ~p ~n", [NewUrl]), 
-	   % check_duplicate(Record#state{url = NewUrl})
+	    case Record#state.check_counter > 3 of
+		true ->
+		    {stop, {error, Reason}, Record};
+		false ->
+		    gen_fsm:send_event(self(), end_url),
+		    {next_state, end_url, 
+		     Record#state{check_counter = Record#state.check_counter+1}}
+	    end;
+       NewUrl ->
 	    gen_fsm:send_event(self(), duplicate),
 	    {next_state, duplicate, Record#state{url = NewUrl}}
     end.
@@ -70,71 +69,57 @@ end_url(end_url, Record=#state{}) ->
 duplicate(duplicate, Record=#state{}) ->
     case ernews_db:exists("news", {"URL" ,Record#state.url}) of
 	true ->
-	    {stop, {error, "already_exists", 
-		    Record#state.init_url, Record#state.source, Record#state.ts,
-		    Record#state.check_counter}, 
-	     Record};
+	    {stop, {error, already_exists}, Record};
 	false ->
 	    gen_fsm:send_event(self(), read_url),
 	    {next_state, read_url, Record}
-	%    read_url(Record)
-   end.
+    end.
 
 
 %------------------------------------------------------------------------
 read_url(read_url, Record=#state{}) ->
-    Title_Tuple = ernews_htmlfuns:get_title(Record#state.url),
-    Description_Tuple = ernews_htmlfuns:get_description(Record#state.url),
-    case {Title_Tuple, Description_Tuple} of
-	{{ok,Title}, {ok,Description}} ->
-	     
-	    {stop, {submit, Record#state.url, Description, Title, Record#state.ts,  
-			     erlang:atom_to_list(Record#state.source)},Record};
-	    
-	    %gen_fsm:send_event(self() , {write, Title, Description}),
-	    %{next_state, write_to_db, Record};
-	{{error,Reason_Title} , {error, Reason_Desc}} ->
-	    {stop, {error,
-		    "Title" ++ atom_to_list(Reason_Title) 
-		    ++ " -- Description" ++ atom_to_list(Reason_Desc), 
-		    Record#state.init_url,Record#state.source, Record#state.ts,
-		    Record#state.check_counter} , 
-	     Record};
-	{{error,Reason} , _} ->
-	    {stop, {error,
-		    "Title" ++ atom_to_list(Reason), Record#state.init_url,
-		    Record#state.source, Record#state.ts , 
-		    Record#state.check_counter},
-	     Record};
-	{_ , {error,Reason}} ->
-	    {stop, {error,
-		    "Description" ++ atom_to_list(Reason), Record#state.init_url,
-		    Record#state.source, Record#state.ts,
-		    Record#state.check_counter},
-	     Record}
+    Title = ernews_htmlfuns:get_title(Record#state.url),
+    Description = ernews_htmlfuns:get_description(Record#state.url),
+    case check_all([Title, Description]) of
+	ok ->
+	    {stop, submit , 
+	     Record#state{title = element(2, Title) ,
+			  description = element(2, Description)}};
+	{error, Reason} ->
+	    case Record#state.check_counter > 3 of
+		true ->
+		    {stop, {error, Reason}, Record};
+		false ->
+		    gen_fsm:send_event(self(), read_url),
+		    {next_state, read_url, 
+		     Record#state{check_counter = Record#state.check_counter+1}}
+	    end
     end.
 
-%------------------------------------------------------------------------
-%write_to_db({write, Title, Description} , Record= #state{}) ->
-   
- %   case ernews_db:write(news,{Record#state.url, 
-%				     Description, Title , 
-%				     erlang:atom_to_list(Record#state.source),
-%				     " "}) of
-%	{error, _} ->
-%	    io:format("-----------------------~s~n", [Title]),
-%	    {stop, {error,{error, bad_db}} , Record};
-%	_ ->
-%	    io:format("+++++++++++++++++++++++~s~n", [Title]),
-%	    {stop, {submit, {Record#state.source, Record#state.ts}}, 
+%    case {Title_Tuple, Description_Tuple} of
+%	{{ok,Title}, {ok,Description}} ->
+%	    	    
+%
+%	{{error,Reason_Title} , {error, Reason_Desc}} ->
+%	    {stop, {error,
+%		    "Title" ++ atom_to_list(Reason_Title) 
+%		    ++ " -- Description" ++ atom_to_list(Reason_Desc), 
+%		    Record#state.init_url,Record#state.source, Record#state.ts,
+%		    Record#state.check_counter} , 
+%	     Record};
+%	{{error,Reason} , _} ->
+%	    {stop, {error,
+%		    "Title" ++ atom_to_list(Reason), Record#state.init_url,
+%		    Record#state.source, Record#state.ts , 
+%		    Record#state.check_counter},
+%	     Record};
+%	{_ , {error,Reason}} ->
+%	    {stop, {error,
+%		    "Description" ++ atom_to_list(Reason), Record#state.init_url,
+%		    Record#state.source, Record#state.ts,
+%		    Record#state.check_counter},
 %	     Record}
- %   end.
- 
-%------------------------------------------------------------------------
-
-state_name(_Event, _From, State) ->
-    Reply = ok,
-    {reply, Reply, state_name, State}.
+%   end.
 
 %------------------------------------------------------------------------
 
@@ -154,17 +139,20 @@ handle_info(_Info, StateName, State) ->
 
 %------------------------------------------------------------------------
 
-terminate({error,Reason ,URL, Source, Ts , Counter}, _StateName , _State) ->
+terminate({error, already_exists} , _StateName, _State) ->
+    ok;
+terminate({error, Reason} , _StateName, Record = #state{}) ->
+    gen_server:cast(ernews_linkserv, 
+		    {error, Reason, Record#state.url, Record#state.source});
+terminate(submit, _StateName, Record = #state{}) ->
     gen_server:cast(ernews_linkserv,
-		    {error, Reason, URL, Source, Ts , Counter});
-    
-terminate({submit, URL, Description, Title, Ts, Source}, _StateName, _State) ->
-    gen_server:cast(ernews_linkserv,
-		    {submit, Source , URL, Title, Description, Ts});
+		    {submit, Record#state.source , Record#state.url,
+		     Record#state.title, Record#state.description, 
+		     Record#state.ts});
 terminate(Reason , _ , _ ) ->
- %   io:format("========================================================~n", []),
- %   io:format("UNKNOWN --  ~p~n", [Reason]),
- %   io:format("========================================================~n", []), 
+    io:format("========================================================~n", []),
+    io:format("UNKNOWN --  ~p~n", [Reason]),
+    io:format("========================================================~n", []), 
     ok.
 
 %------------------------------------------------------------------------
@@ -175,3 +163,17 @@ code_change(_OldVsn, StateName, State, _Extra) ->
 
 
     
+%%%===================================================================
+%%% Internal functions
+%%%===================================================================
+
+check_all(List) ->
+    check_all(List,"").
+check_all([],[]) ->
+    ok;
+check_all([], Reason) ->
+    {error, Reason};
+check_all([{error,Reason}|T] , Buff) ->
+    check_all(T, Buff ++ "-" ++ atom_to_list(Reason));
+check_all([_H|T], Buff) ->
+    check_all(T, Buff).

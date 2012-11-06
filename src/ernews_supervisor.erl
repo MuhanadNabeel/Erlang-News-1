@@ -64,8 +64,14 @@ init([]) ->
 	       Restart , Shutdown , worker, [ernew_rssagent]},
     Link_Serv = {ernews_linkserv , {ernews_linkserv , start_link , []},
 		 Restart , Shutdown , worker , [ernew_linkserv]},
-    
-    {ok, {SupFlags, [Link_Serv, Rss_Agent]}}.
+    My_Sql = {mysql , {mysql , 
+			      start_link , 
+			      [p1, "db.student.chalmers.se", 
+			       3306,"abdoli", "kgcH8v7c", "abdoli"
+			      ]
+			     },
+	       Restart , Shutdown , worker, [mysql]},
+    {ok, {SupFlags, [Link_Serv, Rss_Agent, My_Sql]}}.
 
 %%%===================================================================
 %%% Internal functions
