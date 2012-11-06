@@ -9,13 +9,27 @@ $(document).ready(function() {
     });
 });
 
-function articleAction(id,action) {
-    
+function articleAction(item,action,undo) {
+    var id = $(item).attr('id').substring(0,$(item).attr('id').indexOf('_'));
+    $.get('_article_action.php',{id:id,action:action,undo:undo},function(tmp) {
+        if( ( action == 0 || action == 1 ) && undo == false ) {
+            $('#' + id + '_vote_down').hide();
+            $('#' + id + '_vote_up').hide();
+            $('#' + id + '_vote_undo').show();
+        }
+        else if( action == 0 || action == 1 ) {
+            $('#' + id + '_vote_down').show();
+            $('#' + id + '_vote_up').show();
+            $('#' + id + '_vote_undo').hide();
+        }
+        alert(tmp);
+    });
 }
 
 function getNewsJSON() {
     $.get('_get_news.php',function(outcome) {
-        var json = jQuery.parseJSON(outcome);
+        var parse = jQuery.parseJSON(outcome);
+        var json = parse.news;
         for( var i = 0 ; i < json.length ; i++ ) {
             // URL, image, description, title, PubDate
             if( i < 10 && i % 2 == 0 )
@@ -26,18 +40,27 @@ function getNewsJSON() {
                 $('#archive').append( addNewsLink(json[i]) );
         }
         $('#joe').append('</tr><table>');
+        setUserVoted(parse.cookies.Up_Vote);
+        setUserVoted(parse.cookies.Down_Vote);
     });
 }
 
+function setUserVoted(json) {
+    for( var i = 0 ; i < json.length ; i++ ) {
+        if( json[i] != '' ) {
+            $('#' + json[i] + '_vote_down').hide();
+            $('#' + json[i] + '_vote_up').hide();
+            $('#' + json[i] + '_vote_undo').show();
+        }
+    }
+}
+
 function getNewsArticle(json) {
-    var image = json.Image;
-    if( image.length < 10 )
-        image = 'http://www.erlang-services.com/images/erlang_studiok.bmp';
     return newsTemplate.replace('{title}',json.Title)
                         .replace('{description}',json.Description)
-                        .replace('{image}',image)
+                        .replace('{image}',json.Image)
                         .replace('{URL}',json.URL)
-                        .replace('{id}',json.newsID);
+                        .replace(/{id}/g,json.newsID);
 }
 
 function addNewsLink(json) {
@@ -49,6 +72,6 @@ function addNewsLink(json) {
 
     return newsRightTemplate.replace('{title}',title)
                             .replace('{URL}',json.URL)
-                            .replace('{id}',json.newsID);
+                            .replace(/{id}/g,json.newsID);
 }
 
