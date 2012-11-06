@@ -14,7 +14,7 @@ write(news, {Source, Url, Title, Description , Icon , Image , PubDate}) ->
 	"(Source, Url, Title, Description, Icon, "++
 	"Image, PubDate, TimeStamp, LastClicked) Values('"
 	++ qFix(Source) ++ "', '" ++ qFix(Url) ++ "', '" 
-	++ qFix(Title) ++ "', '" ++ qFix(Description) ++ "', '" 
+	++ qFix(Title) ++ "', '" ++  qFix(Description) ++ "', '" 
 	++ qFix(Icon) ++ "', '" ++ qFix(Image) ++ "', '"
 	++ qFix(PubDate) ++ "', '" ++ qFix(Now) ++ "', '"
 	++ qFix(Now) ++ "')", 
@@ -43,7 +43,7 @@ write(time,{Source, URL, Time_stamp}) ->
 %%	ok.
 
 qFix(A) when is_atom(A) ->
-    atom_to_list(A);
+    qFix(atom_to_list(A),[]);
 qFix({{YY,MM,DD},{HH,Mm,SS}}) ->
     integer_to_list(YY) ++ "-" ++
         integer_to_list(MM) ++ "-" ++
@@ -56,10 +56,14 @@ qFix(Str) ->
 
 qFix([], Buff) ->
     Buff;
-qFix([$'|T], Buff) ->
+qFix([39|T], Buff) ->
     qFix(T, Buff ++ [92, 39]);
-qFix([$"|T], Buff) ->
+qFix([38,35,51,57,59|T], Buff) ->
+    qFix(T, Buff ++ [92, 39]);
+qFix([34|T], Buff) ->
     qFix(T, Buff ++ [92, 34]);
+qFix([H|T], Buff) when is_list(H)->
+    qFix(T, Buff ++ qFix(H,[]));
 qFix([H|T], Buff) ->
     qFix(T, Buff ++ [H]).
 	
@@ -71,11 +75,14 @@ qFunc(write, Q) ->
     try mysql:fetch(p1, Q) of 
 	Result ->
 	    {R,{_,_,_,_,_,_,_,_}} = Result,
-	    
 	    case R of 
-		updated -> {ok, updated};
-		error -> {error, sql_syntax};
-		_ -> else
+		updated -> 
+		    {ok, updated};
+		error -> 
+		    io:format("SQL SYNTAX ERROR :~n~s~n-----------~n",[Q]),
+		    {error, sql_syntax};
+		_ -> 
+		    else
 	    end
     catch 
 	exit:Exit -> 
@@ -130,8 +137,8 @@ get(broken_single,_Broken_id) ->
 	
 %% Does URL exist in news table
 exists(Table,{Column, Keyword}) ->
-    Query = "SELECT * FROM abdoli.ernews_" ++ Table 
-	++ " WHERE " ++ Column ++ "='" ++ Keyword ++ "'",
+    Query = "SELECT * FROM abdoli.ernews_" ++ qFix(Table) 
+	++ " WHERE " ++ qFix(Column) ++ "='" ++ qFix(Keyword) ++ "'",
     L=length(qFunc(exists, Query)),
     L>0;
 	

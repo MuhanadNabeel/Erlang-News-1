@@ -85,16 +85,15 @@ handle_cast({parse, Source, Url, Ts, Title, Description}, State) ->
     ernews_html:start_link(Url, Source, Ts, Title, Description),
     {noreply, State};
 handle_cast({submit, Source, Url, Title, Description, PubDate}, State) ->
-    ernews_db:write(news, {Source, Url, Title, Description, " ", " " ,PubDate}),
+    Result = ernews_db:write(news, 
+		    {Source, Url, Title, Description, " ", " " ,PubDate}),
+    io:format("Submitted With~p~n",[Result]),
     {noreply, State};
 handle_cast({error, Reason, Url, Source}, State) ->
+    io:format("ERRORRR HERE :  ~p~n",[Reason]),
     ernews_db:write(broken, {Url, Reason, Source}),
     {noreply, State};
-handle_cast({error, _Reason, Url, Source, Ts, Counter}, State) ->
-    ernews_html:start_link(Url,Source,Ts, undef, undef , Counter+1),
-    {noreply, State};
 handle_cast(_ ,State) ->
-    
     {noreply, State}.
 
 
