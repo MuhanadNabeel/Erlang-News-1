@@ -81,7 +81,10 @@ class User {
         return -1;
     }
     
-    public static function undoActionArticle($id,$field_index) {    
+    public static function undoActionArticle($id,$field_index) {   
+        // Because user can vote either up or down, not both.
+        // This may be removed with current implementation, 
+        // lets see if it will be in the final impl.
         if( $field_index < 2 )
             $field_index = User::isUpOrDownVote ($id);        
         if( $field_index == -1 )
@@ -117,7 +120,8 @@ class User {
                 . " WHERE newsID = " . $id ); 
         
         if( $field_index == 3 )
-            actionArticleTable($id,User::$db_fields[4],1);
+            $sql->sqlQuery("UPDATE ernews_news SET "  . User::$db_fields[4] 
+                    . " = '" . date('Y-m-d H:i:s') . "' WHERE newsID = " . $id);
     }
     
 }
