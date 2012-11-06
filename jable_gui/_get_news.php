@@ -7,5 +7,11 @@ $outcome = Array();
 while( ($row = mysql_fetch_array($result)) !== FALSE ) {
     $outcome[] = $row;
 }
-echo json_encode ( $outcome );
+
+if( class_exists('User') === FALSE )
+    include 'User.php';
+
+echo json_encode(Array('cookies'=>User::getUserClickList(),'news'=>$outcome));
+
+//echo json_encode ( $outcome );
 ?>
