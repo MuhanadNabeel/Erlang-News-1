@@ -81,7 +81,7 @@ iterate(reddit,[H|T],List) ->
 				   title=proplists:get_value("title",H)
 			  }
 		 |List])
-	 end.
+	 end;
 		 
 %% Iterating through parsed RSS doc
 %% For default Atoms
