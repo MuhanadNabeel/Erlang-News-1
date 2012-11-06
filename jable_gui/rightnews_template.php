@@ -1,5 +1,5 @@
 <div class="right_recent">
-    <a href="">{title}</a>
+    <a href="redirect.php?id={id}&url={URL}" onmouseover="JavaScript:windows.status='this link blaber';return true;" onmouseout="window.status=''";>{title}</a>
     <div style="position: relative; height: 30px;">
     <div class="absolute_16x16_centerback" 
          style="background-image: url('http://icons.iconarchive.com/icons/fatcow/farm-fresh/16/thumb-up-icon.png');left:10px;"
