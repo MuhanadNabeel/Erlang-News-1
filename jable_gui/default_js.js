@@ -8,6 +8,11 @@ $(document).ready(function() {
         getNewsJSON();
     });
 });
+
+function articleAction(id,action) {
+    
+}
+
 function getNewsJSON() {
     $.get('_get_news.php',function(outcome) {
         var json = jQuery.parseJSON(outcome);
@@ -28,10 +33,11 @@ function getNewsArticle(json) {
     var image = json.Image;
     if( image.length < 10 )
         image = 'http://www.erlang-services.com/images/erlang_studiok.bmp';
-    return newsTemplate.replace('$title',json.Title)
-                        .replace('$description',json.Description)
-                        .replace('$image',image)
-                        .replace('$URL',json.URL);
+    return newsTemplate.replace('{title}',json.Title)
+                        .replace('{description}',json.Description)
+                        .replace('{image}',image)
+                        .replace('{URL}',json.URL)
+                        .replace('{id}',json.newsID);
 }
 
 function addNewsLink(json) {
@@ -41,7 +47,8 @@ function addNewsLink(json) {
     else
         title = json.Title.substring(0,55) + ' ...';
 
-    return newsRightTemplate.replace('$title',title)
-                            .replace('$URL',json.URL);
+    return newsRightTemplate.replace('{title}',title)
+                            .replace('{URL}',json.URL)
+                            .replace('{id}',json.newsID);
 }
 
