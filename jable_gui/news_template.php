@@ -9,7 +9,7 @@
        $description
    </p>  
 </div>
-<div style="position: relative;">
+<div style="position: relative; height: 30px; padding-bottom: 30px;">
     <div class="absolute_24x24_centerback" 
          style="background-image: url('http://cdn3.iconfinder.com/data/icons/freeapplication/png/24x24/Thumbs%20up.png');left:10px; "></div>
     <div class="absolute_24x24_centerback" 
