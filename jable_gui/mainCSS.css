@@ -18,7 +18,7 @@ h1{
     font: bold italic 1.5em/1em "Times New Roman", "MS Serif", "New York", serif;
     padding-left: 10px;
     border-top: solid medium;
-    border-bottom: dotted thin;
+    border-bottom: solid thin;
 }
 
 div.newsTemp p.main{
@@ -45,8 +45,29 @@ div.newsTemp img{
     background-position: center;
     background-repeat: no-repeat;
     padding-bottom: 10px; 
+    
 }
 
-.recent{
-    background-color: black;
+.absolute_16x16_centerback {
+    position: absolute;
+    top:0px;
+    width: 14px;
+    height: 7px;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding-bottom: 10px; 
+}
+
+.right_recent{
+    padding-top: 5px;
+}
+
+.right_recent a:link{
+    text-decoration: none;
+    color:black;
+    font-family: sans-serif, serif;
+}
+
+.right_recent a:visited{
+    color:black;
 }
