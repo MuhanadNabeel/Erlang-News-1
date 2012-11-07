@@ -251,5 +251,10 @@ split_text([X | Str], Word, Words) ->
 	split_text(Str, [X | Word], Words).
 
 	
+read_words() ->
+	{readlines("include/words_good.txt"),
+		readlines("include/words_bad.txt"),
+		readlines("include/words_tags.txt")}
+	
 %% </function>
 	
