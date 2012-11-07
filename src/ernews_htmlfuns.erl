@@ -214,7 +214,7 @@ get_icon(Html)->
     end.
 
     
-relevancy_check(Url)->
+relevancy_check(Url,Good,Bad,Tags)->
     Result = ernews_defuns:read_web(default,Url),
     case Result of
 	{success, {_, Body}}->
@@ -222,7 +222,7 @@ relevancy_check(Url)->
 	    PTags= get_value([Html],"p" ,[]),
 	    ParsedToHtml = mochiweb_html:to_html({"html",[],PTags}),
 	   % io:format("~p~s",[bitstring_to_list(iolist_to_binary(ParsedToHtml))]);
-	    ernews_defuns:is_relevant(bitstring_to_list(iolist_to_binary(ParsedToHtml)));
+	    ernews_defuns:is_relevant(bitstring_to_list(iolist_to_binary(ParsedToHtml)),Good,Bad,Tags);
 	{error, Reason} -> {error, Reason}
     end.
 
