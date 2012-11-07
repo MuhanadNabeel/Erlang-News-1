@@ -22,7 +22,7 @@ end_url(iocoder,Url)->
 	    End_Url =proplists:get_value("location", Header),
 	    case End_Url of
 		[] ->
-		    {error, not_found};
+		    {error, end_url_not_found};
 		_ ->
 		    End_Url
 	    end;
@@ -85,6 +85,9 @@ end_url(_,_) ->
 break_list([])->
     [];
 break_list([{_,_,V}|T])->
+    %% Check if the size of the article is bigger than 120 characters
+    %% As implemented in the posting of links on Facebook
+
     case counter(V , 0 ) > 120  of
 	true ->
 	    V;
@@ -116,7 +119,7 @@ get_description(Url)->
 			    
 			    case PTagArticle of
 				[] ->
-				    {error, not_found};
+				    {error, description_not_found};
 				_ ->
 				    
 		        	ParsedToHtml = mochiweb_html:to_html({"html",[],PTagArticle}),
@@ -146,14 +149,77 @@ get_title(Url)->
 	    
 	    case get_value([Html],"title" ,[]) of
 		[{_,_,[Val|_]}] ->
-		    {ok,bitstring_to_list(Val)};
+		    {ok,[bitstring_to_list(Val)]};
 		_ ->
-		    {error, not_found}
+		    case get_value([Html],"TITLE" ,[]) of
+			[{_,_,[Val|_]}] ->
+			    {ok,bitstring_to_list(Val)};
+			_->
+		    
+			    {error, title_not_found}
+		    end
+		
 	    end;
 
 	{error,Reason}->
 	    {error,Reason}
     end.
+
+
+
+get_image(Url)->
+    Result = ernews_defuns:read_web(default,Url),
+    case Result of
+
+	{success, {_, Body}}->
+	    Html = mochiweb_html:parse(Body),
+	    List = get_value([Html],"meta" ,[]),
+	    Image = 
+		get_content_from_list(List , 
+				      {"property" ,"og:image"} , "content"),
+	    case Image of
+		[] ->
+		    List2 = get_value([Html],"img" ,[]),
+		    case find_image(List2,[]) of
+			[] ->
+			    {error, image_not_found};
+			Images ->
+			    lists:max(Images)
+		    end;
+		_ ->
+		    {ok, Image}
+	    end;
+	{error, Reason} -> {error, Reason}
+   end.
+		
+
+get_icon(Url)->	
+    Result = ernews_defuns:read_web(default,Url),
+    case Result of
+
+	{success, {_, Body}}->
+	    Html = mochiweb_html:parse(Body),
+	    List = get_value([Html],"link" ,[]),
+	    Icon = 
+		get_content_from_list(List , 
+				      {"rel" ,"shortcut icon"} , "href"),
+	    case Icon of
+		[] ->
+		    Icon2 = get_content_from_list(List, {"rel","icon"},"href"),
+		    
+		    case Icon2 of
+			[]->
+			    {error, icon_not_found};
+			_ ->
+			    {ok, Icon}
+		    end;
+		    
+		_ ->
+		    {ok, Icon}
+	    end;
+	{error, Reason} -> {error, Reason}
+    end.
+    
 
 %----------------------------HTML LIST BREAKDOWN----------------------------------------%
 %% @author Khashayar Abdoli 
@@ -234,18 +300,88 @@ counter([] , Acc) ->
 
 %%-------------------------------------------------------------%%
 
+compile(Url)->
+    Result = ernews_defuns:read_web(default,Url),
+    case Result of
+	{success, {_, Body}}->
+	    Html = mochiweb_html:parse(Body),
+	    PTags= get_value([Html],"p" ,[]);
+	{error, Reason} -> {error, Reason}
+	end.
+
+
+
+
+
+
+find_image([],Buffer)->
+    % Filters the list to only allow images with the size of 45x45
+    lists:filter(fun({Size,_}) -> Size > 1600 end, Buffer);
+find_image([{Key,List,_}|T], Buffer)  ->
+    case Key == list_to_bitstring("img") of
+	true ->
+	    % Size default set to 1 
+	    find_image(T,[get_image_property(List,{1,""})|Buffer]);
+	false ->
+	    find_image(T,Buffer)
+    end.
+
+get_image_property([],{Size,Source})->
+    {Size,Source};
+%The bitlist from mochiweb contains Key,Value structure of the images tag
+get_image_property([{Key, Value}|T],{Size,Source}) ->
+    case bitstring_to_list(Key) of
+	"width" ->
+	    % Width is found. Times the width by the size. 
+	    get_image_property(T,{Size*list_to_integer(bitstring_to_list(Value)),Source});
+	"height" ->
+	    % Height if found. Time the height by the size.
+	    get_image_property(T,{Size*list_to_integer(bitstring_to_list(Value)),Source});
+	"src" ->
+	    % Source URL found, add it to the buffer
+	    get_image_property(T,{Size,bitstring_to_list(Value)});
+	"class" ->
+	    % Ingnore all images that are avatars (Mainly from blogs)
+	    case bitstring_to_list(Value) of
+		[$a,$v,$a,$t,$a,$r|_] ->
+		    % If an avatar is found, set the size to 0 so it is ignored
+		    get_image_property(T,{0,Source});
+		_ ->
+		    get_image_property(T,{Size,Source})
+	    end;
+	_ ->		
+	    get_image_property(T,{Size,Source})
+    end.
+
+%%-------------------------------------------------------------------%%
+
+
+
+
+
+
+
 test()->
     
+    	{success, {H, Body}} = ernews_defuns:read_web(default,"http://basho.com/images/raspi-boot.jpg"),
+    
+    %Html = mochiweb_html:parse(H).
+    file:write_file("/Users/magnus/Desktop/image.txt", io_lib:fwrite("~s", [Body])).
+
+    
+    %PTags= get_value([Html],"image" ,[]).
+
    % {success, {_, Body}} = ernews_defuns:read_web(default,Url),
    % get_description(readlines("/Users/magnus/Desktop/html.txt")).
-   Html = mochiweb_html:parse(readlines("/Users/magnus/Desktop/html.txt")),
-    PTags= get_value([Html],"p" ,[]),
-    PTagArticle = break_list(lists:reverse(PTags)),
+
+%  Html = mochiweb_html:parse(readlines("/Users/magnus/Desktop/html.txt")),
+  %  PTags= get_value([Html],"p" ,[]),
+ %  % PTagArticle = break_list(lists:reverse(PTags)),
     
     
-    T = mochiweb_html:to_html({"html",[],PTagArticle}),
+   % T = mochiweb_html:to_html({"html",[],PTagArticle}),
     
-    {ok, bitstring_to_list(iolist_to_binary(T))}.
+   % {ok, bitstring_to_list(iolist_to_binary(T))}.
 		        
     % io:format("~p~n",[Html]),
 %    [{_,_,[Val|_]}] =  get_value([Html],"title" ,[]),
@@ -283,14 +419,15 @@ get_all_lines(Device) ->
 
 
 test2()->
-    Test = {<<"html">>,[],[{pi, <<"xml:namespace">>,[{<<"prefix">>,<<"o">>},
-{<<"ns">>,<<"urn:schemas-microsoft-com:office:office">>}]}]},
+hello.
+   % Test = {<<"html">>,[],[{pi, <<"xml:namespace">>,[{<<"prefix">>,<<"o">>},
+%{<<"ns">>,<<"urn:schemas-microsoft-com:office:office">>}]}]},
 
-    T2 = {"",[],[<<"We have finally released ">>,{<<"a">>,[{<<"href">>,
-<<"http://elixir-lang.org/">>}],[<<"Elixir">>]},<<" v0.5.0! This marks 
-the first release since the language was rewritten. In this blog post, we will discu">>]},
+ %   T2 = {"",[],[<<"We have finally released ">>,{<<"a">>,[{<<"href">>,
+%<<"http://elixir-lang.org/">>}],[<<"Elixir">>]},<<" v0.5.0! This marks %
+%the first release since the language was rewritten. In this blog post, we will discu">>]},
 
-bitstring_to_list(iolist_to_binary(mochiweb_html:to_html(T2))).
+%bitstring_to_list(iolist_to_binary(mochiweb_html:to_html(T2))).
 
 %%-------------------------------------------------------------%%
 
