@@ -228,6 +228,7 @@ compile(Url)->
 	    Html = mochiweb_html:parse(Body),
 	    PTags= get_value([Html],"p" ,[]),
 	    ParsedToHtml = mochiweb_html:to_html({"html",[],PTags}),
+	   % io:format("~p~s",[bitstring_to_list(iolist_to_binary(ParsedToHtml))]);
 	    ernews_defuns:is_relevant(bitstring_to_list(iolist_to_binary(ParsedToHtml)));
 	{error, Reason} -> {error, Reason}
     end.
@@ -309,7 +310,7 @@ counter([] , Acc) ->
 
 %--------------------------------IMG Inner Functions------------------------------------%
 
-seperate([$||T],[])->
+seperate([$||_],[])->
     {0,0};
 seperate([$||T],Buff)->
     {list_to_integer(Buff),list_to_integer(T)};
@@ -318,14 +319,14 @@ seperate([H|T],Buff) ->
 
 get_main_url(Url) ->		
     get_main_url(Url,0,"").
-get_main_url([$/|T],2,Buff) ->	
+get_main_url([$/|_],2,Buff) ->	
     Buff;
 get_main_url([$/|T],C,Buff) ->	
     get_main_url(T,C+1,Buff++[$/]);
 get_main_url([H|T],C,Buff) ->	
     get_main_url(T,C,Buff ++ [H]).
 
-find_image([],Buffer,Url)->
+find_image([],Buffer,_)->
     % Filters the list to only allow images with the size of 45x45
     lists:filter(fun({Size,_}) -> Size > 1600 end, Buffer);
 find_image([{Key,List,_}|T], Buffer,Url)  ->
@@ -337,7 +338,7 @@ find_image([{Key,List,_}|T], Buffer,Url)  ->
 	    find_image(T,Buffer,Url)
     end.
 
-get_image_property([],{Size,Source},Url)->
+get_image_property([],{Size,Source},_)->
     {Size,Source};
 %The bitlist from mochiweb contains Key,Value structure of the images tag
 get_image_property([{Key, Value}|T],{Size,Source},Url) ->
@@ -391,7 +392,7 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 
 test()->
     
-    	{success, {H, Body}} = ernews_defuns:read_web(default,"http://localhost:8888/_img_size.php?url=http://basho.com/images/raspi-boot.jpg"),
+    	{success, {_, Body}} = ernews_defuns:read_web(default,"http://localhost:8888/_img_size.php?url=http://basho.com/images/raspi-boot.jpg"),
     Body.
     %Html = mochiweb_html:parse(H).
 %    file:write_file("/Users/magnus/Desktop/image.txt", io_lib:fwrite("~s", [Body])).
