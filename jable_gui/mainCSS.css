@@ -98,13 +98,12 @@ div.newsTemp img{
 }
 
 .up_count_span{
-    
-    
+    font-weight: 700;
     color:darkgreen;
 }
 
 .down_count_span{
-    
+    font-weight: 700;
     color: darkred;
 }
 
