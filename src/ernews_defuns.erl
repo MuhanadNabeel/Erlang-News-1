@@ -170,20 +170,20 @@ get_tags([H|T],List) ->
 get_tags([],_List) ->
 	[].
 	
-is_relavent(List) ->
-	is_relavent(
+is_relevent(List) ->
+	is_relevent(
 		list_word_occur(List,readlines("include/words_good.txt")),
 		list_word_occur(List,readlines("include/words_bad.txt"))
 		).
 	
-is_relavent(0,_B) ->
-	{error,not_relavent};
-is_relavent(G,0) when G > 1 ->
-	{ok,relavent};
-is_relavent(G,B) when G / B < 1.5 ->
+is_relevent(0,_B) ->
+	{error,not_relevent};
+is_relevent(G,0) when G > 1 ->
+	{ok,relevent};
+is_relevent(G,B) when G / B < 1.5 ->
 	{error,bad_words};
-is_relavent(_,_) ->
-	{ok,relavent}.
+is_relevent(_,_) ->
+	{ok,relevent}.
 	
 	
 word_counter(W,[H|T],Counter) ->
