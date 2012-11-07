@@ -170,24 +170,28 @@ get_tags([H|T],List) ->
 get_tags([],_List) ->
 	[].
 	
-test_tel() ->
-	Html = [],
-	is_relevant(Html,readlines("include/words_bad.txt"),readlines("include/words_good.txt"),readlines("include/words_tags.txt"))
 	
-is_relevant(Html,Bad,Good,Tags) ->
-	ok.
+test_rel() ->
+	Html = "erlang job available",
+	is_relevant(Html,
+			readlines("include/words_bad.txt"),
+			readlines("include/words_good.txt"),
+			readlines("include/words_tags.txt")).
 	
-is_relevant(List) ->
+	
+is_relevant(List,Bad,Good,Tags) ->
+	Html = split_text(List),
 	is_relevant(
-		list_word_occur(words(List),readlines("include/words_good.txt")),
-		list_word_occur(words(List),readlines("include/words_bad.txt"))
+		list_word_occur(Html,Good),
+		list_word_occur(Html,Bad),
+		{Html,Tags}
 		).
 	
-is_relevant(0,_B) ->
+is_relevant(0,_,_) ->
 	{error,not_relevant};
-is_relevant(_,0) ->
-	{ok,relevant};
-is_relevant(_,_) ->
+is_relevant(_,0,{Html,Tags}) ->
+	{ok,get_tags(Tags,Html)};
+is_relevant(_,_,_) ->
 	{error,bad_language}.
 	
 	
