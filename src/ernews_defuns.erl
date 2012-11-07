@@ -170,20 +170,25 @@ get_tags([H|T],List) ->
 get_tags([],_List) ->
 	[].
 	
+test_tel() ->
+	Html = [],
+	is_relevant(Html,readlines("include/words_bad.txt"),readlines("include/words_good.txt"),readlines("include/words_tags.txt"))
+	
+is_relevant(Html,Bad,Good,Tags) ->
+	ok.
+	
 is_relevant(List) ->
 	is_relevant(
-		list_word_occur(List,readlines("include/words_good.txt")),
-		list_word_occur(List,readlines("include/words_bad.txt"))
+		list_word_occur(words(List),readlines("include/words_good.txt")),
+		list_word_occur(words(List),readlines("include/words_bad.txt"))
 		).
 	
 is_relevant(0,_B) ->
 	{error,not_relevant};
-is_relevant(G,0) when G > 1 ->
-	{ok,relevent};
-is_relevant(G,B) when G / B < 1.5 ->
-	{error,bad_words};
+is_relevant(_,0) ->
+	{ok,relevant};
 is_relevant(_,_) ->
-	{ok,relevant}.
+	{error,bad_language}.
 	
 	
 word_counter(W,[H|T],Counter) ->
@@ -228,18 +233,18 @@ get_all_lines(Device) ->
 	end.
 	
 	
-words(Str) ->
-	words(Str, [], []).
-words([], [], Words) ->
+split_text(Str) ->
+	split_text(Str, [], []).
+split_text([], [], Words) ->
 	lists:reverse(Words);
-words([], Word, Words) ->
+split_text([], Word, Words) ->
 	lists:reverse([lists:reverse(Word) | Words]);
-words([$ | Str], [], Words) ->
-	words(Str, [], Words);
-words([$ | Str], Word, Words) ->
-	words(Str, [], [lists:reverse(Word) | Words]);
-words([X | Str], Word, Words) ->
-	words(Str, [X | Word], Words).
+split_text([$ | Str], [], Words) ->
+	split_text(Str, [], Words);
+split_text([$ | Str], Word, Words) ->
+	split_text(Str, [], [lists:reverse(Word) | Words]);
+split_text([X | Str], Word, Words) ->
+	split_text(Str, [X | Word], Words).
 
 	
 %% </function>
