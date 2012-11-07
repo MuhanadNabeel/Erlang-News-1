@@ -97,8 +97,7 @@ function getNewsJSON() {
         }
     }
     function getNewsArticle(json) {
-        var up = parseInt(json.UpVote,10);
-        var down = parseInt(json.DownVote,10);
+        var precent = calcPrecent(parseInt(json.Up_Vote,10),parseInt(json.Down_Vote,10));
         return newsTemplate.replace('{title}',json.Title)
                             .replace('{down}',json.Down_Vote)
                             .replace('{up}',json.Up_Vote)
@@ -106,8 +105,15 @@ function getNewsJSON() {
                             .replace('{description}',json.Description)
                             .replace('{image}',json.Image)
                             .replace(/{URL}/g,json.URL)
-                            .replace('{vote_bar}',(up/(up+down)*100))
+                            .replace('{vote_bar}',precent)
                             .replace(/{id}/g,json.newsID);
+    }
+    
+    function calcPrecent(up,down) {
+        if( up == 0 && down == 0 )
+            return 50;
+        var total = up + down;
+        return parseInt( (up/total)*100 ,10);
     }
 
     function addNewsLink(json) {
@@ -117,12 +123,13 @@ function getNewsJSON() {
         else
             title = json.Title.substring(0,55) + ' ...';
 
+        var precent = calcPrecent(parseInt(json.Up_Vote,10),parseInt(json.Down_Vote,10));
         return newsRightTemplate.replace('{title}',title)
                                 .replace('{down}',json.Down_Vote)
                                 .replace('{up}',json.Up_Vote)
                                 .replace('{clicks}',json.Clicks)
                                 .replace(/{URL}/g,json.URL)
-                                .replace('{vote_bar}',(up/(up+down)*100))
+                                .replace('{vote_bar}',precent)
                                 .replace(/{id}/g,json.newsID);
     }
 }
