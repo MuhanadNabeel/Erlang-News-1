@@ -16,5 +16,6 @@
     <div class="absolute_16x16_centerback" 
          style="background-image: url('http://icons.iconarchive.com/icons/kyo-tux/aeon/16/Sign-Alert-icon.png');left:90px;"
          id="{id}_report" onclick="articleAction(this,2,false)"></div>
-    </div> 
+    </div>
+    <div style="height:1px; width: 75%;background-color: black;"></div>
 </div>
