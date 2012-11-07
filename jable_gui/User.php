@@ -56,42 +56,15 @@ class User {
         return TRUE;
     }
     
-    private static function hasUserClickedBefore($field_index,$id) {
-        if( $field_index < 2
-                && (User::isCookie('er1new5->' . User::$db_fields[0],$id) === TRUE 
-                    || User::isCookie('er1new5->' . User::$db_fields[1],$id) === TRUE) )
-            return TRUE;
-        else if( $field_index > 1 && User::isCookie('er1new5->' . User::$db_fields[$field_index],$id) === TRUE )
-            return TRUE; 
-        return FALSE;
-    }
-    
     private static function getUsersCookie($field_index) {
         if( is_null(@$_COOKIE['er1new5->' . User::$db_fields[$field_index]]) )
             return '';
         return @$_COOKIE['er1new5->' . User::$db_fields[$field_index]];
     }
     
-    private static function isUpOrDownVote($id) {
-        echo $id;
-        if( User::isCookie('er1new5->' . User::$db_fields[0],$id) )
-            return 0;
-        if( User::isCookie('er1new5->' . User::$db_fields[1],$id) )
-            return 1;
-        return -1;
-    }
-    
     public static function undoActionArticle($id,$field_index) {   
-        // Because user can vote either up or down, not both.
-        // This may be removed with current implementation, 
-        // lets see if it will be in the final impl.
-        if( $field_index < 2 )
-            $field_index = User::isUpOrDownVote ($id);        
-        if( $field_index == -1 )
+        if( User::isCookie('er1new5->' . User::$db_fields[$field_index],$id) === FALSE )
             return;
-        if( User::hasUserClickedBefore($field_index,$id) === FALSE )
-            return;
-        echo $field_index;
         $cookie = User::getUsersCookie($field_index);
         User::actionArticleTable($id, $field_index, -1);
         setcookie('er1new5->' . User::$db_fields[$field_index], 
@@ -99,8 +72,13 @@ class User {
     }
     
     public static function actionArticle($id,$field_index) {
-        if( User::hasUserClickedBefore($field_index,$id) )
-            return;       
+        if( User::isCookie('er1new5->' . User::$db_fields[$field_index],$id) === TRUE )
+            return;
+        else if( $field_index == 0 )
+            User::undoActionArticle($id,1);
+        else if( $field_index == 1 )
+            User::undoActionArticle($id,0);
+        
         $cookie = User::getUsersCookie($field_index);
         
         setcookie('er1new5->' . User::$db_fields[$field_index], 
