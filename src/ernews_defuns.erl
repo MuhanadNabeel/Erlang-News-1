@@ -145,34 +145,34 @@ google_tag_remover([_H|T] , Buff, false) ->
     google_tag_remover(T, Buff, false).
 	
 
-%% <function author="Ingimar & Muhannad">
+%% <function author="Ingimar & Muhanad">
 
-get_single_tag(W,[H|T],Buffer) ->
+get_single_tag(W,[H|T]) ->
 	Word = string:to_lower(W),
 	Html = string:to_lower(H),
-	case Word == Html of
+	case Word == string:left(Html,length(Word)) of
 		true ->
-			get_single_tag(W,T,[H|Buffer]);
+			[Word];
 		false ->
-			get_single_tag(W,T,Buffer)
+			get_single_tag(W,T)
 	end;
 	
-get_single_tag(_W,[],Buffer) ->
-	Buffer.
+get_single_tag(_W,[]) ->
+	[].
 
 	
 get_tags(List) ->
 	get_tags(readlines("include/words_tags.txt"),List).
 	
 get_tags([H|T],List) ->
-	get_single_tag(H,List,[]) ++ get_tags(T,List);
+	get_single_tag(H,List) ++ get_tags(T,List);
 	
 get_tags([],_List) ->
 	[].
 	
 	
 test_rel() ->
-	Html = "erlang job available",
+	Html = "erlang jobs available, processing jobs",
 	is_relevant(Html,
 			readlines("include/words_bad.txt"),
 			readlines("include/words_good.txt"),
@@ -254,7 +254,7 @@ split_text([X | Str], Word, Words) ->
 read_words() ->
 	{readlines("include/words_good.txt"),
 		readlines("include/words_bad.txt"),
-		readlines("include/words_tags.txt")}
+		readlines("include/words_tags.txt")}.
 	
 %% </function>
 	
