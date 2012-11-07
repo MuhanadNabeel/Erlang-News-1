@@ -36,8 +36,8 @@ start_link(Url,Source,Ts, Title, Description) ->
 
 
 init([Url, Source, Ts, Title, Description]) ->
-    State = #state{url=Url, source=Source, 
-		   ts=Ts , check_counter = 0},
+    State = #state{url=Url, source=Source, title=Title, 
+		   description=Description, ts=Ts , check_counter = 0},
     gen_fsm:send_event(self(), end_url),
     {ok, end_url, State}.
 
@@ -78,8 +78,8 @@ duplicate(duplicate, Record=#state{}) ->
 
 %------------------------------------------------------------------------
 read_url(read_url, Record=#state{}) ->
-    Title = ernews_htmlfuns:get_title(Record#state.url),
-    Description = ernews_htmlfuns:get_description(Record#state.url),
+    Title = mix(ernews_htmlfuns:get_title(Record#state.url), Record#state.title),
+    Description = mix(ernews_htmlfuns:get_description(Record#state.url), Record#state.description),	    		    
     case check_all([Title, Description]) of
 	ok ->
 	    {stop, submit , 
@@ -88,7 +88,7 @@ read_url(read_url, Record=#state{}) ->
 	{error, Reason} ->
 	    case Record#state.check_counter > 3 of
 		true ->
-		    {stop, {error, Reason}, Record};
+		    {stop,{error, Reason}, Record};
 		false ->
 		    gen_fsm:send_event(self(), read_url),
 		    {next_state, read_url, 
@@ -96,30 +96,6 @@ read_url(read_url, Record=#state{}) ->
 	    end
     end.
 
-%    case {Title_Tuple, Description_Tuple} of
-%	{{ok,Title}, {ok,Description}} ->
-%	    	    
-%
-%	{{error,Reason_Title} , {error, Reason_Desc}} ->
-%	    {stop, {error,
-%		    "Title" ++ atom_to_list(Reason_Title) 
-%		    ++ " -- Description" ++ atom_to_list(Reason_Desc), 
-%		    Record#state.init_url,Record#state.source, Record#state.ts,
-%		    Record#state.check_counter} , 
-%	     Record};
-%	{{error,Reason} , _} ->
-%	    {stop, {error,
-%		    "Title" ++ atom_to_list(Reason), Record#state.init_url,
-%		    Record#state.source, Record#state.ts , 
-%		    Record#state.check_counter},
-%	     Record};
-%	{_ , {error,Reason}} ->
-%	    {stop, {error,
-%		    "Description" ++ atom_to_list(Reason), Record#state.init_url,
-%		    Record#state.source, Record#state.ts,
-%		    Record#state.check_counter},
-%	     Record}
-%   end.
 
 %------------------------------------------------------------------------
 
@@ -177,3 +153,10 @@ check_all([{error,Reason}|T] , Buff) ->
     check_all(T, Buff ++ "-" ++ atom_to_list(Reason));
 check_all([_H|T], Buff) ->
     check_all(T, Buff).
+
+mix({ok,Main},_) ->
+    {ok,Main};
+mix({error,Reason}, undefined) ->
+    {error,Reason};
+mix(_,Source) ->
+    Source.
