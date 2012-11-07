@@ -19,7 +19,7 @@
          style="background-color: black;left:10px;display:none;" 
          id="{id}_vote_up_active" onclick="articleAction(this,1,true)"></div>
     <div class="absolute_24x24_centerback" 
-         style="background-color: blue;left:10px;display:none;" 
+         style="background-color: blue;left:40px;display:none;" 
          id="{id}_vote_down_active" onclick="articleAction(this,0,true)"></div>     
     <div class="absolute_24x24_centerback" 
          style="background-image: url('http://icons.iconarchive.com/icons/kyo-tux/aeon/16/Sign-Alert-icon.png');right:10px;"
