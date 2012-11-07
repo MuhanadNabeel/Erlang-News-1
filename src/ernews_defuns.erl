@@ -179,7 +179,7 @@ test_rel() ->
 			readlines("include/words_tags.txt")).
 	
 	
-is_relevant(List,Bad,Good,Tags) ->
+is_relevant(List,Good,Bad,Tags) ->
 	Html = split_text(List),
 	is_relevant(
 		list_word_occur(Html,Good),
@@ -235,6 +235,7 @@ get_all_lines(Device) ->
 					[Line | get_all_lines(Device)]
 			end
 	end.
+	
 	
 	
 split_text(Str) ->
