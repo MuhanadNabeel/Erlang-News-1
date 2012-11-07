@@ -10,7 +10,7 @@ connect() ->
 	 
 	 
 %% News-table should also have date and default votes, rank and visits
-write(news, {Source, Url, Title, Description , Icon , Image , PubDate}) ->
+write(news, {Source, Url, Title, Description , Icon , Image , PubDate, Tags}) ->
     Now = calendar:local_time(),
     Query =  "insert into abdoli.ernews_news " ++
 	"(Source, Url, Title, Description, Icon, "++
@@ -20,7 +20,14 @@ write(news, {Source, Url, Title, Description , Icon , Image , PubDate}) ->
 	++ qFix(Icon) ++ "', '" ++ qFix(Image) ++ "', '"
 	++ qFix(PubDate) ++ "', '" ++ qFix(Now) ++ "', '"
 	++ qFix(Now) ++ "')", 
-    qFunc(write,Query);
+    case qFunc(write,Query) of
+		{error,Reason} ->
+			{error,Reason};
+		{ok, updated} ->
+			ID=qFunc(get, "Select newsID FROM ernews_news WHERE URL='" ++ qFix(Url) ++ "'"),
+			write(tag, Tags, ID)
+			end;
+			
 	
 %% Broken-news-table should also have default date
 write(broken,{URL, Reason, Source}) ->
@@ -35,8 +42,16 @@ write(time,{Source, URL, Time_stamp}) ->
 	  "INSERT INTO abdoli.ernews_time(Source, URL, Time_stamp) VALUES('" 
 	  ++ qFix(Source) ++ "','" ++ qFix(URL) ++ "','" 
 	  ++ qFix(Time_stamp) ++ "')").
-				 
-
+				
+write(tag, [], ID) ->
+	{ok, updated};
+	
+write(tag, [H|T], ID) ->
+	qFunc(write, "INSERT INTO abdoli.ernews_articletags(newsID, tagID) VALUES('" 
+	  ++ ID ++ ", (SELECT id FROM ernews_tag WHERE tag'" ++ H ++ "'))")
+	  write(tag, T, ID).
+	
+	
 				 
 qFix(A) when is_atom(A) ->
     qFix(atom_to_list(A),[]);
@@ -85,7 +100,7 @@ qFunc(write, Q) ->
 		    io:format("SQL SYNTAX ERROR :~n~s~n-----------~n",[Q]),
 		    {error, sql_syntax};
 		_ -> 
-		    else
+		    {error, R}
 	    end
     catch 
 	exit:Exit -> 
