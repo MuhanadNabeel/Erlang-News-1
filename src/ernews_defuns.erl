@@ -143,3 +143,87 @@ google_tag_remover([H|T], Buff, true) ->
     google_tag_remover(T, Buff ++ [H], true);
 google_tag_remover([_H|T] , Buff, false) ->
     google_tag_remover(T, Buff, false).
+	
+
+%% <function author="Ingimar & Muhannad">
+
+get_single_tag(W,[H|T],Buffer) ->
+	Word = string:to_lower(W),
+	Html = string:to_lower(H),
+	case Word == Html of
+		true ->
+			get_single_tag(W,T,[H|Buffer]);
+		false ->
+			get_single_tag(W,T,Buffer)
+	end;
+	
+get_single_tag(_W,[],Buffer) ->
+	Buffer.
+
+	
+get_tags(List) ->
+	get_tags(readlines("words_tags.txt"),List).
+	
+get_tags([H|T],List) ->
+	get_single_tag(H,List,[]) ++ get_tags(T,List);
+	
+get_tags([],_List) ->
+	[].
+	
+is_relavent(List) ->
+	{Bad,Good} = {readlines("words_bad.txt"),readlines("words_good.txt")},
+	is_relavent(list_word_occur(List,Good),list_word_occur(List,Bad)).
+	
+is_relavent(0,_B) ->
+	{error,not_relavent};
+is_relavent(G,0) when G > 1 ->
+	{ok,relavent};
+is_relavent(G,B) when G / B < 1.5 ->
+	{error,bad_words};
+is_relavent(_,_) ->
+	{ok,relavent}.
+	
+	
+word_counter(W,[H|T],Counter) ->
+	Word = string:to_lower(W),
+	Html = string:to_lower(H),
+	case Word == Html of
+		true ->
+			word_counter(Word,T,Counter+1);
+		false ->
+			word_counter(Word,T,Counter)
+	end;
+	
+word_counter(_Word,[],Counter) ->
+	Counter.
+			
+	
+list_word_occur(L1,L2) ->
+	list_word_occur(L1,L2,0).
+list_word_occur([],_List,Counter) ->
+	Counter;
+list_word_occur([H|T],List,Counter) ->
+	list_word_occur(T,List,Counter + word_counter(H,List,0)).
+	
+	
+readlines(Src) ->
+    {ok, Device} = file:open(Src, [read]),
+    try get_all_lines(Device)
+      after file:close(Device)
+    end.
+
+get_all_lines(Device) ->
+    case io:get_line(Device, "") of
+        eof  -> [];
+        Line -> 
+			Last = string:right(Line,1),
+			if 
+				Last == "\n" ->
+					[string:left(Line,length(Line)-1) | get_all_lines(Device)];
+				true ->
+					[Line | get_all_lines(Device)]
+			end
+	end.
+	
+%% </function>
+	
