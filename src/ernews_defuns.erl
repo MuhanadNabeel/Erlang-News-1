@@ -198,7 +198,7 @@ is_relevant(_,_,_) ->
 word_counter(W,[H|T],Counter) ->
 	Word = string:to_lower(W),
 	Html = string:to_lower(H),
-	case Word == Html of
+	case Word == string:left(Html,length(Word)) of
 		true ->
 			word_counter(Word,T,Counter+1);
 		false ->
