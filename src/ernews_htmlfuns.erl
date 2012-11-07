@@ -13,7 +13,7 @@
 	 %check_content/2,pull_content/2]).
 -compile(export_all).
     
-%----------------------------END URL-------------------------------------------------%
+%----------------------------END URL <iocoder> ----------------------------------------------%
 
 end_url(iocoder,Url)->   
     Result  = ernews_defuns:read_web(iocoder, Url),
@@ -180,7 +180,7 @@ get_image(Url)->
 	    case Image of
 		[] ->
 		    List2 = get_value([Html],"img" ,[]),
-		    case find_image(List2,[]) of
+		    case find_image(List2,[],Url) of
 			[] ->
 			    {error, image_not_found};
 			Images ->
@@ -219,7 +219,18 @@ get_icon(Url)->
 	    end;
 	{error, Reason} -> {error, Reason}
     end.
+
     
+compile(Url)->
+    Result = ernews_defuns:read_web(default,Url),
+    case Result of
+	{success, {_, Body}}->
+	    Html = mochiweb_html:parse(Body),
+	    PTags= get_value([Html],"p" ,[]),
+	    ParsedToHtml = mochiweb_html:to_html({"html",[],PTags}),
+	    ernews_defuns:is_relevent(bitstring_to_list(iolist_to_binary(ParsedToHtml)));
+	{error, Reason} -> {error, Reason}
+    end.
 
 %----------------------------HTML LIST BREAKDOWN----------------------------------------%
 %% @author Khashayar Abdoli 
@@ -296,61 +307,78 @@ counter([] , Acc) ->
     Acc.
 
 
+%--------------------------------IMG Inner Functions------------------------------------%
 
+seperate([$||T],[])->
+    {0,0};
+seperate([$||T],Buff)->
+    {list_to_integer(Buff),list_to_integer(T)};
+seperate([H|T],Buff) ->
+    seperate(T,Buff++[H]).
 
-%%-------------------------------------------------------------%%
+get_main_url(Url) ->		
+    get_main_url(Url,0,"").
+get_main_url([$/|T],2,Buff) ->	
+    Buff;
+get_main_url([$/|T],C,Buff) ->	
+    get_main_url(T,C+1,Buff++[$/]);
+get_main_url([H|T],C,Buff) ->	
+    get_main_url(T,C,Buff ++ [H]).
 
-compile(Url)->
-    Result = ernews_defuns:read_web(default,Url),
-    case Result of
-	{success, {_, Body}}->
-	    Html = mochiweb_html:parse(Body),
-	    PTags= get_value([Html],"p" ,[]);
-	{error, Reason} -> {error, Reason}
-	end.
-
-
-
-
-
-
-find_image([],Buffer)->
+find_image([],Buffer,Url)->
     % Filters the list to only allow images with the size of 45x45
     lists:filter(fun({Size,_}) -> Size > 1600 end, Buffer);
-find_image([{Key,List,_}|T], Buffer)  ->
+find_image([{Key,List,_}|T], Buffer,Url)  ->
     case Key == list_to_bitstring("img") of
 	true ->
 	    % Size default set to 1 
-	    find_image(T,[get_image_property(List,{1,""})|Buffer]);
+	    find_image(T,[get_image_property(List,{1,""},Url)|Buffer],Url);
 	false ->
-	    find_image(T,Buffer)
+	    find_image(T,Buffer,Url)
     end.
 
-get_image_property([],{Size,Source})->
+get_image_property([],{Size,Source},Url)->
     {Size,Source};
 %The bitlist from mochiweb contains Key,Value structure of the images tag
-get_image_property([{Key, Value}|T],{Size,Source}) ->
+get_image_property([{Key, Value}|T],{Size,Source},Url) ->
     case bitstring_to_list(Key) of
-	"width" ->
-	    % Width is found. Times the width by the size. 
-	    get_image_property(T,{Size*list_to_integer(bitstring_to_list(Value)),Source});
-	"height" ->
-	    % Height if found. Time the height by the size.
-	    get_image_property(T,{Size*list_to_integer(bitstring_to_list(Value)),Source});
+
 	"src" ->
-	    % Source URL found, add it to the buffer
-	    get_image_property(T,{Size,bitstring_to_list(Value)});
+	     % Source URL found, add it to the buffer
+	    % Check if the src url does not contain the proper structure
+	     case lists:sublist(bitstring_to_list(Value), 1) =:= "/" of 
+		 true	->   
+		     {success, {_, Body}} = 
+			 % Call PHP function to get the width and height of the image
+			 % Some links don't contain a full URL
+			 % Add the image url + source url together 
+			 ernews_defuns:read_web(default,
+						"http://localhost:8888/_img_size.php?url="
+						++get_main_url(Url)
+						++bitstring_to_list(Value)),
+		     {Height,Width}=seperate(Body,[]),
+		     {Height*Width,get_main_url(Url)++ bitstring_to_list(Value)};
+		 false ->
+		     {success, {_, Body}} = 
+			 ernews_defuns:read_web(default,
+						"http://localhost:8888/_img_size.php?url="
+						++bitstring_to_list(Value)),
+		     {Height,Width}=seperate(Body,[]),
+		     {Height*Width,bitstring_to_list(Value)}
+	     end;
+  
+	
 	"class" ->
 	    % Ingnore all images that are avatars (Mainly from blogs)
 	    case bitstring_to_list(Value) of
 		[$a,$v,$a,$t,$a,$r|_] ->
 		    % If an avatar is found, set the size to 0 so it is ignored
-		    get_image_property(T,{0,Source});
+		    get_image_property(T,{0,Source},Url);
 		_ ->
-		    get_image_property(T,{Size,Source})
+		    get_image_property(T,{Size,Source},Url)
 	    end;
 	_ ->		
-	    get_image_property(T,{Size,Source})
+	    get_image_property(T,{Size,Source},Url)
     end.
 
 %%-------------------------------------------------------------------%%
@@ -363,10 +391,10 @@ get_image_property([{Key, Value}|T],{Size,Source}) ->
 
 test()->
     
-    	{success, {H, Body}} = ernews_defuns:read_web(default,"http://basho.com/images/raspi-boot.jpg"),
-    
+    	{success, {H, Body}} = ernews_defuns:read_web(default,"http://localhost:8888/_img_size.php?url=http://basho.com/images/raspi-boot.jpg"),
+    Body.
     %Html = mochiweb_html:parse(H).
-    file:write_file("/Users/magnus/Desktop/image.txt", io_lib:fwrite("~s", [Body])).
+%    file:write_file("/Users/magnus/Desktop/image.txt", io_lib:fwrite("~s", [Body])).
 
     
     %PTags= get_value([Html],"image" ,[]).
