@@ -162,7 +162,7 @@ get_single_tag(_W,[],Buffer) ->
 
 	
 get_tags(List) ->
-	get_tags(readlines("words_tags.txt"),List).
+	get_tags(readlines("include/words_tags.txt"),List).
 	
 get_tags([H|T],List) ->
 	get_single_tag(H,List,[]) ++ get_tags(T,List);
@@ -171,8 +171,10 @@ get_tags([],_List) ->
 	[].
 	
 is_relavent(List) ->
-	{Bad,Good} = {readlines("words_bad.txt"),readlines("words_good.txt")},
-	is_relavent(list_word_occur(List,Good),list_word_occur(List,Bad)).
+	is_relavent(
+		list_word_occur(List,readlines("include/words_good.txt")),
+		list_word_occur(List,readlines("include/words_bad.txt"))
+		).
 	
 is_relavent(0,_B) ->
 	{error,not_relavent};
@@ -224,6 +226,21 @@ get_all_lines(Device) ->
 					[Line | get_all_lines(Device)]
 			end
 	end.
+	
+	
+words(Str) ->
+	words(Str, [], []).
+words([], [], Words) ->
+	lists:reverse(Words);
+words([], Word, Words) ->
+	lists:reverse([lists:reverse(Word) | Words]);
+words([$ | Str], [], Words) ->
+	words(Str, [], Words);
+words([$ | Str], Word, Words) ->
+	words(Str, [], [lists:reverse(Word) | Words]);
+words([X | Str], Word, Words) ->
+	words(Str, [X | Word], Words).
+
 	
 %% </function>
 	
