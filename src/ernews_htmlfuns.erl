@@ -228,7 +228,7 @@ compile(Url)->
 	    Html = mochiweb_html:parse(Body),
 	    PTags= get_value([Html],"p" ,[]),
 	    ParsedToHtml = mochiweb_html:to_html({"html",[],PTags}),
-	    ernews_defuns:is_relevent(bitstring_to_list(iolist_to_binary(ParsedToHtml)));
+	    ernews_defuns:is_relevant(bitstring_to_list(iolist_to_binary(ParsedToHtml)));
 	{error, Reason} -> {error, Reason}
     end.
 
