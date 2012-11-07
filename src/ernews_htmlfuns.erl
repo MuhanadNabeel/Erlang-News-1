@@ -14,6 +14,7 @@
 -compile(export_all).
     
 %----------------------------END URL <iocoder> ----------------------------------------------%
+    
 
 end_url(iocoder,Url)->   
     Result  = ernews_defuns:read_web(iocoder, Url),
@@ -81,13 +82,25 @@ end_url(_,_) ->
 %% @end
 %%--------------------------------------------------------------------
 
+get_info(Url)->
+    Result = ernews_defuns:read_web(default,Url),
+    case Result of
+	{success, {_, Body}}->
+	    Html = mochiweb_html:parse(Body),
+	    [get_title(Html),get_description(Html),get_icon(Html),get_image(Html,Url)];
+	   %  [get_title(Html),get_description(Html),get_icon(Html)];
+        
+	{error, Reason} ->
+	    {error,Reason}
+		
+    end.
 
 break_list([])->
     [];
 break_list([{_,_,V}|T])->
+
     %% Check if the size of the article is bigger than 120 characters
     %% As implemented in the posting of links on Facebook
-
     case counter(V , 0 ) > 120  of
 	true ->
 	    V;
@@ -95,133 +108,113 @@ break_list([{_,_,V}|T])->
 	    break_list(T)
     end.
 
-get_description(Url)->
-    Result = ernews_defuns:read_web(default,Url),
+get_description(Html)->
    
-    case Result of
-
-	{success, {_, Body}}->
-	    Html = mochiweb_html:parse(Body),
 	    List = get_value([Html],"meta" ,[]),
 	    Description = 
 		get_content_from_list(List , 
 				      {"name" ,"description"} , "content"),
-	    case Description of
+    case Description of
+	[]->
+		    
+	    NextDescription = get_content_from_list(List , 
+						    {"name" ,"og:description"} , "content"),
+		    
+	    case NextDescription of
 		[]->
-		    
-		    NextDescription = get_content_from_list(List , 
-				      {"name" ,"og:description"} , "content"),
-		    
-		    case NextDescription of
-		      	[]->
-			    PTags= get_value([Html],"p" ,[]),
-			    PTagArticle = break_list(lists:reverse(PTags)),
+		    PTags= get_value([Html],"p" ,[]),
+		    PTagArticle = break_list(lists:reverse(PTags)),
 			    
-			    case PTagArticle of
-				[] ->
-				    {error, description_not_found};
-				_ ->
-				    
-		        	ParsedToHtml = mochiweb_html:to_html({"html",[],PTagArticle}),
-				  
-				    {ok, bitstring_to_list(iolist_to_binary(ParsedToHtml))}
-		        
-			    end;
-			
-			_ -> {ok,NextDescription}
-		    end;
-		
-			_ ->
-			    {ok,Description}
-	    end;
-
-	{error, Reason} ->
-	    {error,Reason}
-		
-    end.
-
-
-get_title(Url)->
-    Result = ernews_defuns:read_web(default,Url),
-    case Result of
-	{success, {_, Body}}->
-	    Html = mochiweb_html:parse(Body),
-	    
-	    case get_value([Html],"title" ,[]) of
-		[{_,_,[Val|_]}] ->
-		    {ok,[bitstring_to_list(Val)]};
-		_ ->
-		    case get_value([Html],"TITLE" ,[]) of
-			[{_,_,[Val|_]}] ->
-			    {ok,bitstring_to_list(Val)};
-			_->
-		    
-			    {error, title_not_found}
-		    end
-		
-	    end;
-
-	{error,Reason}->
-	    {error,Reason}
-    end.
-
-
-
-get_image(Url)->
-    Result = ernews_defuns:read_web(default,Url),
-    case Result of
-
-	{success, {_, Body}}->
-	    Html = mochiweb_html:parse(Body),
-	    List = get_value([Html],"meta" ,[]),
-	    Image = 
-		get_content_from_list(List , 
-				      {"property" ,"og:image"} , "content"),
-	    case Image of
-		[] ->
-		    List2 = get_value([Html],"img" ,[]),
-		    case find_image(List2,[],Url) of
+		    case PTagArticle of
 			[] ->
-			    {error, image_not_found};
-			Images ->
-			    lists:max(Images)
+			    {error, description_not_found};
+			_ ->
+			    
+			    ParsedToHtml = mochiweb_html:to_html({"html",[],PTagArticle}),
+			    
+			    {ok, bitstring_to_list(iolist_to_binary(ParsedToHtml))}
+		        
 		    end;
-		_ ->
-		    {ok, Image}
+			
+		_ -> {ok,NextDescription}
 	    end;
-	{error, Reason} -> {error, Reason}
-   end.
+		
+	_ ->
+	    {ok,Description}
+
+		
+    end.
+
+
+get_title(Html)-> 
+    case get_value([Html],"title" ,[]) of
+	[{_,_,[Val|_]}] ->
+	    {ok,[bitstring_to_list(Val)]};
+	_ ->
+	    case get_value([Html],"TITLE" ,[]) of
+		[{_,_,[Val|_]}] ->
+		    {ok,bitstring_to_list(Val)};
+		_->
+		    
+		    {error, title_not_found}
+	    end
+			
+    end.
+
+
+
+
+get_image(Html,Url)->
+    List = get_value([Html],"meta" ,[]),
+    Image = 
+	get_content_from_list(List , 
+			      {"property" ,"og:image"} , "content"),
+    case Image of
+	[] ->
+	    List2 = get_value([Html],"img" ,[]),
+	    case find_image(List2,[],Url) of
+		[] ->
+		    {error, image_not_found};
+		Images ->
+		    lists:max(Images)
+	    end;
+	_ ->
+	    % Ensure images are larger than 45x45
+	    {success, {_, Body}} =  ernews_defuns:read_web(default,						   "http://recallin.com/?url="
+							   ++Url),
+	    {Height,Width}=seperate(Body,[]),
+	    
+	    case Height*Width > 1600 of
+		true -> {ok, Image};
+		false -> {error, image_not_found}
+	    end
+	    
+    end.
 		
 
-get_icon(Url)->	
-    Result = ernews_defuns:read_web(default,Url),
-    case Result of
-
-	{success, {_, Body}}->
-	    Html = mochiweb_html:parse(Body),
-	    List = get_value([Html],"link" ,[]),
-	    Icon = 
-		get_content_from_list(List , 
-				      {"rel" ,"shortcut icon"} , "href"),
-	    case Icon of
-		[] ->
-		    Icon2 = get_content_from_list(List, {"rel","icon"},"href"),
-		    
-		    case Icon2 of
-			[]->
-			    {error, icon_not_found};
-			_ ->
-			    {ok, Icon}
-		    end;
-		    
+get_icon(Html)->
+    List = get_value([Html],"link" ,[]),
+    Icon = 
+	get_content_from_list(List , 
+			      {"rel" ,"shortcut icon"} , "href"),
+    case Icon of
+	[] ->
+	    Icon2 = get_content_from_list(List, {"rel","icon"},"href"),
+	    
+	    case Icon2 of
+		[]->
+		    {error, icon_not_found};
 		_ ->
-		    {ok, Icon}
+		    {ok, Icon2}
 	    end;
-	{error, Reason} -> {error, Reason}
+	
+	_ ->
+	    {ok, Icon}
+		
     end.
 
     
-compile(Url)->
+relevancy_check(Url)->
     Result = ernews_defuns:read_web(default,Url),
     case Result of
 	{success, {_, Body}}->
@@ -328,7 +321,11 @@ get_main_url([H|T],C,Buff) ->
 
 find_image([],Buffer,_)->
     % Filters the list to only allow images with the size of 45x45
-    lists:filter(fun({Size,_}) -> Size > 1600 end, Buffer);
+    lists:filter(fun({Size,_}) ->  Size > 1600 end, Buffer);
+
+
+  
+
 find_image([{Key,List,_}|T], Buffer,Url)  ->
     case Key == list_to_bitstring("img") of
 	true ->
@@ -354,16 +351,19 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 			 % Some links don't contain a full URL
 			 % Add the image url + source url together 
 			 ernews_defuns:read_web(default,
-						"http://localhost:8888/_img_size.php?url="
+					        "http://recallin.com/?url="
 						++get_main_url(Url)
 						++bitstring_to_list(Value)),
 		     {Height,Width}=seperate(Body,[]),
 		     {Height*Width,get_main_url(Url)++ bitstring_to_list(Value)};
 		 false ->
+		      io:format("~p~n",[bitstring_to_list(Value)]),
 		     {success, {_, Body}} = 
+			
 			 ernews_defuns:read_web(default,
-						"http://localhost:8888/_img_size.php?url="
+						"http://recallin.com/?url="
 						++bitstring_to_list(Value)),
+		    
 		     {Height,Width}=seperate(Body,[]),
 		     {Height*Width,bitstring_to_list(Value)}
 	     end;
@@ -403,7 +403,7 @@ test()->
    % {success, {_, Body}} = ernews_defuns:read_web(default,Url),
    % get_description(readlines("/Users/magnus/Desktop/html.txt")).
 
-%  Html = mochiweb_html:parse(readlines("/Users/magnus/Desktop/html.txt")),
+%  Html = mochiweb_html:pars(readlines("/Users/magnus/Desktop/html.txt")),
   %  PTags= get_value([Html],"p" ,[]),
  %  % PTagArticle = break_list(lists:reverse(PTags)),
     
