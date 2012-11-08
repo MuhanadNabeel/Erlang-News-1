@@ -84,7 +84,7 @@ qFix([H|T], Buff) ->
     qFix(T, Buff ++ [H]).
 	
 	
-qFunc(get, Q) ->
+qFunc(getTags, Q) ->
     {_,{_,_,Result,_,_,_,_,_}} = mysql:fetch(p1, Q),
     Result;
 	
@@ -135,4 +135,17 @@ exists(Table,{Column, Keyword}) ->
 	++ " WHERE " ++ qFix(Column) ++ "='" ++ qFix(Keyword) ++ "'",
     L=qFunc(exists, Query),
     L.
+	
+%% Fetch all tags in the DB
+getTags() ->
+	Q = "SELECT tag FROM ernews_tag",
+	List = qFunc(getTags, Q),
+	sendTags(List, []).
 
+%% Return all tags from DB
+sendTags([H|T], NL) ->
+	[P] = H,
+	NL ++ [bitstring_to_list(P)] ++ sendTags(T, NL);
+	
+sendTags([], NL) ->
+	[].
