@@ -109,14 +109,30 @@ qFunc(write, Q) ->
 	%io:format("~s~n", [Tag]);
 
 qFunc(exists, Q) ->	
-    {_,{_,_,R,_,_,_,_,_}} = mysql:fetch(p1,Q),
-    R.
-	
-	
+	try mysql:fetch(p1, Q) of 
+		Result ->
+			case mysql:fetch(p1, Q) of 
+				{_,{_,_,[[R]],_,_,_,_,_}} = Result ->
+					case R>0 of
+						false ->
+							false;
+						true ->
+							true
+					end;		
+				{R,{_,_,_,_,_,_,_,_}} = Result ->
+					R
+			end
+	catch 
+	exit:_Exit -> 
+		%{Res, _} = Exit,
+		{error, no_connection}
+	end.
+		
+		
 %% Does URL exist in news table
 exists(Table,{Column, Keyword}) ->
-    Query = "SELECT * FROM abdoli.ernews_" ++ qFix(Table) 
+    Query = "SELECT COUNT(*) FROM abdoli.ernews_" ++ qFix(Table) 
 	++ " WHERE " ++ qFix(Column) ++ "='" ++ qFix(Keyword) ++ "'",
-    L=length(qFunc(exists, Query)),
-    L>0.
+    L=qFunc(exists, Query),
+    L.
 
