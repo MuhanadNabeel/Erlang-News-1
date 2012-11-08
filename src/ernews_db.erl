@@ -5,8 +5,7 @@
 
 
 connect() ->
-    mysql:start(p1, "db.student.chalmers.se", 3306, 
-		"abdoli", "kgcH8v7c", "abdoli").
+    mysql:start(p1, "db.student.chalmers.se", 3306, "abdoli", "kgcH8v7c", "abdoli").
 	 
 	 
 %% News-table should also have date and default votes, rank and visits
@@ -21,12 +20,12 @@ write(news, {Source, Url, Title, Description , Icon , Image , PubDate, Tags}) ->
 	++ qFix(PubDate) ++ "', '" ++ qFix(Now) ++ "', '"
 	++ qFix(Now) ++ "')", 
     case qFunc(write,Query) of
-		{error,Reason} ->
-			{error,Reason};
-		{ok, updated} ->
-			ID=qFunc(get, "Select newsID FROM ernews_news WHERE URL='" ++ qFix(Url) ++ "'"),
-			write(tag, Tags, ID)
-			end;
+	{error,Reason} ->
+	    {error,Reason};
+	{ok, updated} ->
+	    ID=qFunc(get, "Select newsID FROM ernews_news WHERE URL='" ++ qFix(Url) ++ "'"),
+	    write(tag, Tags, integer_to_list(hd(hd(ID))))
+    end;
 			
 	
 %% Broken-news-table should also have default date
@@ -43,13 +42,13 @@ write(time,{Source, URL, Time_stamp}) ->
 	  ++ qFix(Source) ++ "','" ++ qFix(URL) ++ "','" 
 	  ++ qFix(Time_stamp) ++ "')").
 				
-write(tag, [], ID) ->
+write(tag, [],_ID) ->
 	{ok, updated};
 	
 write(tag, [H|T], ID) ->
-	qFunc(write, "INSERT INTO abdoli.ernews_articletags(newsID, tagID) VALUES('" 
-	  ++ ID ++ ", (SELECT id FROM ernews_tag WHERE tag'" ++ H ++ "'))")
-	  write(tag, T, ID).
+    qFunc(write, "INSERT INTO abdoli.ernews_articletags(newsID, tagID) VALUES(" 
+	      ++ ID ++ ", (SELECT id FROM ernews_tag WHERE tag = '" ++ H ++ "'))"),
+    write(tag, T, ID).
 	
 	
 				 
@@ -103,7 +102,7 @@ qFunc(write, Q) ->
 		    {error, R}
 	    end
     catch 
-	exit:Exit -> 
+	exit:_Exit -> 
 	    %{Res, _} = Exit,
 	    {error, no_connection}
     end;
@@ -119,4 +118,5 @@ exists(Table,{Column, Keyword}) ->
     Query = "SELECT * FROM abdoli.ernews_" ++ qFix(Table) 
 	++ " WHERE " ++ qFix(Column) ++ "='" ++ qFix(Keyword) ++ "'",
     L=length(qFunc(exists, Query)),
-    L>0;
+    L>0.
+

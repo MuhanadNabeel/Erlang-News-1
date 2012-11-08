@@ -11,33 +11,34 @@
 -behaviour(gen_fsm).
 
 %% API
--export([start_link/5]).
+-export([start_link/4 , check_all/1]).
 
 %% gen_fsm callbacks
--export([init/1, duplicate/2 , read_url/2, end_url/2, handle_event/3,
+-export([init/1, duplicate/2 , read_url/2, end_url/2, check_relevancy/2,
+	 handle_event/3,
 	 handle_sync_event/4, handle_info/3, terminate/3, code_change/4]).
 
 -define(SERVER, ?MODULE).
 
--record(state, {url="", source="", ts="", 
-		title="", description="", check_counter}).
+-record(state, {url="", source="", ts="", image = "", icon = "", words,
+		tags = [] , title="", description="", check_counter}).
 
 %%%===================================================================
 %%% API
 %%%===================================================================
 
 
-start_link(Url,Source,Ts, Title, Description) ->
-    gen_fsm:start(?MODULE, [Url,Source,Ts,Title,Description], []).
+start_link(Url,Source,Ts,Words) ->
+    gen_fsm:start(?MODULE, [Url,Source,Ts,Words], []).
 
 %%%===================================================================
 %%% gen_fsm callbacks
 %%%===================================================================
 
 
-init([Url, Source, Ts, Title, Description]) ->
-    State = #state{url=Url, source=Source, title=Title, 
-		   description=Description, ts=Ts , check_counter = 0},
+init([Url, Source, Ts, Words]) ->
+    State = #state{url=Url, source=Source, ts=Ts,
+		   check_counter = 0 ,words = Words},
     gen_fsm:send_event(self(), end_url),
     {ok, end_url, State}.
 
@@ -78,13 +79,15 @@ duplicate(duplicate, Record=#state{}) ->
 
 %------------------------------------------------------------------------
 read_url(read_url, Record=#state{}) ->
-    Title = mix(ernews_htmlfuns:get_title(Record#state.url), Record#state.title),
-    Description = mix(ernews_htmlfuns:get_description(Record#state.url), Record#state.description),	    		    
-    case check_all([Title, Description]) of
+    Info_List = ernews_htmlfuns:get_info(Record#state.url),
+    case check_all(Info_List) of
 	ok ->
-	    {stop, submit , 
-	     Record#state{title = element(2, Title) ,
-			  description = element(2, Description)}};
+	    gen_fsm:send_event(self(), check_relevancy),
+	    {next_state, check_relevancy, 
+	     Record#state{title = element(2, hd(lists:sublist(Info_List,1,1))),
+			  description = element(2, hd(lists:sublist(Info_List,2,1))),
+			  icon = element(2, hd(lists:sublist(Info_List,3,1))),
+			  image = element(2, hd(lists:sublist(Info_List,4,1)))}};
 	{error, Reason} ->
 	    case Record#state.check_counter > 3 of
 		true ->
@@ -99,6 +102,15 @@ read_url(read_url, Record=#state{}) ->
 
 %------------------------------------------------------------------------
 
+check_relevancy(check_relevancy, Record=#state{}) ->
+    case ernews_htmlfuns:relevancy_check(Record#state.url, Record#state.words) of
+	{ok, Tags} ->
+	    {stop, submit, Record#state{tags= Tags}};
+	{error, Reason} ->
+	    {stop, {error, Reason} , Record}
+    end.
+
+%-------------------------------------------------------------------------------
 handle_event(_Event, StateName, State) ->
     {next_state, StateName, State}.
 
@@ -120,14 +132,16 @@ terminate({error, already_exists} , _StateName, _State) ->
 terminate({error, Reason} , _StateName, Record = #state{}) ->
     gen_server:cast(ernews_linkserv, 
 		    {error, Reason, Record#state.url, Record#state.source});
-terminate(submit, _StateName, Record = #state{}) ->
+terminate(submit, _StateName,Record = #state{}) -> 
     gen_server:cast(ernews_linkserv,
 		    {submit, Record#state.source , Record#state.url,
 		     Record#state.title, Record#state.description, 
-		     Record#state.ts});
-terminate(Reason , _ , _ ) ->
+		     Record#state.ts, Record#state.icon, Record#state.image,
+		     Record#state.tags
+		    });
+terminate(Reason , _ , Record = #state{}) -> 
     io:format("========================================================~n", []),
-    io:format("UNKNOWN --  ~p~n", [Reason]),
+    io:format("UNKNOWN - URL ~p~n-  ~p~n", [Record#state.url, Reason ]),
     io:format("========================================================~n", []), 
     ok.
 
@@ -142,7 +156,8 @@ code_change(_OldVsn, StateName, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
-
+check_all({error,Reason}) ->
+    {error,Reason};
 check_all(List) ->
     check_all(List,"").
 check_all([],[]) ->
@@ -154,9 +169,3 @@ check_all([{error,Reason}|T] , Buff) ->
 check_all([_H|T], Buff) ->
     check_all(T, Buff).
 
-mix({ok,Main},_) ->
-    {ok,Main};
-mix({error,Reason}, undefined) ->
-    {error,Reason};
-mix(_,Source) ->
-    Source.

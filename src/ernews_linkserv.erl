@@ -51,7 +51,9 @@ start_link() ->
 %% @end
 %%--------------------------------------------------------------------
 init([]) ->
-    {ok, []}.
+    Words = ernews_defuns:read_words(),
+    io:format("INITING ~n",[]),
+    {ok, Words}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -82,11 +84,14 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast({parse, Source, Url, Ts, Title, Description}, State) ->
-    ernews_html:start_link(Url, Source, Ts, Title, Description),
+    ernews_html:start_link(Url, Source, Ts,State),
     {noreply, State};
-handle_cast({submit, Source, Url, Title, Description, PubDate}, State) ->
+handle_cast({submit, Source, Url, Title, Description, 
+	     PubDate, Icon, Image, Tags}, State) ->
+    io:format("SUBMITTTTTTING " , []),
     Result = ernews_db:write(news, 
-		    {Source, Url, Title, Description, " ", " " ,PubDate}),
+		    {Source, Url, Title, Description, 
+		     Icon, Image ,PubDate , Tags}),
     io:format("Submitted With~p~n",[Result]),
     {noreply, State};
 handle_cast({error, Reason, Url, Source}, State) ->
@@ -121,7 +126,8 @@ handle_info(_Info, State) ->
 %% @spec terminate(Reason, State) -> void()
 %% @end
 %%--------------------------------------------------------------------
-terminate(_Reason, _State) ->
+terminate(Reason, _State) ->
+    io:format("Reason ~p~n",[Reason]),
     ok.
 
 %%--------------------------------------------------------------------

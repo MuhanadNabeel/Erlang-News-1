@@ -174,8 +174,8 @@ get_tags([],_List) ->
 test_rel() ->
 	Html = "erlang jobs available, processing jobs",
 	is_relevant(Html,
-			readlines("include/words_bad.txt"),
 			readlines("include/words_good.txt"),
+			readlines("include/words_bad.txt"),
 			readlines("include/words_tags.txt")).
 	
 	
@@ -198,7 +198,7 @@ is_relevant(_,_,_) ->
 word_counter(W,[H|T],Counter) ->
 	Word = string:to_lower(W),
 	Html = string:to_lower(H),
-	case Word == string:left(Html,length(Word)) of
+	case Word == Html of
 		true ->
 			word_counter(Word,T,Counter+1);
 		false ->
@@ -259,3 +259,7 @@ read_words() ->
 	
 %% </function>
 	
+
+test() ->
+    readlines("include/words_bad.txt").
+    

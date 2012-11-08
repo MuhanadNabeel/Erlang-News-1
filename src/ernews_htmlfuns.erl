@@ -22,7 +22,7 @@ end_url(iocoder,Url)->
 	{success,{Header, _}}->
 	    End_Url =proplists:get_value("location", Header),
 	    case End_Url of
-		[] ->
+	        undefined ->
 		    {error, end_url_not_found};
 		_ ->
 		    End_Url
@@ -149,7 +149,7 @@ get_description(Html)->
 get_title(Html)-> 
     case get_value([Html],"title" ,[]) of
 	[{_,_,[Val|_]}] ->
-	    {ok,[bitstring_to_list(Val)]};
+	    {ok,bitstring_to_list(Val)};
 	_ ->
 	    case get_value([Html],"TITLE" ,[]) of
 		[{_,_,[Val|_]}] ->
@@ -174,7 +174,7 @@ get_image(Html,Url)->
 	    List2 = get_value([Html],"img" ,[]),
 	    case find_image(List2,[],Url) of
 		[] ->
-		    {error, image_not_found};
+		    {ok, "undef"};
 		Images ->
 		    lists:max(Images)
 	    end;
@@ -186,7 +186,7 @@ get_image(Html,Url)->
 	    
 	    case Height*Width > 1600 of
 		true -> {ok, Image};
-		false -> {error, image_not_found}
+		false -> {ok, "undef"}
 	    end
 	    
     end.
@@ -203,7 +203,7 @@ get_icon(Html)->
 	    
 	    case Icon2 of
 		[]->
-		    {error, icon_not_found};
+		    {ok, "undef"};
 		_ ->
 		    {ok, Icon2}
 	    end;
@@ -214,7 +214,7 @@ get_icon(Html)->
     end.
 
     
-relevancy_check(Url,Good,Bad,Tags)->
+relevancy_check(Url,{Good,Bad,Tags})->
     Result = ernews_defuns:read_web(default,Url),
     case Result of
 	{success, {_, Body}}->
@@ -308,8 +308,9 @@ seperate([$||_],[])->
 seperate([$||T],Buff)->
     {list_to_integer(Buff),list_to_integer(T)};
 seperate([H|T],Buff) ->
-    seperate(T,Buff++[H]).
-
+    seperate(T,Buff++[H]);
+seperate(_,_) ->
+    {0,0}.
 get_main_url(Url) ->		
     get_main_url(Url,0,"").
 get_main_url([$/|_],2,Buff) ->	
@@ -346,26 +347,33 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 	    % Check if the src url does not contain the proper structure
 	     case lists:sublist(bitstring_to_list(Value), 1) =:= "/" of 
 		 true	->   
-		     {success, {_, Body}} = 
+		     
 			 % Call PHP function to get the width and height of the image
 			 % Some links don't contain a full URL
 			 % Add the image url + source url together 
-			 ernews_defuns:read_web(default,
+		     case  ernews_defuns:read_web(default,
 					        "http://recallin.com/?url="
 						++get_main_url(Url)
-						++bitstring_to_list(Value)),
-		     {Height,Width}=seperate(Body,[]),
-		     {Height*Width,get_main_url(Url)++ bitstring_to_list(Value)};
-		 false ->
-		      io:format("~p~n",[bitstring_to_list(Value)]),
-		     {success, {_, Body}} = 
+						++bitstring_to_list(Value)) of
+			 {success, {_, Body}} -> 		
 			
-			 ernews_defuns:read_web(default,
-						"http://recallin.com/?url="
-						++bitstring_to_list(Value)),
-		    
-		     {Height,Width}=seperate(Body,[]),
-		     {Height*Width,bitstring_to_list(Value)}
+			     {Height,Width}=seperate(Body,[]),
+			     {Height*Width,
+			      get_main_url(Url)++ bitstring_to_list(Value)};
+			 _ ->
+			     {0,""}
+		     end;
+		 false ->
+
+		     case ernews_defuns:read_web(default,
+						 "http://recallin.com/?url="
+						 ++bitstring_to_list(Value)) of
+			 {success, {_, Body}} -> 		    
+			     {Height,Width}=seperate(Body,[]),
+			     {Height*Width,bitstring_to_list(Value)};
+			 _ ->
+			     {0,""}
+		     end
 	     end;
   
 	

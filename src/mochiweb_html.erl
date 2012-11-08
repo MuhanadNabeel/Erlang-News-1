@@ -275,7 +275,11 @@ tokens(B, S=#decoder{offset=O}, Acc) ->
             {Tag, S1} = tokenize(B, S),
 	    %io:format("~p -- ~p~n", [Tag,S1]),
             case parse_flag(Tag) of
-                script ->
+                noscript ->
+		    {Tag2, S2} = tokenize_script(B, S1),
+                    %tokens(B, S2, [Tag2, Tag | Acc]);
+		    tokens(B,S2,Acc);
+		script ->
                     {Tag2, S2} = tokenize_script(B, S1),
                     %tokens(B, S2, [Tag2, Tag | Acc]);
 		    tokens(B,S2,Acc);
