@@ -145,77 +145,106 @@ google_tag_remover([_H|T] , Buff, false) ->
     google_tag_remover(T, Buff, false).
 	
 
-%% <function author="Ingimar & Muhanad">
+split_text(Str) ->
+	split_text(Str, [], []).
+split_text([], [], Words) ->
+	lists:reverse(Words);
+split_text([], Word, Words) ->
+	lists:reverse([lists:reverse(Word) | Words]);
+split_text([$ | Str], [], Words) ->
+	split_text(Str, [], Words);
+split_text([$ | Str], Word, Words) ->
+	split_text(Str, [], [lists:reverse(Word) | Words]);
+split_text([X | Str], Word, Words) ->
+	split_text(Str, [X | Word], Words).
 
-get_single_tag(W,[H|T]) ->
-	Word = string:to_lower(W),
-	Html = string:to_lower(H),
-	case Word == string:left(Html,length(Word)) of
-		true ->
-			[Word];
-		false ->
-			get_single_tag(W,T)
-	end;
-	
-get_single_tag(_W,[]) ->
-	[].
+
+%%	
+%% Following is related to relevant-check
+%% and tag-generator
+%%	
+test_rel(Src) ->
+	ernews_htmlfuns:relevancy_check(Src,read_words()).
+test1(A,B) ->
+	list_words_occur_insens(A,string:tokens(B," ")).
 
 	
-get_tags(List) ->
-	get_tags(readlines("include/words_tags.txt"),List).
-	
+get_tags([],_) ->
+	[];	
 get_tags([H|T],List) ->
-	get_single_tag(H,List) ++ get_tags(T,List);
+	case list_words_occur_insens(H,List) of
+		true ->
+			[H] ++ get_tags(T,List);
+		false ->
+			get_tags(T,List)
+	end.
 	
-get_tags([],_List) ->
-	[].
 	
-	
-test_rel() ->
-	Html = "erlang jobs available, processing jobs",
-	is_relevant(Html,
-			readlines("include/words_good.txt"),
-			readlines("include/words_bad.txt"),
-			readlines("include/words_tags.txt")).
+count_words(WordList,CheckList) ->
+	count_words(WordList,CheckList,0).
+count_words([],_,Counter) ->
+	Counter;
+count_words([H|T],List,Counter) ->
+	case list_words_occur_insens(H,List) of
+		true ->
+			count_words(T,List,Counter+1);
+		false ->
+			count_words(T,List,Counter)
+	end.
 	
 	
 is_relevant(List,Good,Bad,Tags) ->
-	Html = split_text(List),
-	is_relevant(
-		list_word_occur(Html,Good),
-		list_word_occur(Html,Bad),
-		{Html,Tags}
-		).
-	
+	Html = string:tokens(List," "),
+	Erlang = list_words_occur_insens("erlang",Html),
+	ErlangCalc = list_words_occur_insens("erlang calculator",Html),
+	ErlangFormula = list_words_occur_insens("erlang formula",Html),
+	case {Erlang,ErlangCalc,ErlangFormula} of
+		{false,_,_} ->
+			{error,not_erlang};
+		{_,true,_} ->
+			{error,erlang_calculator};
+		{_,_,true} ->
+			{error,erlang_formula};
+		_Else ->
+			is_relevant(count_words(Good,Html),
+				count_words(Bad,Html),
+				{Html,Tags})
+	end.
 is_relevant(0,_,_) ->
 	{error,not_relevant};
 is_relevant(_,0,{Html,Tags}) ->
 	{ok,get_tags(Tags,Html)};
 is_relevant(_,_,_) ->
 	{error,bad_language}.
-	
-	
-word_counter(W,[H|T],Counter) ->
-	Word = string:to_lower(W),
-	Html = string:to_lower(H),
-	case Word == Html of
+
+%% Word is one or more words
+%% List is a list of all relative words from HTML
+list_words_occur_insens(Words,List) ->
+	Split = string:tokens(Words," "),
+	list_words_occur_insens(lists:concat(Split),List,length(Split)).
+list_words_occur_insens(_,List,Length) when length(List) < Length ->
+	false;
+list_words_occur_insens(WordConcat,List,Length) ->
+	ListConcat = lists:concat(lists:sublist(List,1,Length)),
+	case compare_concat_str(WordConcat,ListConcat) of
 		true ->
-			word_counter(Word,T,Counter+1);
+			true;
 		false ->
-			word_counter(Word,T,Counter)
-	end;
+			list_words_occur_insens(WordConcat,tl(List),Length)
+	end.
 	
-word_counter(_Word,[],Counter) ->
-	Counter.
-			
-	
-list_word_occur(L1,L2) ->
-	list_word_occur(L1,L2,0).
-list_word_occur([],_List,Counter) ->
-	Counter;
-list_word_occur([H|T],List,Counter) ->
-	list_word_occur(T,List,Counter + word_counter(H,List,0)).
-	
+compare_concat_str(Str1,Str2) ->
+	Left = string:to_lower(string:left(Str2,string:len(Str1))),
+	Right = string:to_lower(string:right(Str2,string:len(Str1))),
+	Word = string:to_lower(Str1),
+	if
+		Word == Left ->
+			true;
+		Word == Right ->
+			true;
+		true ->
+			false
+	end.
 	
 readlines(Src) ->
     {ok, Device} = file:open(Src, [read]),
@@ -236,30 +265,7 @@ get_all_lines(Device) ->
 			end
 	end.
 	
-	
-	
-split_text(Str) ->
-	split_text(Str, [], []).
-split_text([], [], Words) ->
-	lists:reverse(Words);
-split_text([], Word, Words) ->
-	lists:reverse([lists:reverse(Word) | Words]);
-split_text([$ | Str], [], Words) ->
-	split_text(Str, [], Words);
-split_text([$ | Str], Word, Words) ->
-	split_text(Str, [], [lists:reverse(Word) | Words]);
-split_text([X | Str], Word, Words) ->
-	split_text(Str, [X | Word], Words).
-
-	
 read_words() ->
 	{readlines("include/words_good.txt"),
 		readlines("include/words_bad.txt"),
 		readlines("include/words_tags.txt")}.
-	
-%% </function>
-	
-
-test() ->
-    readlines("include/words_bad.txt").
-    
