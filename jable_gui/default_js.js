@@ -1,40 +1,25 @@
-//@author Khahsayar
-/* ArrayList of booleans that represent if an user interaction
- * is being processed */
 var isUserAction = new Object();
-/* Template of the news articles, with: icon, title, description and image */
 var newsTemplate = '';
-/* Template of the news list, with only title */
 var newsRightTemplate = '';
-/* Loading the page */
 jQuery(document).ready(function() {
     jQuery.get('_get_templates.php',function(str){
         /* Assigning the templates to the variables */
         var split = str.split('<split_between_templates>')
         newsRightTemplate = split[0];
         newsTemplate = split[1];
-        /* Fetching content */
         getNewsJSON();
-        /* Reload content every 5 minutes */
         setInterval('getNewsJSON();',300000);
     });
 });
 
-/* Interaction with user of the page: votes and reports */
 function articleAction(item,action,undo) {
-    /* ID of the article in question */
     var id = jQuery(item).attr('id').substring(0,jQuery(item).attr('id').indexOf('_'));
-    /* If action to this ID is still in process - abort */
     if( isUserAction[id][Math.floor(action/2)] == true )
         return;
-    /* Set action in process */
     isUserAction[id][Math.floor(action/2)] = true;
-    /* Change visual effect */
     changeUserButtons(id,item,undo);
-    /* In case of slow process, change transparency of button every 0.25 sec */
     var interval = setInterval("articleActionBlink('" 
         + jQuery(item).attr('id') + "');",250);
-    /* Call PHP file and update DB. Clear interval, reset and refresh content */
     jQuery.post('_article_action.php',{id:id,action:action,undo:undo},function() {
         isUserAction[id][Math.floor(action/2)] = false;
         clearInterval(interval);
@@ -60,11 +45,15 @@ function articleAction(item,action,undo) {
             && jQuery('#' + id + '_vote_down_active').is(':visible') ) {
             jQuery('#' + id + '_vote_down_active').hide();
             jQuery('#' + id + '_vote_up_active').show();
+            jQuery('#' + id + '_vote_down').hide();
+            jQuery('#' + id + '_vote_up').show();
         }
         else if( jQuery(item).attr('id') == id + '_vote_down' 
             && jQuery('#' + id + '_vote_up_active').is(':visible') ) {
             jQuery('#' + id + '_vote_up_active').hide();
             jQuery('#' + id + '_vote_down_active').show();
+            jQuery('#' + id + '_vote_up').hide();
+            jQuery('#' + id + '_vote_down').show();
         }
         else
             jQuery( '#' + jQuery(item).attr('id') + '_active').show();
@@ -98,14 +87,14 @@ function getNewsJSON() {
     }
     function getNewsArticle(json) {
         var precent = calcPrecent(parseInt(json.Up_Vote,10),parseInt(json.Down_Vote,10));
-        return newsTemplate.replace('{title}',json.Title)
-                            .replace('{down}',json.Down_Vote)
-                            .replace('{up}',json.Up_Vote)
-                            .replace('{clicks}',json.Clicks)
-                            .replace('{description}',json.Description)
-                            .replace('{image}',json.Image)
+        return newsTemplate.replace(/{title}/g,json.Title)
+                            .replace(/{down}/g,json.Down_Vote)
+                            .replace(/{up}/g,json.Up_Vote)
+                            .replace(/{clicks}/g,json.Clicks)
+                            .replace(/{description}/g,json.Description)
+                            .replace(/{image}/g,json.Image)
                             .replace(/{URL}/g,json.URL)
-                            .replace('{vote_bar}',precent)
+                            .replace(/{vote_bar}/g,precent)
                             .replace(/{id}/g,json.newsID);
     }
     
@@ -124,12 +113,12 @@ function getNewsJSON() {
             title = json.Title.substring(0,55) + ' ...';
 
         var precent = calcPrecent(parseInt(json.Up_Vote,10),parseInt(json.Down_Vote,10));
-        return newsRightTemplate.replace('{title}',title)
-                                .replace('{down}',json.Down_Vote)
-                                .replace('{up}',json.Up_Vote)
-                                .replace('{clicks}',json.Clicks)
+        return newsRightTemplate.replace(/{title}/g,title)
+                                .replace(/{down}/g,json.Down_Vote)
+                                .replace(/{up}/g,json.Up_Vote)
+                                .replace(/{clicks}/g,json.Clicks)
                                 .replace(/{URL}/g,json.URL)
-                                .replace('{vote_bar}',precent)
+                                .replace(/{vote_bar}/g,precent)
                                 .replace(/{id}/g,json.newsID);
     }
 }
