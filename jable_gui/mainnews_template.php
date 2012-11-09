@@ -173,9 +173,9 @@
 		<tr><td class="voteButtons" onmouseover="jQuery(this).fadeTo('fast', 1)">
 				<table>
 					<tr><div class="vote-up" id="{id}_vote_up" onclick="articleAction(this,1,false)" align="center"><a class="likes">{up}</a></div>
-						<div class="vote-up-active" id="{id}_vote_up_active" onclick="articleAction(this,1,true)" align="center"><a class="likes">{up}</a></div></tr>
+						<div class="vote-up-active" id="{id}_vote_up_active" onclick="articleAction(this,1,true)" align="center"><a id="{id}_up_vote_count" class="likes">{up}</a></div></tr>
 					<tr><div class="vote-down" id="{id}_vote_down" onclick="articleAction(this,0,false)" align="center"><a class="likes">{down}</a></div>
-						<div class="vote-down-active" id="{id}_vote_down_active" onclick="articleAction(this,0,true)" align="center"><a class="likes">{down}</a></div></tr>
+						<div class="vote-down-active" id="{id}_vote_down_active" onclick="articleAction(this,0,true)" align="center"><a id="{id}_down_vote_count" class="likes">{down}</a></div></tr>
 				</table>
 			</td>
 			<td><div class="content">
