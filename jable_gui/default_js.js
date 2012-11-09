@@ -76,13 +76,15 @@ function getNewsJSON() {
             else 
                 jQuery('#archive').append( addNewsLink(json[i]) );
         }
-        setUserClicked(parse.cookies.Up_Vote,'_vote_up_active');
-        setUserClicked(parse.cookies.Down_Vote,'_vote_down_active');
+        setUserClicked(parse.cookies.Up_Vote,'_vote_up');
+        setUserClicked(parse.cookies.Down_Vote,'_vote_down');
     });
     function setUserClicked(json,str) {
         for( var i = 0 ; i < json.length ; i++ ) {
-            if( json[i] != '' )
-                jQuery('#' + json[i] + str).show();
+            if( json[i] != '' ) {
+                jQuery('#' + json[i] + str).hide();
+                jQuery('#' + json[i] + str + '_active').show();
+            }
         }
     }
     function getNewsArticle(json) {

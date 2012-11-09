@@ -195,15 +195,12 @@ count_words([H|T],List,Counter) ->
 	
 is_relevant(List,Good,Bad,Tags) ->
 	Html = string:tokens(List," "),
-	Erlang = list_words_occur_insens("erlang",Html),
 	ErlangCalc = list_words_occur_insens("erlang calculator",Html),
 	ErlangFormula = list_words_occur_insens("erlang formula",Html),
-	case {Erlang,ErlangCalc,ErlangFormula} of
-		{false,_,_} ->
-			{error,not_erlang};
-		{_,true,_} ->
+	case {ErlangCalc,ErlangFormula} of
+		{true,_} ->
 			{error,erlang_calculator};
-		{_,_,true} ->
+		{_,true} ->
 			{error,erlang_formula};
 		_Else ->
 			is_relevant(count_words(Good,Html),
@@ -268,4 +265,4 @@ get_all_lines(Device) ->
 read_words() ->
 	{readlines("include/words_good.txt"),
 		readlines("include/words_bad.txt"),
-		readlines("include/words_tags.txt")}.
+		ernews_db:getTags()}.
