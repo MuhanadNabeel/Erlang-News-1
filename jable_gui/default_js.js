@@ -39,6 +39,12 @@ function articleAction(item,action,undo) {
         articleActionBlinkIndex++;
     }
     function changeUserButtons(id,item,undo) {
+        jQuery(item).hide();
+        if( jQuery(item).attr('id').indexOf('_active') != -1 )
+            jQuery( '#' + jQuery(item).attr('id').substring(0, jQuery(item).attr('id').lastIndexOf('_')) ).show();
+        else
+            jQuery( '#' + jQuery(item).attr('id') + '_active' ).show();
+        /*
         if( undo == true )
             jQuery(item).hide();
         else if( jQuery(item).attr('id') == id + '_vote_up' 
@@ -57,6 +63,7 @@ function articleAction(item,action,undo) {
         }
         else
             jQuery( '#' + jQuery(item).attr('id') + '_active').show();
+        */
     }
 }
 
