@@ -36,82 +36,73 @@
 	padding: 5px;
 	height:40px;
 	vertical-align:top;
-	opacity:1;
+	opacity:0.1;
 	filter:alpha(opacity=10); /* For IE8 and earlier */
-}
-.voteButtons:hover{
-	opacity: 1;
-	filter:alpha(opacity=100); /* For IE8 and earlier */
 }
 
 .vote-up{
-
-	padding-top: 2px;
+	padding-top: 0.1em;
 	background:url(img/vote-up.png) 0 0 no-repeat;
 	background-size: 100%;
-	height: 40px;
-	width: 35px;
+	height: 2.4em;
+	width: 2em;
 }
 
 .vote-up:hover{
-	background:url(img/vote-up.png) 0 -42.9px no-repeat;
+	background:url(img/vote-up-hover.png) 0 0 no-repeat;
 	background-size: 100%;
 }
 .vote-up:active{
-	background:url(img/vote-up.png) 0 -85.9px no-repeat;
+	background:url(img/vote-up-active-hover.png) 0 0 no-repeat;
 	background-size: 100%;
 }
+
+
+
 
 .vote-up-active{
-	padding-top: 2px;
-	background:url(img/vote-up.png) 0 -85.9 no-repeat;
-	display: none;
+	background:url(img/vote-up-active.png) 0 0 no-repeat;
 	background-size: 100%;
-	height: 40px;
-	width: 35px;
+	height: 2.4em;
+	width: 2em;
+	padding-top: 0.1em;
+	display:none;
 }
 
-.vote-up-active:hover{
-	background:url(img/vote-up.png) 0 -42.9px no-repeat;
-	background-size: 100%;
-}
 .vote-up-active:active{
-	background:url(img/vote-up.png) 0 -85.9px no-repeat;
+	background:url(img/vote-up-active-hover.png) 0 0 no-repeat;
 	background-size: 100%;
 }
 
 
 .vote-down{
+	margin-top: -0.1em;
+	padding-top: 1.5em;
 	background:url(img/vote-down.png) 0 0 no-repeat;
 	background-size: 100%;
-	height: 15px;
-	width: 35px;
-	padding-top: 27px;
+	height: 2.4em;
+	width: 2em;
 }
 .vote-down:hover{
-	background:url(img/vote-down.png) 0 -42px no-repeat;
+	background:url(img/vote-down-hover.png) 0 0 no-repeat;
 	background-size: 100%;
 }
 .vote-down:active{
-	background:url(img/vote-down.png) 0 -84px no-repeat;
+	background:url(img/vote-down-active-hover.png) 0 0 no-repeat;
 	background-size: 100%;
 }
 
 .vote-down-active{
-	position: absolute;
-	background:url(img/vote-down.png) 0 -84px no-repeat;
+	margin-top: -0.1em;
+	background:url(img/vote-down-active.png) 0 0 no-repeat;
 	background-size: 100%;
-	height: 15px;
-	width: 35px;
-	padding-top: 27px;
+	height: 2.4em;
+	width: 2em;
+	padding-top: 1.5em;
 	display:none;
 }
-.vote-down-active:hover{
-	background:url(img/vote-down.png) 0 -42px no-repeat;
-	background-size: 100%;
-}
 .vote-down-active:active{
-	background:url(img/vote-down.png) 0 -84px no-repeat;
+	background:url(img/vote-down-active-hover.png) 0 0 no-repeat;
 	background-size: 100%;
 }
 
@@ -179,12 +170,12 @@
 		<tr>
 			<div style="width:100%;height:8em;background-color:gray;">{vote_bar}</div>
 		</tr>
-		<tr><td class="voteButtons">
+		<tr><td class="voteButtons" onmouseover="jQuery(this).fadeTo('fast', 1)">
 				<table>
 					<tr><div class="vote-up" id="{id}_vote_up" onclick="articleAction(this,1,false)" align="center"><a class="likes">{up}</a></div>
 						<div class="vote-up-active" id="{id}_vote_up_active" onclick="articleAction(this,1,true)" align="center"><a class="likes">{up}</a></div></tr>
 					<tr><div class="vote-down" id="{id}_vote_down" onclick="articleAction(this,0,false)" align="center"><a class="likes">{down}</a></div>
-						<div class="vote-down-active" id="{id}_vote_down_active" onclick="articleAction(this,0,true)" align="center"><a class="likes">{up}</a></div></tr>
+						<div class="vote-down-active" id="{id}_vote_down_active" onclick="articleAction(this,0,true)" align="center"><a class="likes">{down}</a></div></tr>
 				</table>
 			</td>
 			<td><div class="content">
