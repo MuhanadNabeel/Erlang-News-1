@@ -40,6 +40,7 @@ url(fonts/MyriadPro-SemiboldIt.otf) format("opentype")
 .content{
     margin-right: 20px;
     padding: 10px;
+    font-size: 12pt;
     text-decoration: none;
 }
 
@@ -171,21 +172,165 @@ url(fonts/MyriadPro-SemiboldIt.otf) format("opentype")
 .link a:hover {color:#aacc77;}  /* mouse over link */
 .link a:active {color:#74a22f;}
 
-.readMore a:link{color:#aacc77; text-decoration: none;}
-.readMore a:hover {color:#74a22f;}
-.readMore a:visited {color:#aacc77;}  /* mouse over link */
-.readMore a:active {color:black;}
-
+.readMore a:link{color:#aacc77; text-decoration: none;text-shadow:1px 1px 0px white;}
+.readMore a:hover {color:#74a22f;text-shadow:1px 1px 0px white;}
+.readMore a:visited {color:#aacc77;text-shadow:1px 1px 0px white;}  /* mouse over link */
+.readMore a:active {color:black;text-shadow:1px 1px 0px white;}
 </style>
+
+
+
+<style type="text/css">
+
+.right_title{
+    font-family: "MyriadPro Regular";
+    font-size: 0.8em;
+    color: #4b4b4b;
+    text-shadow:1px 1px 1px white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.arrow-up{
+    width: 0;
+    height: 0;
+    border-left: 0.5em solid transparent;
+    border-right: 0.5em solid transparent;
+    border-bottom: 1em solid white;
+    margin-right: 1.5em;
+    margin-bottom: 0.1em;
+}
+
+.right_row{
+    background-color: #eeeeee;
+    border-bottom: 1px solid #d4d4d4;
+    width: 100%;
+    padding: .4em;
+    padding-right: 0;
+    padding-left: 1em;
+    cursor: pointer;
+}
+.right_row{
+    background-color: #eeeeee;
+    border-bottom: 1px solid #d4d4d4;
+    width: 100%;
+    padding: .4em;
+    padding-right: 0;
+    padding-left: 1em;
+    cursor: pointer;
+}
+.right_row:hover{
+    background-color: #eaeaea;
+}
+.right_row:hover a.right_title{
+    color:#222222;
+}
+.right-bottom-line{
+    background-color: white;
+    width:21.4em;
+    height:1px;
+}
+
+
+.thumb-up{
+    margin-top: 0.2em;
+    background:url(img/thumb-up.png) 0 0 no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+}
+.thumb-up:hover{
+    background:url(img/thumb-up.png) 0 -1.2em no-repeat;
+    background-size: 100%;
+}
+.thumb-up:active{
+    background:url(img/thumb-up.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+}
+.thumb-up-active{
+    margin-top: 0.2em;
+    background:url(img/thumb-up.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+    display: none;
+}
+
+
+.thumb-down{
+    margin-top: 0.2em;
+    background:url(img/thumb-down.png) 0 0 no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+}
+.thumb-down:hover{
+    background:url(img/thumb-down.png) 0 -1.2em no-repeat;
+    background-size: 100%;
+}
+.thumb-down:active{
+    background:url(img/thumb-down.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+}
+.thumb-down-active{
+    margin-top: 0.2em;
+    background:url(img/thumb-down.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+    display: none;
+}
+
+.right_source{
+    font-family: "Times New Roman";
+    font-size: 0.7em;
+    font-style: italic;
+    color: #8c8c8c;
+    text-shadow:1px 1px 1px white;
+    text-align: right;
+    text-decoration: none;
+}
+.right_source a:link{
+    color:#0c638c;
+    font-size:1em;
+    text-decoration: none;
+}
+.right_source a:hover{
+    color: #2497cd;
+}
+.right_source a:visited{
+    color: #0c638c;
+}
+
+.desc{
+    font-size: 10pt;
+    text-shadow:1px 1px 0px white;
+    color: #222222;
+}
+
+.right_content{
+    width:21.4em;
+    background-color:#f6f6f6;
+    padding: 0;
+    height:0;
+    overflow: hidden;
+}
+</style>
+
         <link rel="stylesheet" type="text/css" href="mainCSS.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script type="text/javascript" src="default_js.js"></script>
         <script type="text/javascript">
 
-            function fade(id){
-                jQuery(id).fadeToggle('fast');
+            function openUpStuff(id){
+                if(jQuery("#"+id+"_expand").css('height') =='0px'){
+                    jQuery("#"+id+"_expand").animate({height:jQuery("#"+id+"_content").css('height')}, 400);
+                }else{
+                    jQuery("#"+id+"_expand").animate({height:'0'}, 400);
+                }
             }
+            
 
 
         </script>
@@ -196,14 +341,14 @@ url(fonts/MyriadPro-SemiboldIt.otf) format("opentype")
                 <tr>
                     <td class="left">
                         <table>
-                            <tr >
-                                <td style="width:45%;vertical-align: top;" id="news_article_left"></td>
+                            <tr>
+                                <td style="width:45%;vertical-align: top;border-right:1px solid #c6c6c6;" id="news_article_left"></td>
                                 <td style="width:45%;vertical-align: top;" id="news_article_right"></td>
                             </tr>
                         </table>
                     </td>
-                <td class="left" >
-                        <div id="recent"></div>
+                    <td class="left">
+                        <div id="recent" ></div>
                         <div id="archive"></div>
                     </td>
                 </tr>
