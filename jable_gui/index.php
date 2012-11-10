@@ -6,17 +6,35 @@
     <head>
         <style>
 
+/*
+url(fonts/MyriadPro-Bold.otf) format("opentype"),
+url(fonts/MyriadPro-BoldCond.otf) format("opentype"),
+url(fonts/MyriadPro-BoldCondIt.otf) format("opentype"),
+url(fonts/MyriadPro-BoldIt.otf) format("opentype"),
+url(fonts/MyriadPro-Cond.otf) format("opentype"),
+url(fonts/MyriadPro-CondIt.otf) format("opentype"),
+url(fonts/MyriadPro-It.otf) format("opentype"),
+url(fonts/MyriadPro-Regular.otf) format("opentype"),
+url(fonts/MyriadPro-Semibold.otf) format("opentype"),
+url(fonts/MyriadPro-SemiboldIt.otf) format("opentype")
+*/
+
 @font-face {
-  font-family: "Condenced";
-  src: url(fonts/MyriadPro-Cond.otf) format("opentype");
+  font-family: "MyriadPro Cond";
+  src:  url(fonts/MyriadPro-Cond.otf) format("opentype");
 }
+@font-face {
+  font-family: "MyriadPro Regular";
+  src:  url(fonts/MyriadPro-Regular.otf) format("opentype");   
+}
+
 
 .newsTemp{
     margin: 10px;
 }
 .title{
     margin: 0px;
-    font-family: "Condenced";
+    font-family: "MyriadPro Cond";
     font-size: 1.6em;
 }
 .content{
@@ -27,39 +45,40 @@
 
 .readMore{
     margin: 10px;
-    font-family: "Condenced";
+    font-family: "MyriadPro Cond";
     font-size: 1em;
     color: #aacc77;
 }
 
 #pub{
-    font: italic 0.7em "Condenced";
+    font: italic 0.7em "MyriadPro Cond";
     color: #c6c6c6;
 }
 
 .voteButtons{
+    position: absolute;
     margin-right: 20px;
     padding: 5px;
-    height:40px;
+    height:4.46em;
     vertical-align:top;
-    opacity:0.1;
+    opacity:1;
     filter:alpha(opacity=10); /* For IE8 and earlier */
 }
 
 .vote-up{
-    padding-top: 0.1em;
-    background:url(img/vote-up.png) 0 0 no-repeat;
+    padding-top: 0.06em;
+    background:url(img/vote-up2.png) 0 0 no-repeat;
     background-size: 100%;
-    height: 2.4em;
+    height: 2.34em;
     width: 2em;
 }
 
 .vote-up:hover{
-    background:url(img/vote-up-hover.png) 0 0 no-repeat;
+    background:url(img/vote-up2.png) 0 -2.4em no-repeat;
     background-size: 100%;
 }
 .vote-up:active{
-    background:url(img/vote-up-active-hover.png) 0 0 no-repeat;
+    background:url(img/vote-up2.png) 0 -4.8em no-repeat;
     background-size: 100%;
 }
 
@@ -67,48 +86,46 @@
 
 
 .vote-up-active{
-    background:url(img/vote-up-active.png) 0 0 no-repeat;
+    background:url(img/vote-up2.png) 0 -7.2em no-repeat;
     background-size: 100%;
-    height: 2.4em;
+    height: 2.34em;
     width: 2em;
-    padding-top: 0.1em;
+    padding-top: 0.06em;
     display:none;
 }
 
 .vote-up-active:active{
-    background:url(img/vote-up-active-hover.png) 0 0 no-repeat;
+    background:url(img/vote-up2.png) 0 -4.8em no-repeat;
     background-size: 100%;
 }
 
 
 .vote-down{
-    margin-top: -0.1em;
-    padding-top: 1.5em;
-    background:url(img/vote-down.png) 0 0 no-repeat;
+    padding-top: 1.55em;
+    background:url(img/vote-down2.png) 0 0 no-repeat;
     background-size: 100%;
-    height: 2.4em;
+    height: 0.85em;
     width: 2em;
 }
 .vote-down:hover{
-    background:url(img/vote-down-hover.png) 0 0 no-repeat;
+    background:url(img/vote-down2.png) 0 -2.4em no-repeat;
     background-size: 100%;
 }
 .vote-down:active{
-    background:url(img/vote-down-active-hover.png) 0 0 no-repeat;
+    background:url(img/vote-down2.png) 0 -4.8em no-repeat;
     background-size: 100%;
 }
 
 .vote-down-active{
-    margin-top: -0.1em;
-    background:url(img/vote-down-active.png) 0 0 no-repeat;
+    background:url(img/vote-down2.png) 0 -7.2em no-repeat;
     background-size: 100%;
-    height: 2.4em;
+    height: 0.85em;
     width: 2em;
-    padding-top: 1.5em;
+    padding-top: 1.55em;
     display:none;
 }
 .vote-down-active:active{
-    background:url(img/vote-down-active-hover.png) 0 0 no-repeat;
+    background:url(img/vote-down2.png) 0 -4.8em no-repeat;
     background-size: 100%;
 }
 
@@ -132,7 +149,7 @@
 .likes{
     height: 100%;
     width: 100%;
-    font:bold 0.75em "Condenced";
+    font:bold 0.75em "MyriadPro Cond";
     text-shadow: 0.067em 0.067em 0.1em black;
     color:white;
     vertical-align: top;
