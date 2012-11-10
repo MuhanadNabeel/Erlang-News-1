@@ -67,18 +67,18 @@ url(fonts/MyriadPro-SemiboldIt.otf) format("opentype")
 
 .vote-up{
     padding-top: 0.06em;
-    background:url(img/vote-up2.png) 0 0 no-repeat;
+    background:url(img/vote-up.png) 0 0 no-repeat;
     background-size: 100%;
     height: 2.34em;
     width: 2em;
 }
 
 .vote-up:hover{
-    background:url(img/vote-up2.png) 0 -2.4em no-repeat;
+    background:url(img/vote-up.png) 0 -2.4em no-repeat;
     background-size: 100%;
 }
 .vote-up:active{
-    background:url(img/vote-up2.png) 0 -4.8em no-repeat;
+    background:url(img/vote-up.png) 0 -4.8em no-repeat;
     background-size: 100%;
 }
 
@@ -86,7 +86,7 @@ url(fonts/MyriadPro-SemiboldIt.otf) format("opentype")
 
 
 .vote-up-active{
-    background:url(img/vote-up2.png) 0 -7.2em no-repeat;
+    background:url(img/vote-up.png) 0 -7.2em no-repeat;
     background-size: 100%;
     height: 2.34em;
     width: 2em;
@@ -95,29 +95,29 @@ url(fonts/MyriadPro-SemiboldIt.otf) format("opentype")
 }
 
 .vote-up-active:active{
-    background:url(img/vote-up2.png) 0 -4.8em no-repeat;
+    background:url(img/vote-up.png) 0 -4.8em no-repeat;
     background-size: 100%;
 }
 
 
 .vote-down{
     padding-top: 1.55em;
-    background:url(img/vote-down2.png) 0 0 no-repeat;
+    background:url(img/vote-down.png) 0 0 no-repeat;
     background-size: 100%;
     height: 0.85em;
     width: 2em;
 }
 .vote-down:hover{
-    background:url(img/vote-down2.png) 0 -2.4em no-repeat;
+    background:url(img/vote-down.png) 0 -2.4em no-repeat;
     background-size: 100%;
 }
 .vote-down:active{
-    background:url(img/vote-down2.png) 0 -4.8em no-repeat;
+    background:url(img/vote-down.png) 0 -4.8em no-repeat;
     background-size: 100%;
 }
 
 .vote-down-active{
-    background:url(img/vote-down2.png) 0 -7.2em no-repeat;
+    background:url(img/vote-down.png) 0 -7.2em no-repeat;
     background-size: 100%;
     height: 0.85em;
     width: 2em;
@@ -125,7 +125,7 @@ url(fonts/MyriadPro-SemiboldIt.otf) format("opentype")
     display:none;
 }
 .vote-down-active:active{
-    background:url(img/vote-down2.png) 0 -4.8em no-repeat;
+    background:url(img/vote-down.png) 0 -4.8em no-repeat;
     background-size: 100%;
 }
 

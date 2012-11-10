@@ -23,22 +23,22 @@
 
 .thumb-up{
 	margin-top: 0.2em;
-    background:url(img/vote-small/thumb-up.png) 0 0 no-repeat;
+    background:url(img/thumb-up.png) 0 0 no-repeat;
     background-size: 100%;
     height: 1.1em;
     width: 1em;
 }
 .thumb-up:hover{
-	background:url(img/vote-small/thumb-up.png) 0 -1.2em no-repeat;
+	background:url(img/thumb-up.png) 0 -1.2em no-repeat;
     background-size: 100%;
 }
 .thumb-up:active{
-	background:url(img/vote-small/thumb-up.png) 0 -2.4em no-repeat;
+	background:url(img/thumb-up.png) 0 -2.4em no-repeat;
     background-size: 100%;
 }
 .thumb-up-active{
 	margin-top: 0.2em;
-    background:url(img/vote-small/thumb-up.png) 0 -2.4em no-repeat;
+    background:url(img/thumb-up.png) 0 -2.4em no-repeat;
     background-size: 100%;
     height: 1.1em;
     width: 1em;
@@ -48,22 +48,22 @@
 
 .thumb-down{
 	margin-top: 0.2em;
-    background:url(img/vote-small/thumb-down.png) 0 0 no-repeat;
+    background:url(img/thumb-down.png) 0 0 no-repeat;
     background-size: 100%;
     height: 1.1em;
     width: 1em;
 }
 .thumb-down:hover{
-	background:url(img/vote-small/thumb-down.png) 0 -1.2em no-repeat;
+	background:url(img/thumb-down.png) 0 -1.2em no-repeat;
     background-size: 100%;
 }
 .thumb-down:active{
-	background:url(img/vote-small/thumb-down.png) 0 -2.4em no-repeat;
+	background:url(img/thumb-down.png) 0 -2.4em no-repeat;
     background-size: 100%;
 }
 .thumb-down-active{
 	margin-top: 0.2em;
-    background:url(img/vote-small/thumb-down.png) 0 -2.4em no-repeat;
+    background:url(img/thumb-down.png) 0 -2.4em no-repeat;
     background-size: 100%;
     height: 1.1em;
     width: 1em;
