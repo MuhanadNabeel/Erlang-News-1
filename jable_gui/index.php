@@ -88,9 +88,9 @@ url(fonts/MyriadPro-SemiboldIt.otf) format("opentype")
 .vote-up-active{
     background:url(img/vote-up.png) 0 -7.2em no-repeat;
     background-size: 100%;
-    height: 2.34em;
+    height: 2.3em;
     width: 2em;
-    padding-top: 0.06em;
+    padding-top: 0.1em;
     display:none;
 }
 
