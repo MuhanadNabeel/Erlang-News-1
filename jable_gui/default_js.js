@@ -43,7 +43,6 @@ function articleAction(item,action,undo) {
     }
     function iterateCounter(id,up) {
         var org = parseInt( jQuery(id).text(), 10 );
-        //alert(org);
         if( up )
             jQuery(id).text( ( org + 1 ) );
         else
@@ -81,7 +80,10 @@ function articleAction(item,action,undo) {
 }
 
 function getNewsJSON() {
+    $('body').prepend('<div style="text-align:center;position:absolute;left:50%;'
+            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');
     jQuery.get('_get_news.php',function(outcome) {
+        $('#main_loading_space').remove();
         jQuery('#news_article_left').html('');
         jQuery('#news_article_right').html('');
         jQuery('#archive').html('');
@@ -140,9 +142,11 @@ function getNewsJSON() {
                                 .replace(/{down}/g,json.Down_Vote)
                                 .replace(/{up}/g,json.Up_Vote)
                                 .replace(/{clicks}/g,json.Clicks)
+                                .replace(/{description}/g,json.Description)
                                 .replace(/{URL}/g,json.URL)
                                 .replace(/{host}/g,json.host)
                                 .replace(/{vote_bar}/g,precent)
+                                .replace(/{image}/g,json.Image)
                                 .replace(/{id}/g,json.newsID);
     }
 }
