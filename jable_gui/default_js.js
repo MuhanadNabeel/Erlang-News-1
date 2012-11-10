@@ -25,33 +25,25 @@ function articleAction(item,action,undo) {
         clearInterval(interval);
         jQuery('#' + jQuery(item).attr('id') + '_active').css('opacity','1');
         jQuery('#' + jQuery(item).attr('id')).css('opacity','1');
-        //getNewsJSON();
     });
     function updateCounter(id,action,undo) {
-        // jQuery('#' + id + '_up_vote_count').html();
-        // jQuery('#' + id + '_down_vote_count').html();
-        var org, eID;
         if( undo == true && action == 0 ) {
-            eID = '#' + id + '_down_vote_count';
-            org = parseInt(jQuery(eID).html(),10);
-            //alert(org + ': ' + (org-1));
-            jQuery(eID).html((org-1));
+            iterateCounter('#' + id + '_down_vote_count',-1);
         } else if( undo == true && action == 1 ) {
-            eID = '#' + id + '_up_vote_count';
-            org = parseInt(jQuery(eID).html(),10);
-            //alert(org + ': ' + (org-1));
-            jQuery(eID).html((org-1));
+            iterateCounter('#' + id + '_up_vote_count',-1);
         } else if( undo == false && action == 0 ) {
-            eID = '#' + id + '_down_vote_count';
-            org = parseInt(jQuery(eID).html(),10);
-            //alert(org + ': ' + (org+1));
-            jQuery(eID).html((org+1));
+            iterateCounter('#' + id + '_down_vote_count',1);
+            if( jQuery('#' + id + '_vote_up_active').is(':visible') )
+                iterateCounter('#' + id + '_up_vote_count',-1);
         } else if( undo == false && action == 1 ) {
-            eID = '#' + id + '_up_vote_count';
-            org = parseInt(jQuery(eID).html(),10);
-            //alert(org + ': ' + (org+1));
-            jQuery(eID).html((org+1));
+            iterateCounter('#' + id + '_up_vote_count',1);
+            if( jQuery('#' + id + '_vote_down_active').is(':visible') )
+                iterateCounter('#' + id + '_down_vote_count',-1);
         }
+    }
+    function iterateCounter(id,num) {
+        var org = parseInt(jQuery(id).html(),10);
+        jQuery(id).html( ( org + num ) );
     }
     var articleActionBlinkIndex = 1;
     function articleActionBlink(id) {
@@ -81,27 +73,6 @@ function articleAction(item,action,undo) {
                 jQuery( '#' + id + '_vote_up_active' ).hide();
                 jQuery( '#' + id + '_vote_up' ).show();
         }
-            
-        /*
-        if( undo == true )
-            jQuery(item).hide();
-        else if( jQuery(item).attr('id') == id + '_vote_up' 
-            && jQuery('#' + id + '_vote_down_active').is(':visible') ) {
-            jQuery('#' + id + '_vote_down_active').hide();
-            jQuery('#' + id + '_vote_up_active').show();
-            jQuery('#' + id + '_vote_down').hide();
-            jQuery('#' + id + '_vote_up').show();
-        }
-        else if( jQuery(item).attr('id') == id + '_vote_down' 
-            && jQuery('#' + id + '_vote_up_active').is(':visible') ) {
-            jQuery('#' + id + '_vote_up_active').hide();
-            jQuery('#' + id + '_vote_down_active').show();
-            jQuery('#' + id + '_vote_up').hide();
-            jQuery('#' + id + '_vote_down').show();
-        }
-        else
-            jQuery( '#' + jQuery(item).attr('id') + '_active').show();
-        */
     }
 }
 
