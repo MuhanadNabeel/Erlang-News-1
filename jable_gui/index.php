@@ -194,10 +194,8 @@ url(fonts/MyriadPro-SemiboldIt.otf) format("opentype")
 .arrow-up{
     width: 0;
     height: 0;
-    border-left: 0.5em solid transparent;
-    border-right: 0.5em solid transparent;
-    border-bottom: 1em solid white;
-    margin-right: 1.5em;
+    border-bottom: 1.3em solid white;
+    border-left: 1.3em solid transparent;
     margin-bottom: 0.1em;
 }
 
