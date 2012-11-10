@@ -5,6 +5,7 @@ $sql = new MySQL();
 $result = $sql->sqlQuery("SELECT * FROM ernews_news LIMIT 30");
 $outcome = Array();
 while( ($row = mysql_fetch_array($result)) !== FALSE ) {
+    $row['host'] = parse_url($row['URL'])['host'];
     $outcome[] = $row;
 }
 

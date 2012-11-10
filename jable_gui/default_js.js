@@ -3,7 +3,6 @@ var newsTemplate = '';
 var newsRightTemplate = '';
 jQuery(document).ready(function() {
     jQuery.get('_get_templates.php',function(str){
-        /* Assigning the templates to the variables */
         var split = str.split('<split_between_templates>')
         newsRightTemplate = split[0];
         newsTemplate = split[1];
@@ -25,8 +24,23 @@ function articleAction(item,action,undo) {
         clearInterval(interval);
         jQuery('#' + jQuery(item).attr('id') + '_active').css('opacity','1');
         jQuery('#' + jQuery(item).attr('id')).css('opacity','1');
-        getNewsJSON();
+        //getNewsJSON();
+        updateCounter(id,action,undo);
     });
+    function updateCounter(id,action,undo) {
+        // jQuery('#' + id + '_up_vote_count').html();
+        // jQuery('#' + id + '_down_vote_count').html();
+        if( undo == true && action == 0 )
+            jQuery('#' + id + '_down_vote_count').html( (parseInt(jQuery('#' + id + '_down_vote_count').html(),10)-1) );
+        else if( undo == true && action == 1 )
+            jQuery('#' + id + '_up_vote_count').html( (parseInt(jQuery('#' + id + '_down_vote_count').html(),10)-1) );
+        else if( undo == false && action == 0 )
+            jQuery('#' + id + '_down_vote_count').html( (parseInt(jQuery('#' + id + '_down_vote_count').html(),10)+1) );
+        else if( undo == false && action == 1 )
+            jQuery('#' + id + '_up_vote_count').html( (parseInt(jQuery('#' + id + '_down_vote_count').html(),10)+1) );
+        else
+            alert('ba');
+    }
     var articleActionBlinkIndex = 1;
     function articleActionBlink(id) {
         var opacity = '0.3';
@@ -41,9 +55,21 @@ function articleAction(item,action,undo) {
     function changeUserButtons(id,item,undo) {
         jQuery(item).hide();
         if( jQuery(item).attr('id').indexOf('_active') != -1 )
-            jQuery( '#' + jQuery(item).attr('id').substring(0, jQuery(item).attr('id').lastIndexOf('_')) ).show();
+            jQuery( '#' + jQuery(item).attr('id').substring(0, 
+                jQuery(item).attr('id').lastIndexOf('_')) ).show();
         else
             jQuery( '#' + jQuery(item).attr('id') + '_active' ).show();
+        if( jQuery(item).attr('id').indexOf('vote_up') != -1 && 
+                jQuery( '#' + id + '_vote_down_active' ).is(':visible') ) {
+                jQuery( '#' + id + '_vote_down_active' ).hide();
+                jQuery( '#' + id + '_vote_down' ).show();
+        }
+        else if( jQuery(item).attr('id').indexOf('vote_down') != -1 && 
+                jQuery( '#' + id + '_vote_up_active' ).is(':visible') ) {
+                jQuery( '#' + id + '_vote_up_active' ).hide();
+                jQuery( '#' + id + '_vote_up' ).show();
+        }
+            
         /*
         if( undo == true )
             jQuery(item).hide();
@@ -100,6 +126,7 @@ function getNewsJSON() {
                             .replace(/{down}/g,json.Down_Vote)
                             .replace(/{up}/g,json.Up_Vote)
                             .replace(/{clicks}/g,json.Clicks)
+                            .replace(/{host}/g,json.host)
                             .replace(/{description}/g,json.Description)
                             .replace(/{image}/g,json.Image)
                             .replace(/{URL}/g,json.URL)
@@ -127,6 +154,7 @@ function getNewsJSON() {
                                 .replace(/{up}/g,json.Up_Vote)
                                 .replace(/{clicks}/g,json.Clicks)
                                 .replace(/{URL}/g,json.URL)
+                                .replace(/{host}/g,json.host)
                                 .replace(/{vote_bar}/g,precent)
                                 .replace(/{id}/g,json.newsID);
     }
