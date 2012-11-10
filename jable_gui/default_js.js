@@ -15,6 +15,7 @@ function articleAction(item,action,undo) {
     var id = jQuery(item).attr('id').substring(0,jQuery(item).attr('id').indexOf('_'));
     if( isUserAction[id][Math.floor(action/2)] == true )
         return;
+    updateCounter(id,action,undo);
     isUserAction[id][Math.floor(action/2)] = true;
     changeUserButtons(id,item,undo);
     var interval = setInterval("articleActionBlink('" 
@@ -25,21 +26,32 @@ function articleAction(item,action,undo) {
         jQuery('#' + jQuery(item).attr('id') + '_active').css('opacity','1');
         jQuery('#' + jQuery(item).attr('id')).css('opacity','1');
         //getNewsJSON();
-        updateCounter(id,action,undo);
     });
     function updateCounter(id,action,undo) {
         // jQuery('#' + id + '_up_vote_count').html();
         // jQuery('#' + id + '_down_vote_count').html();
-        if( undo == true && action == 0 )
-            jQuery('#' + id + '_down_vote_count').html( (parseInt(jQuery('#' + id + '_down_vote_count').html(),10)-1) );
-        else if( undo == true && action == 1 )
-            jQuery('#' + id + '_up_vote_count').html( (parseInt(jQuery('#' + id + '_down_vote_count').html(),10)-1) );
-        else if( undo == false && action == 0 )
-            jQuery('#' + id + '_down_vote_count').html( (parseInt(jQuery('#' + id + '_down_vote_count').html(),10)+1) );
-        else if( undo == false && action == 1 )
-            jQuery('#' + id + '_up_vote_count').html( (parseInt(jQuery('#' + id + '_down_vote_count').html(),10)+1) );
-        else
-            alert('ba');
+        var org, eID;
+        if( undo == true && action == 0 ) {
+            eID = '#' + id + '_down_vote_count';
+            org = parseInt(jQuery(eID).html(),10);
+            //alert(org + ': ' + (org-1));
+            jQuery(eID).html((org-1));
+        } else if( undo == true && action == 1 ) {
+            eID = '#' + id + '_up_vote_count';
+            org = parseInt(jQuery(eID).html(),10);
+            //alert(org + ': ' + (org-1));
+            jQuery(eID).html((org-1));
+        } else if( undo == false && action == 0 ) {
+            eID = '#' + id + '_down_vote_count';
+            org = parseInt(jQuery(eID).html(),10);
+            //alert(org + ': ' + (org+1));
+            jQuery(eID).html((org+1));
+        } else if( undo == false && action == 1 ) {
+            eID = '#' + id + '_up_vote_count';
+            org = parseInt(jQuery(eID).html(),10);
+            //alert(org + ': ' + (org+1));
+            jQuery(eID).html((org+1));
+        }
     }
     var articleActionBlinkIndex = 1;
     function articleActionBlink(id) {
