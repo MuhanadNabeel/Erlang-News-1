@@ -1,9 +1,10 @@
 <div class="newsTemp"> 
-   <p>
+<!--   <p>
        <a href="redirect.php?id={id}&url={URL}" onmouseover="JavaScript:windows.status='this link blaber';
            return true;" onmouseout="window.status=''";><h1>{title}</h1></a>
-   </p>
-   <p class="main" style="min-height: 90px;">
+   </p>-->
+
+   <p class="template1Main" style="min-height: 90px;">
        <img src="{image}" align="left">
        {description}
    </p>  
