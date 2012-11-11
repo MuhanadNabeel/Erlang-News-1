@@ -81,7 +81,8 @@ function articleAction(item,action,undo) {
     }
 }
 
-var archiveTable = 'archive_1';
+var archiveTable = 1;
+var isPageLoad = true;
 function getNewsJSON() {
     jQuery.get('_get_news.php',function(outcome) {
         $('#main_loading_space').remove();
@@ -93,18 +94,21 @@ function getNewsJSON() {
         for( var i = 0 ; i < json.length ; i++ ) {
             isUserAction[json[i].newsID] = Array(false,false);
             if( i < 10 && i % 2 == 0 )
-                jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
+                jQuery('#news_article_left').append( getNewsArticle(json[i]) );
             else if( i < 10 )
-                jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
+                jQuery('#news_article_right').append( getNewsArticle(json[i]) );
             else 
-                jQuery('#archive').append( addNewsLink(json[i], archiveTable) );
+                jQuery('#archive_' + archiveTable).append( addNewsLink(json[i]) );
         }
         setUserClicked(parse.cookies.Up_Vote,'_vote_up');
         setUserClicked(parse.cookies.Down_Vote,'_vote_down');
-        if( archiveTable == 'archive_1' )
-            archiveTable = 'archive_2';
+        if( archiveTable == 1 )
+            archiveTable = 2;
         else
-            archiveTable = 'archive_1';
+            archiveTable = 1;
+        if( isPageLoad == false )
+            updateRight();
+        isPageLoad = true;
     });
     function setUserClicked(json,str) {
         for( var i = 0 ; i < json.length ; i++ ) {
@@ -114,7 +118,7 @@ function getNewsJSON() {
             }
         }
     }
-    function getNewsArticle(json,datatype) {
+    function getNewsArticle(json) {
         var precent = calcPrecent(parseInt(json.Up_Vote,10),parseInt(json.Down_Vote,10));
         return newsTemplate.replace(/{title}/g,json.Title)
                             .replace(/{down}/g,json.Down_Vote)
@@ -125,7 +129,6 @@ function getNewsJSON() {
                             .replace(/{image}/g,json.Image)
                             .replace(/{URL}/g,json.URL)
                             .replace(/{vote_bar}/g,precent)
-                            .replace(/{datatype}/g,datatype)
                             .replace(/{id}/g,json.newsID);
     }
     
@@ -136,7 +139,7 @@ function getNewsJSON() {
         return parseInt( (up/total)*100 ,10);
     }
 
-    function addNewsLink(json,datatype) {
+    function addNewsLink(json) {
         var title = '';
         if( json.Title.length < 60 )
             title = json.Title;
@@ -152,7 +155,6 @@ function getNewsJSON() {
                                 .replace(/{URL}/g,json.URL)
                                 .replace(/{host}/g,json.host)
                                 .replace(/{vote_bar}/g,precent)
-                                .replace(/{datatype}/g,datatype)
                                 .replace(/{image}/g,json.Image)
                                 .replace(/{id}/g,json.newsID);
     }
