@@ -1,4 +1,6 @@
 <li data-id="{id}_right_item">
+    <div style="width:100%;margin-right:10px;">
+
     <div class="right_row" onclick="openUpStuff('{id}')">
                     
                         <a class="right_title">{title}</a></br>
@@ -37,5 +39,5 @@
         </div>
     </div>
     <div class="right-bottom-line"></div>
-
+    </div>
 </li>

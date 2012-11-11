@@ -28,8 +28,14 @@
                     jQuery("#"+id+"_expand").animate({height:'0'}, 400);
                 }
             }
-            function updateRight(){
-
+            function test(){
+                $('#oldone').quicksand( $('#newone li') );
+            }
+            function updateRight(id){
+                if(id == 'archive_1'){
+                }else{
+                    $('#archive_1').quicksand( $('#archive_2 li') );
+                }
             }
             
 
@@ -49,10 +55,11 @@
                     </td>
                     <td class="left">
                         <div id="recent"></div>
-                        <ul id="archive"></ul>
+                        <ul id="archive_1"></ul>
+                        <ul id="archive_2" style="display:none"></ul>
 
-
-                        <!--
+<!--
+                        
 <ul id="oldone">
                             <li data-id="1">Hello1</li>
                             <li data-id="3">Hello2</li>
@@ -81,10 +88,10 @@
                             <li data-id="6">Hello6</li>
                             <li data-id="5">Hello5</li>
                             <li data-id="3"><div style="width:60px;height:50px;background-color:green;">Hello3</div></li>
-                        </ul>
-                    </td>-->
+                        </ul>-->
+                    </td>
                 </tr>
-                <tr><button onclick="sort()">Hello</button></tr>
+                <tr><button onclick="getNewsJSON()">Hello</button></tr>
             </table>
         
     </body>

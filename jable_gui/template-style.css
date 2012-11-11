@@ -18,7 +18,7 @@
 .right_row{
     background-color: #eeeeee;
     border-bottom: 1px solid #d4d4d4;
-    width: 100%;
+    width: 100 %;
     padding: .4em;
     padding-right: 0;
     padding-left: 1em;
@@ -123,7 +123,6 @@
 }
 
 .right_content{
-    width:100%;
     background-color:#f6f6f6;
     padding: 0;
     height:0;
