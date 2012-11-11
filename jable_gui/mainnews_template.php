@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" href="template-style.css">
+
 <div class="newsTemp">
 
 	<div class="title">
