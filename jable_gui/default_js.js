@@ -108,7 +108,7 @@ function getNewsJSON() {
             archiveTable = 1;
         if( isPageLoad == false )
             updateRight();
-        isPageLoad = true;
+        isPageLoad = false;
     });
     function setUserClicked(json,str) {
         for( var i = 0 ; i < json.length ; i++ ) {
