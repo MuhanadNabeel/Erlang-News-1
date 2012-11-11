@@ -2,6 +2,8 @@ var isUserAction = new Object();
 var newsTemplate = '';
 var newsRightTemplate = '';
 jQuery(document).ready(function() {
+    $('body').prepend('<div style="text-align:center;position:absolute;left:50%;'
+            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');
     jQuery.get('_get_templates.php',function(str){
         var split = str.split('<split_between_templates>')
         newsRightTemplate = split[0];
@@ -79,14 +81,12 @@ function articleAction(item,action,undo) {
     }
 }
 
+var whichArchive = 1;
 function getNewsJSON() {
-    $('body').prepend('<div style="text-align:center;position:absolute;left:50%;'
-            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');
     jQuery.get('_get_news.php',function(outcome) {
         $('#main_loading_space').remove();
         jQuery('#news_article_left').html('');
         jQuery('#news_article_right').html('');
-        jQuery('#archive').html('');
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
         for( var i = 0 ; i < json.length ; i++ ) {
@@ -96,10 +96,15 @@ function getNewsJSON() {
             else if( i < 10 )
                 jQuery('#news_article_right').append( getNewsArticle(json[i]) );
             else 
-                jQuery('#archive').append( addNewsLink(json[i]) );
+                jQuery('#archive_' + whichArchive).append( addNewsLink(json[i]) );
         }
         setUserClicked(parse.cookies.Up_Vote,'_vote_up');
         setUserClicked(parse.cookies.Down_Vote,'_vote_down');
+        updateRight('archive_' + whichArchive);
+        if( whichArchive == 1 )
+            whichArchive = 2;
+        else
+            whichArchive = 1;
     });
     function setUserClicked(json,str) {
         for( var i = 0 ; i < json.length ; i++ ) {
