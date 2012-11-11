@@ -5,21 +5,147 @@
 <html>
     <head>
         <style type="text/css">
-      tr.awesome{
-        color: red;
-      }
-      th[class|="type"]{
-        cursor:pointer;
-      }
-    </style>
+        /*----------
+Div fonts
+----------*/
+.right_title{
+    font-family: "MyriadPro Regular";
+    font-size: 0.8em;
+    color: #4b4b4b;
+    text-shadow:1px 1px 1px white;
+    text-decoration: none;
+    cursor: pointer;
+}
+.right_source{
+    font-family: "Times New Roman";
+    font-size: 0.7em;
+    font-style: italic;
+    color: #8c8c8c;
+    text-shadow:1px 1px 1px white;
+    text-align: right;
+    text-decoration: none;
+}
+.right_source a:link{color:#0c638c;font-size:1em;text-decoration: none;}
+.right_source a:hover{color: #2497cd;}
+.right_source a:visited{color: #0c638c;}
+.desc{
+    font-size: 10pt;
+    text-shadow:1px 1px 0px white;
+    color: #222222;
+}
+/*----------
+Main divs
+----------*/
+.right_row{
+    background-color: #eeeeee;
+    border-bottom: 1px solid #d4d4d4;
+    padding-right: 0;
+    cursor: pointer;
+    width: 22em;
+}
+.right_row:hover{background-color: #eaeaea;}
+.right_row:hover a.right_title{color:#222222;}
+
+.right_content{
+    width:22em;
+    background-color:#f6f6f6;
+    height:0;
+    overflow: hidden;
+}
+/*----------
+Details
+----------*/
+.right-bottom-line{background-color: white;height:1px;}
+.seperator{
+    width:16em;
+    height:1px;
+    background-color:#c6c6c6;
+    border-bottom:1px solid white;
+    margin-top:0.5em;
+}
+.green-seperator{
+  background-color:#aacc77;
+  width:100%;
+  height:0.1em;
+}
+.arrow-container{
+    width: 100%;
+    vertical-align:bottom;
+    margin-bottom:2em;
+}
+.arrow-up{
+    width: 0;
+    height: 0;
+    border-bottom: 1.3em solid white;
+    border-left: 1.3em solid transparent;
+    margin-bottom: 0.1em;
+}
+
+/*----------
+Thumbs up and down.
+----------*/
+.voting{
+  vertical-align:top;
+  display:inline-block;
+  padding: 0.5em;
+}
+.thumb-up{
+    margin-top: 0.2em;
+    background:url(img/thumb-up.png) 0 0 no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+}
+.thumb-up:hover{
+    background:url(img/thumb-up.png) 0 -1.2em no-repeat;
+    background-size: 100%;
+}
+.thumb-up:active{
+    background:url(img/thumb-up.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+}
+.thumb-up-active{
+    margin-top: 0.2em;
+    background:url(img/thumb-up.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+    display: none;
+}
+.thumb-down{
+    margin-top: 0.2em;
+    background:url(img/thumb-down.png) 0 0 no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+}
+.thumb-down:hover{
+    background:url(img/thumb-down.png) 0 -1.2em no-repeat;
+    background-size: 100%;
+}
+.thumb-down:active{
+    background:url(img/thumb-down.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+}
+.thumb-down-active{
+    margin-top: 0.2em;
+    background:url(img/thumb-down.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+    display: none;
+}</style>
 
         <link rel="stylesheet" type="text/css" href="mainCSS.css">
-        <link rel="stylesheet" type="text/css" href="template-style.css">
+<!--        <link rel="stylesheet" type="text/css" href="template-style.css">-->
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script type="text/javascript" src="default_js.js"></script>
         <script type="text/javascript" src="jquery.quicksand.js"></script>
         <script type="text/javascript">
+
+            var $holder;
+            var $data;
 
             function openUpStuff(id){
                 if(jQuery("#"+id+"_expand").css('height') =='0px'){
@@ -28,19 +154,43 @@
                     jQuery("#"+id+"_expand").animate({height:'0'}, 400);
                 }
             }
-            function test(){
-                $('#oldone').quicksand( $('#newone li') );
+            $(document).ready(function() {
+
+                // get the action filter option item on page load
+                var $filterType = $('#filterOptions li.active button').attr('class');
+                $holder = $('#archive');
+                $data = $holder.clone();
+
+                /*var $filteredData = $data.find('li[data-type=type1]');
+                    $holder.quicksand($filteredData, {
+                        duration: 0});*/
+
+            })
+
+            function animate(id){
+                var $filteredData = $data.find('li[data-type=archive_'+id+']');
+                $holder.quicksand($filteredData, {
+                    duration: 800,
+                    easing: 'swing'});
             }
+
             function updateRight(id){
-                if(id == 'archive_1'){
-                }else{
-                    $('#archive_1').quicksand( $('#archive_2 li') );
-                }
+                $data = $holder.clone();                
+                var $filteredData = $data.find('li[data-type=archive_'+(id-1)+']');
+                $holder.quicksand($filteredData, {
+                    duration: 0,
+                    easing: 'swing'});
+                if(id > 2)
+                    $data.find('li[data-type=archive_'+(id-2)+']').empty();
+                
+                animate(id);
+                
             }
             
 
         </script>
         <title></title>
+        
     </head>
     <body>
             <table class="leftTable">
@@ -55,9 +205,7 @@
                     </td>
                     <td class="left">
                         <div id="recent"></div>
-                        <ul id="archive_1"></ul>
-                        <ul id="archive_2" style="display:none"></ul>
-
+                        <ul id="archive" style="list-style-type: none;"></ul>
 <!--
                         
 <ul id="oldone">
@@ -73,25 +221,25 @@
 
 
                     
-                        <ul id="newone" style="display:none">
-                            <li data-id="1"><div style="width:10px;height:30px;background-color:red;">Hello1</div></li>
-                            <li data-id="2"><div style="width:30px;height:20px;background-color:blue;">Hello2</div></li>
-                            <li data-id="3"><div style="width:60px;height:50px;background-color:green;">Hello3</div></li>
-                            <li data-id="4"><div style="width:10px;height:60px;background-color:pink;">Hello4</div></li>
-                            <li data-id="5">Hello5</li>
-                            <li data-id="6">Hello6</li>
-                        </ul>
-                        <ul id="oldone" >
-                            <li data-id="2"><div style="width:30px;height:20px;background-color:blue;">Hello2</div></li>
-                            <li data-id="4"><div style="width:10px;height:60px;background-color:pink;">Hello4</div></li>
-                            <li data-id="1"><div style="width:10px;height:30px;background-color:red;">Hello1</div></li>
-                            <li data-id="6">Hello6</li>
-                            <li data-id="5">Hello5</li>
-                            <li data-id="3"><div style="width:60px;height:50px;background-color:green;">Hello3</div></li>
+                        <ul id="newone">
+                            <li data-id="1" data-type="type1"><div style="width:10px;height:30px;background-color:red;">Hello1</div></li>
+                            <li data-id="1" data-type="type2"><div style="width:10px;height:30px;background-color:red;">Hello1</div></li>
+                            <li data-id="2" data-type="type2" style="display:none;"><div style="width:30px;height:20px;background-color:blue;">Hello2</div></li>
+                            <li data-id="3" data-type="type1"><div style="width:60px;height:50px;background-color:green;">Hello3</div></li>
+                            <li data-id="4" data-type="type2"><div style="width:10px;height:60px;background-color:pink;">Hello4</div></li>
+                            <li data-id="4" data-type="type1"><div style="width:10px;height:60px;background-color:pink;">Hello4</div></li>
+                            <li data-id="5" data-type="type1">Hello5</li>
+                            <li data-id="6" data-type="type2">Hello6</li>
                         </ul>-->
+
                     </td>
                 </tr>
-                <tr><button onclick="getNewsJSON()">Hello</button></tr>
+
+                <ul id="filterOptions">
+                    <li>
+                        <button class="type1" onclick="type3()">Type1</button></li>
+                    <li class="active"><button class="type4()" onclick="type4()">Type2</button></li></tr>
+                    <button onclick="getNewsJSON()">Update</button>
             </table>
         
     </body>
