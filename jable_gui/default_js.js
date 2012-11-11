@@ -80,8 +80,7 @@ function articleAction(item,action,undo) {
         }
     }
 }
-var isOnLoad = true;
-var archiveTable = 'archive_1';
+var archiveTable = 1;
 function getNewsJSON() {
     jQuery.get('_get_news.php',function(outcome) {
         $('#main_loading_space').remove();
@@ -101,17 +100,10 @@ function getNewsJSON() {
         }
         setUserClicked(parse.cookies.Up_Vote,'_vote_up');
         setUserClicked(parse.cookies.Down_Vote,'_vote_down');
-
         
-        if( archiveTable == 'archive_1' )
-            archiveTable = 'archive_2';
-        else
-            archiveTable = 'archive_1';
-
-        if (!isOnLoad) {
+        if (archiveTable>1)
             updateRight(archiveTable);
-        }
-        isOnLoad = false;
+        archiveTable++;
 
     });
     function setUserClicked(json,str) {
@@ -133,7 +125,7 @@ function getNewsJSON() {
                             .replace(/{image}/g,json.Image)
                             .replace(/{URL}/g,json.URL)
                             .replace(/{vote_bar}/g,precent)
-                            .replace(/{datatype}/g,datatype)
+                            .replace(/{datatype}/g,'archive_' + datatype)
                             .replace(/{id}/g,json.newsID);
     }
     
@@ -160,7 +152,7 @@ function getNewsJSON() {
                                 .replace(/{URL}/g,json.URL)
                                 .replace(/{host}/g,json.host)
                                 .replace(/{vote_bar}/g,precent)
-                                .replace(/{datatype}/g,datatype)
+                                .replace(/{datatype}/g,'archive_' + datatype)
                                 .replace(/{image}/g,json.Image)
                                 .replace(/{id}/g,json.newsID);
     }
