@@ -266,3 +266,26 @@ read_words() ->
 	{readlines("include/words_good.txt"),
 		readlines("include/words_bad.txt"),
 		ernews_db:getTags()}.
+		
+		
+remove_tags_except_a_href(Str) ->
+	remove_tags_except_a_href(Str,false).
+remove_tags_except_a_href([60|T],_) when length(T) > 0, hd(T) == 97  ->
+	["<"] ++ remove_tags_except_a_href(T,false);
+remove_tags_except_a_href([60|T],_) when length(T) > 0, hd(T) == 65  ->
+	["<"] ++ remove_tags_except_a_href(T,false);
+remove_tags_except_a_href([60|T],_) when length(T) > 1, hd(T) == 47, hd(tl(T)) == 97  ->
+	["<"] ++ remove_tags_except_a_href(T,false);
+remove_tags_except_a_href([60|T],_) when length(T) > 1, hd(T) == 47, hd(tl(T)) == 65  ->
+	["<"] ++ remove_tags_except_a_href(T,false);
+remove_tags_except_a_href([60|T],_) ->
+	remove_tags_except_a_href(T,true);
+remove_tags_except_a_href([62|T],true) ->
+	remove_tags_except_a_href(T,false);
+remove_tags_except_a_href([_|T],true) ->
+	remove_tags_except_a_href(T,true);
+remove_tags_except_a_href([H|T],false) ->
+	[H] ++ remove_tags_except_a_href(T,false);
+remove_tags_except_a_href([],_) ->
+	[].
+
