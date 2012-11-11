@@ -82,6 +82,7 @@ function articleAction(item,action,undo) {
 }
 
 var whichArchive = 1;
+var isPageLoading = true;
 function getNewsJSON() {
     jQuery.get('_get_news.php',function(outcome) {
         $('#main_loading_space').remove();
@@ -100,7 +101,9 @@ function getNewsJSON() {
         }
         setUserClicked(parse.cookies.Up_Vote,'_vote_up');
         setUserClicked(parse.cookies.Down_Vote,'_vote_down');
-        updateRight('archive_' + whichArchive);
+        if( isPageLoading == false )
+            updateRight('archive_' + whichArchive);
+        isPageLoading = false;
         if( whichArchive == 1 )
             whichArchive = 2;
         else

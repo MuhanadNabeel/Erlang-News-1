@@ -69,7 +69,8 @@ class User {
         
         $state = $sql->sqlQuery("SELECT " . User::$db_fields[$field_index] 
                 . " FROM ernews_news WHERE newsID = " . $id);
-        $new_value = mysql_fetch_array($state)[User::$db_fields[$field_index]] + $int;
+        $get_value = mysql_fetch_array($state);
+        $new_value = $get_value[User::$db_fields[$field_index]] + $int;
         if( $new_value != -1 )
             $sql->sqlQuery("UPDATE ernews_news SET " . User::$db_fields[$field_index] 
                 . " = " . $new_value
