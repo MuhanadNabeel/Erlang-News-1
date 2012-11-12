@@ -27,6 +27,7 @@ function articleAction(item,action,undo) {
         clearInterval(interval);
         jQuery('#' + jQuery(item).attr('id') + '_active').css('opacity','1');
         jQuery('#' + jQuery(item).attr('id')).css('opacity','1');
+        getNewsJSON();
     });
     function updateCounter(id,action,undo) {
         if( undo == true && action == 0 )
@@ -79,6 +80,7 @@ function articleAction(item,action,undo) {
                 jQuery( '#' + id + '_vote_up' ).show();
         }
     }
+
 }
 var archiveTable = 1;
 function getNewsJSON() {

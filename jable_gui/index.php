@@ -222,10 +222,7 @@ Thumbs up and down.
             
 
         </script>
-        <title></title>
-
-        <button onclick="closeAllStuff()">Type1</button>
-        <button onclick="getNewsJSON()">Update</button>        
+        <title></title>      
     </head>
     <body>
             <table class="leftTable">
