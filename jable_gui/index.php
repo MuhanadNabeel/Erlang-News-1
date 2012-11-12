@@ -49,7 +49,7 @@ Main divs
 .right_content{
     width:22em;
     background-color:#f6f6f6;
-    height:0;
+    display: none;
     overflow: hidden;
 }
 /*----------
@@ -64,14 +64,13 @@ Details
     margin-top:0.5em;
 }
 .green-seperator{
-  background-color:#aacc77;
-  width:100%;
-  height:0.1em;
+    background-color:#aacc77;
+    width:100%;
+    height:0.1em;
 }
 .arrow-container{
     width: 100%;
     vertical-align:bottom;
-    margin-bottom:2em;
 }
 .arrow-up{
     width: 0;
@@ -148,12 +147,9 @@ Thumbs up and down.
             var $data;
 
             function openUpStuff(id){
-                if(jQuery("#"+id+"_expand").css('height') =='0px'){
-                    jQuery("#"+id+"_expand").animate({height:jQuery("#"+id+"_content").css('height')}, 400);
-                }else{
-                    jQuery("#"+id+"_expand").animate({height:'0'}, 400);
-                }
+                jQuery('#'+id+'_expand').slideToggle('400');
             }
+
             $(document).ready(function() {
 
                 // get the action filter option item on page load
@@ -185,6 +181,14 @@ Thumbs up and down.
                 
                 animate(id);
                 
+            }
+
+            function closeAllStuff(){
+                a = jQuery("#archive").find('li[class=right_content]').filter(function(){
+                    return ($(this).is(":visible"));
+                });
+                a.slideUp('400');/*
+                t.slideUp('400');*/
             }
             
 
@@ -237,8 +241,7 @@ Thumbs up and down.
 
                 <ul id="filterOptions">
                     <li>
-                        <button class="type1" onclick="type3()">Type1</button></li>
-                    <li class="active"><button class="type4()" onclick="type4()">Type2</button></li></tr>
+                    <button onclick="closeAllStuff()">Stuff</button>
                     <button onclick="getNewsJSON()">Update</button>
             </table>
         
