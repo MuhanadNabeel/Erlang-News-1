@@ -100,11 +100,12 @@ function getNewsJSON() {
             else 
                 jQuery('#archive').append( addNewsLink(json[i], archiveTable) );
         }
-        setUserClicked(parse.cookies.Up_Vote,'_vote_up');
-        setUserClicked(parse.cookies.Down_Vote,'_vote_down');
+        setUserClicked(parse.cookies.Up_Vote,'_vote_up_archive_'+archiveTable);
+        setUserClicked(parse.cookies.Down_Vote,'_vote_down_archive_'+archiveTable);
         
         if (archiveTable>1)
             updateRight(archiveTable);
+
         archiveTable++;
 
     });
