@@ -1,8 +1,4 @@
-
-
-
-
-<li data-id="{id}_right_item" data-type="{datatype}">
+<li data-id="{id}_right_item" data-type="right_{datatype}">
     <div>
 
     <div class="right_row" onclick="openUpStuff('{id}')">
@@ -29,7 +25,7 @@
                         </div>
                     </td>
                     <td>
-                    <div><a class="desc">{description}</a>
+                    <div><div class="desc">{description}</div>
                         <span class="readMore">
                             <a href="redirect.php?id={id}&url={URL}" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
                             return true;" onmouseout="window.status=''">Read more..</a></span>

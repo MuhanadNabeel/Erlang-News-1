@@ -1,5 +1,6 @@
-<link rel="stylesheet" type="text/css" href="template-style.css">
 
+<li data-id="{id}_left_item" data-type="left_{datatype}">
+<div>
 <div class="newsTemp">
 
 	<div class="title">
@@ -39,3 +40,5 @@
 
 	</br>
 </div>
+</div>
+</li>
