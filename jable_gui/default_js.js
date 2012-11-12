@@ -1,15 +1,9 @@
-/**
- * 
- *
- * @author Ingimar
- */
 var isUserAction = new Object();
 var newsTemplate = '';
 var newsRightTemplate = '';
 jQuery(document).ready(function() {
     $('body').prepend('<div style="text-align:center;position:absolute;left:50%;'
-        + 'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space">'
-        + '<img src="img/loading.gif" /></div>');
+            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');
     jQuery.get('_get_templates.php',function(str){
         var split = str.split('<split_between_templates>')
         newsRightTemplate = split[0];
@@ -20,8 +14,7 @@ jQuery(document).ready(function() {
 });
 
 function articleAction(item,action,undo) {
-    var id = jQuery(item).attr('id').substring(0,jQuery(item)
-        .attr('id').indexOf('_'));
+    var id = jQuery(item).attr('id').substring(0,jQuery(item).attr('id').indexOf('_'));
     if( isUserAction[id][Math.floor(action/2)] == true )
         return;
     updateCounter(id,action,undo);
@@ -29,7 +22,7 @@ function articleAction(item,action,undo) {
     changeUserButtons(id,item,undo);
     var interval = setInterval("articleActionBlink('" 
         + jQuery(item).attr('id') + "');",250);
-    jQuery.post('_article_action.php',{id:id,action:action,undo:undo},function(){
+    jQuery.post('_article_action.php',{id:id,action:action,undo:undo},function() {
         isUserAction[id][Math.floor(action/2)] = false;
         clearInterval(interval);
         jQuery('#' + jQuery(item).attr('id') + '_active').css('opacity','1');
@@ -93,25 +86,23 @@ function getNewsJSON() {
         $('#main_loading_space').remove();
         jQuery('#news_article_left').html('');
         jQuery('#news_article_right').html('');
+    //    jQuery('#archive').html('');
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
         for( var i = 0 ; i < json.length ; i++ ) {
             isUserAction[json[i].newsID] = Array(false,false);
             if( i < 10 && i % 2 == 0 )
-                jQuery('#news_article_left').append( 
-                        getNewsArticle(json[i], archiveTable) );
+                jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 10 )
-                jQuery('#news_article_right').append( 
-                        getNewsArticle(json[i], archiveTable) );
+                jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
             else 
-                jQuery('#archive').append( 
-                        addNewsLink(json[i], archiveTable) );
+                jQuery('#archive').append( addNewsLink(json[i], archiveTable) );
         }
-        setUserClicked(parse.cookies.Up_Vote,'_vote_up_' + archiveTable);
-        setUserClicked(parse.cookies.Down_Vote,'_vote_down_' + archiveTable);
+        setUserClicked(parse.cookies.Up_Vote,'_vote_up');
+        setUserClicked(parse.cookies.Down_Vote,'_vote_down');
         
-        if ( archiveTable > 1 )
-            updateRight( archiveTable );
+        if (archiveTable>1)
+            updateRight(archiveTable);
         archiveTable++;
 
     });
@@ -124,6 +115,7 @@ function getNewsJSON() {
         }
     }
     function getNewsArticle(json,datatype) {
+        var precent = calcPrecent(parseInt(json.Up_Vote,10),parseInt(json.Down_Vote,10));
         return newsTemplate.replace(/{title}/g,json.Title)
                             .replace(/{down}/g,json.Down_Vote)
                             .replace(/{up}/g,json.Up_Vote)
@@ -132,7 +124,8 @@ function getNewsJSON() {
                             .replace(/{description}/g,json.Description)
                             .replace(/{image}/g,json.Image)
                             .replace(/{URL}/g,json.URL)
-                            .replace(/{datatype}/g,datatype)
+                            .replace(/{vote_bar}/g,precent)
+                            .replace(/{datatype}/g,'archive_' + datatype)
                             .replace(/{id}/g,json.newsID);
     }
     
@@ -150,6 +143,7 @@ function getNewsJSON() {
         else
             title = json.Title.substring(0,55) + ' ...';
 
+        var precent = calcPrecent(parseInt(json.Up_Vote,10),parseInt(json.Down_Vote,10));
         return newsRightTemplate.replace(/{title}/g,title)
                                 .replace(/{down}/g,json.Down_Vote)
                                 .replace(/{up}/g,json.Up_Vote)
@@ -157,7 +151,8 @@ function getNewsJSON() {
                                 .replace(/{description}/g,json.Description)
                                 .replace(/{URL}/g,json.URL)
                                 .replace(/{host}/g,json.host)
-                                .replace(/{datatype}/g,datatype)
+                                .replace(/{vote_bar}/g,precent)
+                                .replace(/{datatype}/g,'archive_' + datatype)
                                 .replace(/{image}/g,json.Image)
                                 .replace(/{id}/g,json.newsID);
     }
