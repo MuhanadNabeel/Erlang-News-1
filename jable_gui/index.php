@@ -32,6 +32,7 @@ Div fonts
     font-size: 10pt;
     text-shadow:1px 1px 0px white;
     color: #222222;
+    padding-right: 10px;
 }
 /*----------
 Main divs
@@ -41,13 +42,13 @@ Main divs
     border-bottom: 1px solid #d4d4d4;
     padding-right: 0;
     cursor: pointer;
-    width: 22em;
+    width: auto;
 }
 .right_row:hover{background-color: #eaeaea;}
 .right_row:hover a.right_title{color:#222222;}
 
 .right_content{
-    width:22em;
+    width:auto;
     background-color:#f6f6f6;
     display: none;
     overflow: hidden;
@@ -133,10 +134,17 @@ Thumbs up and down.
     height: 1.1em;
     width: 1em;
     display: none;
-}</style>
+}
+#article_container{
+    width:45%;
+    vertical-align: top;
+}
+
+
+</style>
 
         <link rel="stylesheet" type="text/css" href="mainCSS.css">
-<!--        <link rel="stylesheet" type="text/css" href="template-style.css">-->
+        <link rel="stylesheet" type="text/css" href="template-style.css">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script type="text/javascript" src="default_js.js"></script>
@@ -153,7 +161,6 @@ Thumbs up and down.
             $(document).ready(function() {
 
                 // get the action filter option item on page load
-                var $filterType = $('#filterOptions li.active button').attr('class');
                 $holder = $('#archive');
                 $data = $holder.clone();
 
@@ -164,86 +171,80 @@ Thumbs up and down.
             })
 
             function animate(id){
-                var $filteredData = $data.find('li[data-type=archive_'+id+']');
-                $holder.quicksand($filteredData, {
-                    duration: 800,
-                    easing: 'swing'});
-            }
+                closeAllStuff(function(){
+                    jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
+                    var $filteredData = $data.find('li[data-type=right_archive_'+id+']');
+                    $holder.quicksand($filteredData, {
+                        duration: 1000,
+                        easing: 'swing'});
+
+
+                });
+                
+/*
+                jQuery('#article_container').css('width', jQuery('#news_article_left').css('width'));
+                jQuery('#newsTemp').css('width', '100px');
+
+                var $filteredData1 = $data1.find('li[data-type=left_archive_'+id+']');
+                $holder1.quicksand($filteredData1, {
+                    duration: 1000,
+                     easing: 'swing'});
+
+                var $filteredData2 = $data2.find('li[data-type=left_archive_'+id+']');
+                $holder2.quicksand($filteredData2, {
+                    duration: 1000,
+                    easing: 'swing'});*/
+             }
 
             function updateRight(id){
                 $data = $holder.clone();                
-                var $filteredData = $data.find('li[data-type=archive_'+(id-1)+']');
+                var $filteredData = $data.find('li[data-type=right_archive_'+(id-1)+']');
                 $holder.quicksand($filteredData, {
                     duration: 0,
                     easing: 'swing'});
-                if(id > 2)
-                    $data.find('li[data-type=archive_'+(id-2)+']').empty();
+                if(id > 2){
+                    $data.find('li[data-type=right_archive_'+(id-2)+']').empty();
+                }
+                    
                 
                 animate(id);
                 
             }
 
-            function closeAllStuff(){
-                a = jQuery("#archive").find('li[class=right_content]').filter(function(){
-                    return ($(this).is(":visible"));
-                });
-                a.slideUp('400');/*
-                t.slideUp('400');*/
-            }
+            function closeAllStuff(cbFunc){
+                t = jQuery('#archive').find('div[class="right_content"]');
+                a = t.filter(function(){
+                    return ($(this).is(':visible'));
+                })
+                a.slideUp('400', cbFunc);
+                 
+             }
             
 
         </script>
         <title></title>
-        
+
+        <button onclick="closeAllStuff()">Type1</button>
+        <button onclick="getNewsJSON()">Update</button>        
     </head>
     <body>
             <table class="leftTable">
-                <tr>
-                    <td class="left">
-                        <table>
-                            <tr>
-                                <td style="width:45%;vertical-align: top;border-right:1px solid #c6c6c6;" id="news_article_left"></td>
-                                <td style="width:45%;vertical-align: top;" id="news_article_right"></td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td class="left">
-                        <div id="recent"></div>
-                        <ul id="archive" style="list-style-type: none;"></ul>
-<!--
-                        
-<ul id="oldone">
-                            <li data-id="1">Hello1</li>
-                            <li data-id="3">Hello2</li>
-                            <li data-id="4">Hello3</li>
-                        </ul>
-                        <ul id="newone" style="display:none">
-                            <li data-id="2">Hello2</li>
-                            <li data-id="4">Hello4</li>
-                            <li data-id="1">Hello1</li>
-                        </ul>
+            <tr>
+                <td class="left">
+                    <table>
+                        <tr>
+<!--                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_left"></ul></td>
+                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_right"></ul></td>-->
+                        </tr>
+                    </table>
+                </td>
+                <td class="left">
+                    <div id="recent"></div>
+                    <ul id="archive" style="list-style-type: none;"></ul>
 
-
-                    
-                        <ul id="newone">
-                            <li data-id="1" data-type="type1"><div style="width:10px;height:30px;background-color:red;">Hello1</div></li>
-                            <li data-id="1" data-type="type2"><div style="width:10px;height:30px;background-color:red;">Hello1</div></li>
-                            <li data-id="2" data-type="type2" style="display:none;"><div style="width:30px;height:20px;background-color:blue;">Hello2</div></li>
-                            <li data-id="3" data-type="type1"><div style="width:60px;height:50px;background-color:green;">Hello3</div></li>
-                            <li data-id="4" data-type="type2"><div style="width:10px;height:60px;background-color:pink;">Hello4</div></li>
-                            <li data-id="4" data-type="type1"><div style="width:10px;height:60px;background-color:pink;">Hello4</div></li>
-                            <li data-id="5" data-type="type1">Hello5</li>
-                            <li data-id="6" data-type="type2">Hello6</li>
-                        </ul>-->
-
-                    </td>
-                </tr>
-
-                <ul id="filterOptions">
-                    <li>
-                    <button onclick="closeAllStuff()">Stuff</button>
-                    <button onclick="getNewsJSON()">Update</button>
-            </table>
+                </td>
+            </tr>
+        </table>
         
     </body>
 </html>
