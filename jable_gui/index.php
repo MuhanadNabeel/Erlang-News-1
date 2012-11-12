@@ -32,7 +32,6 @@ Div fonts
     font-size: 10pt;
     text-shadow:1px 1px 0px white;
     color: #222222;
-    padding-right: 10px;
 }
 /*----------
 Main divs
@@ -42,16 +41,16 @@ Main divs
     border-bottom: 1px solid #d4d4d4;
     padding-right: 0;
     cursor: pointer;
-    width: auto;
+    width: 22em;
 }
 .right_row:hover{background-color: #eaeaea;}
 .right_row:hover a.right_title{color:#222222;}
 
 .right_content{
-    width:auto;
+    width:22em;
     background-color:#f6f6f6;
+    height:0;
     overflow: hidden;
-    display: none;
 }
 /*----------
 Details
@@ -72,6 +71,7 @@ Details
 .arrow-container{
     width: 100%;
     vertical-align:bottom;
+    margin-bottom:2em;
 }
 .arrow-up{
     width: 0;
@@ -134,18 +134,10 @@ Thumbs up and down.
     height: 1.1em;
     width: 1em;
     display: none;
-}
-
-
-#article_container{
-    width:45%;
-    vertical-align: top;
-}
-
-</style>
+}</style>
 
         <link rel="stylesheet" type="text/css" href="mainCSS.css">
-        <link rel="stylesheet" type="text/css" href="template-style.css">
+<!--        <link rel="stylesheet" type="text/css" href="template-style.css">-->
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
         <script type="text/javascript" src="default_js.js"></script>
@@ -155,127 +147,100 @@ Thumbs up and down.
             var $holder;
             var $data;
 
-            var $holder1;
-            var $data1;
-
-            var $holder2;
-            var $data2;
-
             function openUpStuff(id){
-
-
-                jQuery('#'+id+'_expand').slideToggle('400');
-                /*
                 if(jQuery("#"+id+"_expand").css('height') =='0px'){
                     jQuery("#"+id+"_expand").animate({height:jQuery("#"+id+"_content").css('height')}, 400);
                 }else{
                     jQuery("#"+id+"_expand").animate({height:'0'}, 400);
-                }*/
+                }
             }
             $(document).ready(function() {
+
+                // get the action filter option item on page load
+                var $filterType = $('#filterOptions li.active button').attr('class');
                 $holder = $('#archive');
                 $data = $holder.clone();
 
-                $holder1 = $('#news_article_left');
-                $data1 = $holder1.clone();
+                /*var $filteredData = $data.find('li[data-type=type1]');
+                    $holder.quicksand($filteredData, {
+                        duration: 0});*/
 
-                $holder2 = $('#news_article_right');
-                $data2 = $holder2.clone();
             })
 
             function animate(id){
-                closeAllStuff(function(){
-                    jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
-                    var $filteredData = $data.find('li[data-type=right_archive_'+id+']');
-                    $holder.quicksand($filteredData, {
-                        duration: 1000,
-                        easing: 'swing'});
-
-
-                });
-                
-/*
-                jQuery('#article_container').css('width', jQuery('#news_article_left').css('width'));
-                jQuery('#newsTemp').css('width', '100px');
-
-                var $filteredData1 = $data1.find('li[data-type=left_archive_'+id+']');
-                $holder1.quicksand($filteredData1, {
-                    duration: 1000,
+                var $filteredData = $data.find('li[data-type=archive_'+id+']');
+                $holder.quicksand($filteredData, {
+                    duration: 800,
                     easing: 'swing'});
-
-                var $filteredData2 = $data2.find('li[data-type=left_archive_'+id+']');
-                $holder2.quicksand($filteredData2, {
-                    duration: 1000,
-                    easing: 'swing'});*/
             }
 
             function updateRight(id){
                 $data = $holder.clone();                
-                var $filteredData = $data.find('li[data-type=right_archive_'+(id-1)+']');
+                var $filteredData = $data.find('li[data-type=archive_'+(id-1)+']');
                 $holder.quicksand($filteredData, {
                     duration: 0,
                     easing: 'swing'});
                 if(id > 2)
-                    $data.find('li[data-type=right_archive_'+(id-2)+']').empty();
-/*
-                $data1 = $holder1.clone();                
-                var $filteredData1 = $data1.find('li[data-type=left_archive_'+(id-1)+']');
-                $holder1.quicksand($filteredData1, {
-                    duration: 0,
-                    easing: 'swing'});
-                if(id > 2)
-                    $data1.find('li[data-type=left_archive_'+(id-2)+']').empty();
-/*
-                $data2 = $holder2.clone();                
-                var $filteredData2 = $data2.find('li[data-type=left_archive_'+(id-1)+']');
-                $holder2.quicksand($filteredData2, {
-                    duration: 0,
-                    easing: 'swing'});
-                if(id > 2)
-                    $data2.find('li[data-type=left_archive_'+(id-2)+']').empty();
-*/
-
+                    $data.find('li[data-type=archive_'+(id-2)+']').empty();
+                
                 animate(id);
-            }
-
-            function closeAllStuff(cbFunc){
-                t=jQuery('#archive').find('div[class="right_content"]');
-                a = t.filter(function(){
-                    return ($(this).is(':visible'));
-                })
-                a.slideUp('400', cbFunc);
                 
             }
-
-
-            function clickLol(){
-                alert();
-            }
+            
 
         </script>
         <title></title>
-
-        <button onclick="closeAllStuff()">Type1</button>
-        <button onclick="getNewsJSON()">Update</button>
         
     </head>
     <body>
-        <table class="leftTable">
-            <tr>
-                <td class="left">
-                    <table>
-                        <tr>
-<!--                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_left"></ul></td>
-                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_right"></ul></td>-->
-                        </tr>
-                    </table>
-                </td>
-                <td class="left">
-                    <div id="recent"></div>
-                    <ul id="archive" style="list-style-type: none;"></ul>
+            <table class="leftTable">
+                <tr>
+                    <td class="left">
+                        <table>
+                            <tr>
+                                <td style="width:45%;vertical-align: top;border-right:1px solid #c6c6c6;" id="news_article_left"></td>
+                                <td style="width:45%;vertical-align: top;" id="news_article_right"></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="left">
+                        <div id="recent"></div>
+                        <ul id="archive" style="list-style-type: none;"></ul>
+<!--
+                        
+<ul id="oldone">
+                            <li data-id="1">Hello1</li>
+                            <li data-id="3">Hello2</li>
+                            <li data-id="4">Hello3</li>
+                        </ul>
+                        <ul id="newone" style="display:none">
+                            <li data-id="2">Hello2</li>
+                            <li data-id="4">Hello4</li>
+                            <li data-id="1">Hello1</li>
+                        </ul>
 
-                </td>
-            </tr>
-        </table>
+
+                    
+                        <ul id="newone">
+                            <li data-id="1" data-type="type1"><div style="width:10px;height:30px;background-color:red;">Hello1</div></li>
+                            <li data-id="1" data-type="type2"><div style="width:10px;height:30px;background-color:red;">Hello1</div></li>
+                            <li data-id="2" data-type="type2" style="display:none;"><div style="width:30px;height:20px;background-color:blue;">Hello2</div></li>
+                            <li data-id="3" data-type="type1"><div style="width:60px;height:50px;background-color:green;">Hello3</div></li>
+                            <li data-id="4" data-type="type2"><div style="width:10px;height:60px;background-color:pink;">Hello4</div></li>
+                            <li data-id="4" data-type="type1"><div style="width:10px;height:60px;background-color:pink;">Hello4</div></li>
+                            <li data-id="5" data-type="type1">Hello5</li>
+                            <li data-id="6" data-type="type2">Hello6</li>
+                        </ul>-->
+
+                    </td>
+                </tr>
+
+                <ul id="filterOptions">
+                    <li>
+                        <button class="type1" onclick="type3()">Type1</button></li>
+                    <li class="active"><button class="type4()" onclick="type4()">Type2</button></li></tr>
+                    <button onclick="getNewsJSON()">Update</button>
+            </table>
+        
     </body>
 </html>
