@@ -175,7 +175,7 @@ Thumbs up and down.
                     jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
                     var $filteredData = $data.find('li[data-type=right_archive_'+id+']');
                     $holder.quicksand($filteredData, {
-                        duration: 1000,
+                        duration: 700,
                         easing: 'swing'});
 
 
@@ -230,8 +230,8 @@ Thumbs up and down.
                 <td class="left">
                     <table>
                         <tr>
-<!--                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_left"></ul></td>
-                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_right"></ul></td>-->
+                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_left"></ul></td>
+                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_right"></ul></td>
                         </tr>
                     </table>
                 </td>
