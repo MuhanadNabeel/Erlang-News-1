@@ -5,11 +5,13 @@
 
 
 connect() ->
-    mysql:start(p1, "db.student.chalmers.se", 3306, "abdoli", "kgcH8v7c", "abdoli").
+    mysql:start(p1, "db.student.chalmers.se", 
+				3306, "abdoli", "kgcH8v7c", "abdoli").
 	 
 	 
 %% News-table should also have date and default votes, rank and visits
-write(news, {Source, Url, Title, Description , Icon , Image , PubDate, Tags}) ->
+write(news, {Source, Url, Title, Description , Icon , 
+			Image , PubDate, Tags}) ->
     Now = calendar:local_time(),
     Query =  "insert into abdoli.ernews_news " ++
 	"(Source, Url, Title, Description, Icon, "++
@@ -23,7 +25,8 @@ write(news, {Source, Url, Title, Description , Icon , Image , PubDate, Tags}) ->
 	{error,Reason} ->
 	    {error,Reason};
 	{ok, updated} ->
-	    ID=qFunc(get, "Select newsID FROM ernews_news WHERE URL='" ++ qFix(Url) ++ "'"),
+	    ID=qFunc(get, "Select newsID FROM ernews_news WHERE URL='" ++ 
+						qFix(Url) ++ "'"),
 	    write(tag, Tags, integer_to_list(hd(hd(ID))))
     end;
 			
@@ -84,10 +87,6 @@ qFix([H|T], Buff) ->
     qFix(T, Buff ++ [H]).
 	
 	
-qFunc(getTags, Q) ->
-    {_,{_,_,Result,_,_,_,_,_}} = mysql:fetch(p1, Q),
-    Result;
-	
 qFunc(write, Q) ->
     try mysql:fetch(p1, Q) of 
 	Result ->
@@ -126,6 +125,24 @@ qFunc(exists, Q) ->
 	exit:_Exit -> 
 		%{Res, _} = Exit,
 		{error, no_connection}
+	end;
+	
+qFunc(getList, Q) ->
+%    {_,{_,_,Result,_,_,_,_,_}} = mysql:fetch(p1, Q),
+%    Result.
+	try mysql:fetch(p1, Q) of 
+		Result ->
+			case mysql:fetch(p1, Q) of 		
+				{data,{_,_,P,_,_,_,_,_}} = Result ->
+					P;
+				_ ->
+				{error, else}
+				
+			end
+	catch 
+	exit:_Exit -> 
+		%{Res, _} = Exit,
+		{error, no_connection}
 	end.
 		
 		
@@ -137,9 +154,26 @@ exists(Table,{Column, Keyword}) ->
     L.
 	
 %% Fetch all tags in the DB
-getTags() ->
-	Q = "SELECT tag FROM ernews_tag",
-	List = qFunc(getTags, Q),
+getList(tag) ->
+	getList("SELECT tag FROM ernews_tag");
+	
+%% Fetch all relevant words
+getList(relevant) ->
+	getList("SELECT word FROM ernews_relevant");
+	
+%% Fetch all irrelevant words
+getList(irrelevant) ->
+	getList("SELECT word FROM ernews_irrelevant");	
+	
+getList(Q) ->
+	case List = qFunc(getList, Q) of
+		[H|T] = List ->
+			sendTags(List, []);
+		H = List ->
+			H;	
+		_ ->
+			else
+	end,		
 	sendTags(List, []).
 
 %% Return all tags from DB
