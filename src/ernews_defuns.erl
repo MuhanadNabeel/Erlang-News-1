@@ -126,7 +126,6 @@ test1(A,B) ->
 %% Generate tags for articles
 get_tags([],_) ->
 	[];	
-%% If word is found then add to list
 get_tags([H|T],List) ->
 	case list_words_occur_insens(H,List) of
 		true ->
@@ -189,6 +188,7 @@ list_words_occur_insens(WordConcat,List,Length) ->
 			list_words_occur_insens(WordConcat,tl(List),Length)
 	end.
 	
+%% Author: Ingimar Samuelsson	
 %% Compare two strings
 compare_concat_str(Str1,Str2) ->
 	Left = string:to_lower(string:left(Str2,string:len(Str1))),
