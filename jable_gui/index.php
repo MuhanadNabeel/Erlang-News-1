@@ -172,11 +172,13 @@ Thumbs up and down.
 
             function animate(id){
                 closeAllStuff(function(){
-                    jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
                     var $filteredData = $data.find('li[data-type=right_archive_'+id+']');
                     $holder.quicksand($filteredData, {
                         duration: 700,
-                        easing: 'swing'});
+                        easing: 'swing'},
+                        function(){
+                            jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
+                        });
 
 
                 });
