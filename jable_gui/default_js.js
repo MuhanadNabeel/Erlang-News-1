@@ -83,6 +83,7 @@ function articleAction(item,action,undo) {
 
 }
 var archiveTable = 1;
+var archive_counter = 0;
 function getNewsJSON() {
     jQuery.get('_get_news.php',function(outcome) {
         $('#main_loading_space').remove();
@@ -98,15 +99,21 @@ function getNewsJSON() {
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 10 )
                 jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
-            else 
+            else{
                 jQuery('#archive').append( addNewsLink(json[i], archiveTable) );
+            }
+                
         }
         setUserClicked(parse.cookies.Up_Vote,'_vote_up_archive_'+archiveTable);
         setUserClicked(parse.cookies.Down_Vote,'_vote_down_archive_'+archiveTable);
         
-        if (archiveTable>1)
+        if (archiveTable>1){
             updateRight(archiveTable);
+            
+        }
         archiveTable++;
+            
+        
 
     });
     function setUserClicked(json,str) {

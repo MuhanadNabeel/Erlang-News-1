@@ -21,8 +21,10 @@
     margin: 0px;
     font-family: "MyriadPro Cond";
     font-size: 1.3em;
-    background-color: #eeeeee;
-    text-shadow:1px 1px 0px white;
+    z-index: 20010;
+    color:white;
+    padding:3px;
+    text-shadow:1px 1px 1px black;
 }
 .content{
     padding: 10px;
@@ -42,6 +44,25 @@
 }
 .content a:visited{
     color: #aacc77;
+}
+
+
+.close-button {
+    position: absolute;
+    z-index: 30000;
+    right: -17px;
+    top:-17px;
+    background-size: 100%;
+    background:url(img/close.png) no-repeat 0 0;
+    height:34px;
+    width: 34px;
+    cursor: pointer;
+}
+.close-button:hover{
+    background:url(img/close.png) no-repeat 0 -34px;
+}
+.close-button:active{
+    background:url(img/close.png) no-repeat 0 -68px;
 }
 
 

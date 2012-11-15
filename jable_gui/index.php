@@ -155,6 +155,57 @@ Thumbs up and down.
     width: 1em;
     display: none;
 }
+
+
+
+.thumb-up-shadowed{
+    margin-top: 0.2em;
+    background:url(img/thumb-up-shadowed.png) 0 0 no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+}
+.thumb-up-shadowed:hover{
+    background:url(img/thumb-up-shadowed.png) 0 -1.2em no-repeat;
+    background-size: 100%;
+}
+.thumb-up-shadowed:active{
+    background:url(img/thumb-up-shadowed.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+}
+.thumb-up-active-shadowed{
+    margin-top: 0.2em;
+    background:url(img/thumb-up-shadowed.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+    display: none;
+}
+.thumb-down-shadowed{
+    margin-top: 0.2em;
+    background:url(img/thumb-down-shadowed.png) 0 0 no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+}
+.thumb-down-shadowed:hover{
+    background:url(img/thumb-down-shadowed.png) 0 -1.2em no-repeat;
+    background-size: 100%;
+}
+.thumb-down-shadowed:active{
+    background:url(img/thumb-down-shadowed.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+}
+.thumb-down-active-shadowed{
+    margin-top: 0.2em;
+    background:url(img/thumb-down-shadowed.png) 0 -2.4em no-repeat;
+    background-size: 100%;
+    height: 1.1em;
+    width: 1em;
+    display: none;
+}
+
+
 #article_container{
     width:45%;
     vertical-align: top;
@@ -223,10 +274,12 @@ Thumbs up and down.
                 var $filteredData = $data.find('li[data-type=right_archive_'+(id-1)+']');
                 $holder.quicksand($filteredData, {
                     duration: 0,
-                    easing: 'swing'});
-                if(id > 2){
-                    $data.find('li[data-type=right_archive_'+(id-2)+']').empty();
-                }
+                    easing: 'swing'},function(){
+                        if(id > 2){
+                            $data.find('li[data-type=right_archive_'+(id-2)+']').empty();
+                        }
+                    });
+                
                     
                 
                 animate(id);
@@ -242,34 +295,47 @@ Thumbs up and down.
                  
              }
 
-             function openBox(URL, title){
-                alert(title);
-//                jQuery('#box_title').innerHTML(title);
-//                jQuery('#frame_content').attr('src', URL);
-//                jQuery('#bigframe').css('display', 'block');
+             function openBox(URL, title, id, datatype){
+                buttons = jQuery("#"+id+"_all_vote_buttons").clone();
+                buttons.css('display', 'block');
+                jQuery('#box-vote-buttons').append(buttons);
+                jQuery('#box_title').html(title);
+                jQuery('#frame_content').attr('src', URL);
+                jQuery('#bigframe').css('display', 'block');
+             }
+             function closeBox(){
+                jQuery('#box-vote-buttons').empty();
+                jQuery('#bigframe').css('display', 'none');
+                jQuery('#frame_content').attr('src', '');
              }
             
 
         </script>
-        <title></title>     
-        <button onclick="jQuery('#bigframe').css('display', 'block')">SHOW</button> 
+        <title></title>  
+        <button onclick="getNewsJSON()">update</button>   
     </head>
     <body>
         <div id="bigframe" style="display:none">
-        <div style="position:fixed;background-color:black;opacity:.3;width:100%;height:100%;top:0;left:0;z-index:20000;" onclick="jQuery('#bigframe').css('display', 'none')"></div>
-        <div style="position:fixed;background-color:white;width:80%;height:80%;z-index:20001;box-shadow:0px 0px 100px black;left:50%; margin-left:-40%;top:4%;">
-            <div style="height:30px;width:100%;background-color:#eeeeee">
-                <div id="box_title" class="box_title" style="float:left;margin-left:10px"></div>
-                <div style="display:relative;
-                        float:right;
-                        width:30px;
-                        height:30px;
-                        background:url(img/close.png) no-repeat center center;
-                        background-size:100%;" onclick="jQuery('#bigframe').css('display', 'none');jQuery('#frame_content').attr('src', '')"></div></div>
-                        <iframe id="frame_content" src="" style="position:absolute;border-style:none;width:100%;height:90%;z-index:1;"></iframe>
-                <div style="position:absolute;background-color:white;width:100%;height:10%;z-index:2;bottom:0;box-shadow:0 -3px 10px #333333;"></div>
-            
-        </div>
+            <div style="position:fixed;background-color:black;left:0;top:0;opacity:.3;width:100%;height:100%;z-index:20000;" onclick="closeBox();"></div>
+            <div style="position:fixed;background-color:white;width:80%;height:92%;z-index:20001;box-shadow:0px 0px 100px black;left:50%; margin-left:-40%;top:4%;">
+                
+                <div class="close-button" onclick="closeBox()"></div>
+                <div style="position:absolute;z-index:20;width:100%;height:auto;background-color:rgba(0,0,0,.5);top:0px;">
+                    <table><tr>
+                        <td id="box-vote-buttons"></td>
+                        <td style="vertical-align:top;"><div id="box_title" class="box_title"></div></td>
+                        </tr></table>
+
+                </div>
+
+                
+                            <iframe id="frame_content" src="" style="position:absolute;border-style:none;width:100%;height:100%;z-index:1;"></iframe>
+<!--                    <div style="position:absolute;background-color:#e4e4e4;width:100%;height:auto;z-index:2;bottom:0;box-shadow:0 -3px 10px #333333;white-space:nowrap;">
+    -->                    
+
+                    </div>
+                
+            </div>
         </div>
             <table class="leftTable">
             <tr>
