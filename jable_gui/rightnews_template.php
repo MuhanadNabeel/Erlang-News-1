@@ -28,7 +28,7 @@
                     <div><div class="desc">{description}</div>
                         <span class="readMore">
                             <a href="redirect.php?id={id}&url={URL}" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
-                            return true;" onmouseout="window.status=''">Read more..</a></span>
+                            return true;" onmouseout="window.status=''">Read more..</a>--></span>
                         <div class="seperator"></div>
                     </div>
                     </td>

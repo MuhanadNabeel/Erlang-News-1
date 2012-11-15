@@ -1,5 +1,5 @@
 <?php
 include 'rightnews_template.php';
 echo '<split_between_templates>';
-include 'mainnews_template.php';
+include 'small_template.php';
 ?>

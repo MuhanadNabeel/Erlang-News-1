@@ -34,6 +34,22 @@ Div fonts
     color: #222222;
     padding-right: 10px;
 }
+.desc a:link{
+    text-decoration: none;
+    color: #aacc77;
+}
+.desc a:hover{
+    color: #74a22f;
+}
+.desc a:active{
+    color: black;
+}
+.desc a:visited{
+    color: #aacc77;
+}
+
+
+
 /*----------
 Main divs
 ----------*/
@@ -88,6 +104,10 @@ Thumbs up and down.
   vertical-align:top;
   display:inline-block;
   padding: 0.5em;
+}
+.small-voting{
+  vertical-align:top;
+  display:inline-block;
 }
 .thumb-up{
     margin-top: 0.2em;
@@ -221,12 +241,36 @@ Thumbs up and down.
                 a.slideUp('400', cbFunc);
                  
              }
+
+             function openBox(URL, title){
+                alert(title);
+//                jQuery('#box_title').innerHTML(title);
+//                jQuery('#frame_content').attr('src', URL);
+//                jQuery('#bigframe').css('display', 'block');
+             }
             
 
         </script>
-        <title></title>      
+        <title></title>     
+        <button onclick="jQuery('#bigframe').css('display', 'block')">SHOW</button> 
     </head>
     <body>
+        <div id="bigframe" style="display:none">
+        <div style="position:fixed;background-color:black;opacity:.3;width:100%;height:100%;top:0;left:0;z-index:20000;" onclick="jQuery('#bigframe').css('display', 'none')"></div>
+        <div style="position:fixed;background-color:white;width:80%;height:80%;z-index:20001;box-shadow:0px 0px 100px black;left:50%; margin-left:-40%;top:4%;">
+            <div style="height:30px;width:100%;background-color:#eeeeee">
+                <div id="box_title" class="box_title" style="float:left;margin-left:10px"></div>
+                <div style="display:relative;
+                        float:right;
+                        width:30px;
+                        height:30px;
+                        background:url(img/close.png) no-repeat center center;
+                        background-size:100%;" onclick="jQuery('#bigframe').css('display', 'none');jQuery('#frame_content').attr('src', '')"></div></div>
+                        <iframe id="frame_content" src="" style="position:absolute;border-style:none;width:100%;height:90%;z-index:1;"></iframe>
+                <div style="position:absolute;background-color:white;width:100%;height:10%;z-index:2;bottom:0;box-shadow:0 -3px 10px #333333;"></div>
+            
+        </div>
+        </div>
             <table class="leftTable">
             <tr>
                 <td class="left">

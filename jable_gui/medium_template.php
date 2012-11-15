@@ -10,20 +10,16 @@
 		
 		
 	</div>
-	<div align="right" style="height:1em;background-color:#aacc77;"><div class="triangle-topright"></div></div>
+	<div align="right" style="height:.5em;background-color:#aacc77;"><div class="triangle-topright"></div></div>
 	<div id="pub">Published: 2012-02-13</div>
 	<table style="width:100%;">
-		<tr>
-			<div style="width:100%;height:8em;background-color:gray;">{vote_bar}</div>
-		</tr>
-
-		<tr><td class="voteButtons" >
+		<tr><td style="vertical-align:top;"><div style="width:5.5em;height:5.5em;background-color:gray;">{vote_bar}</div></td><td class="voteButtons" >
 				<table>
 					<tr><div class="vote-up" id="{id}_vote_up_{datatype}" onclick="articleAction(this,1,false)" align="center"><a class="likes">{up}</a></div>
 						<div class="vote-up-active" id="{id}_vote_up_{datatype}_active" onclick="articleAction(this,1,true)" align="center"><a id="{id}_up_vote_count" class="likes">{up}</a></div></tr>
 					<tr><div class="vote-down" id="{id}_vote_down_{datatype}" onclick="articleAction(this,0,false)" align="center"><a class="likes">{down}</a></div>
 						<div class="vote-down-active" id="{id}_vote_down_{datatype}_active" onclick="articleAction(this,0,true)" align="center"><a id="{id}_down_vote_count" class="likes">{down}</a></div></tr>
-				</table
+				</table>
 			</td>
 			<td style="width:2em;height:4em;"></td>
 			<td><div class="content">

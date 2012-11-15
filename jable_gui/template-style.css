@@ -17,16 +17,49 @@
     font-family: "MyriadPro Cond";
     font-size: 1.6em;
 }
+.box_title{
+    margin: 0px;
+    font-family: "MyriadPro Cond";
+    font-size: 1.3em;
+    background-color: #eeeeee;
+    text-shadow:1px 1px 0px white;
+}
 .content{
     padding: 10px;
-    font-size: 12pt;
+    font-size: 11pt;
     text-decoration: none;
 }
+
+.content a:link{
+    text-decoration: none;
+    color: #aacc77;
+}
+.content a:hover{
+    color: #74a22f;
+}
+.content a:active{
+    color: black;
+}
+.content a:visited{
+    color: #aacc77;
+}
+
+
+
 
 .readMore{
     margin: 10px;
     font-family: "MyriadPro Cond";
     font-size: 1em;
+    color: #aacc77;
+}
+.readMore:hover{
+    color: #74a22f;
+}
+.readMore:active{
+    color: black;
+}
+.readMore:visited{
     color: #aacc77;
 }
 
@@ -121,8 +154,14 @@
 .triangle-topright {
     width: 0;
     height: 0;
-    border-top: 1em solid white;
-    border-left: 1em solid transparent;
+    border-top: .5em solid white;
+    border-left: .5em solid transparent;
+}
+.small-triangle-topright {
+    width: 0;
+    height: 0;
+    border-top: .5em solid white;
+    border-left: .5em solid transparent;
 }
 
 .link a:link{
