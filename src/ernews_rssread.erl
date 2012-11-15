@@ -7,10 +7,6 @@
 %%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
 %%%-------------------------------------------------------------------
 
-%% http://news.google.com/news/feeds?hl=en&gl=us&q=erlang&um=1&ie=UTF-8&output=rss
-%% http://coder.io/tag/erlang.rss
-%% http://www.reddit.com/r/erlang.rss
-
 -module(ernews_rssread).
 
 -export([start_link/2,start/2]).
@@ -19,10 +15,9 @@
 
 -include("records.hrl").
 
-%% Start link
+%% Called from RSS Agent
 start_link(Atom,Source) ->
     spawn_link(?MODULE, init,[Atom,Source]).
-
 start(Atom,Source) ->
     spawn(?MODULE, init,[Atom,Source]).
 
@@ -78,8 +73,8 @@ iterate(reddit,[H|T],List) ->
 	    iterate(reddit, T,
 		    [#rss_item{link=proplists:get_value("link",H),
 			       pubDate=ernews_defuns:convert_date(
-					 proplists:get_value("pubDate",H)),
-			       title=proplists:get_value("title",H)}
+					 proplists:get_value("pubDate",H))
+					 }
 		     |List])
     end;
 
@@ -89,10 +84,8 @@ iterate(Atom,[H|T],List) ->
     iterate(Atom, T,
 	    [#rss_item{link=proplists:get_value("link",H),
 		       pubDate=ernews_defuns:convert_date(
-				 proplists:get_value("pubDate",H)),
-		       description=ernews_defuns:get_description(proplists:get_value("description",H),Atom),
-		       title=proplists:get_value("title",H)
-		      }
+				 proplists:get_value("pubDate",H))
+				 }
 	     |List]);
 
 %% Iteration done
@@ -100,7 +93,6 @@ iterate(Atom,[H|T],List) ->
 iterate(_Atom,[],List) ->
     List.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% <Accumulated from="http://www.1011ltd.com/web/blog/post/elegant_xml_parsing">
 parse(File) ->
     {ok, {Quotes, _}, _} = xmerl_sax_parser:stream(
