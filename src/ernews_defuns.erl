@@ -69,7 +69,7 @@ read_web(iocoder,Src) ->
 
 % <function author="Khashayar">
 % Converts pubDate from RSS document to Erlang date
-convert_pubDate_to_datetime(DateTime) ->
+convert_date(DateTime) ->
     {ok,[_Day, Date, MonthS, Year,HH,MM,SS], _} = 
 	io_lib:fread("~3s, ~2d ~3s ~4d ~2d:~2d:~2d" , DateTime),
     Month = case MonthS of
