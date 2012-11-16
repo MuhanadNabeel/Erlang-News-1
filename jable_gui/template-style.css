@@ -1,4 +1,6 @@
 
+
+
 @font-face {
   font-family: "MyriadPro Cond";
   src:  url(fonts/MyriadPro-Cond.otf) format("opentype");
@@ -15,17 +17,19 @@
 .title{
     margin: 0px;
     font-family: "MyriadPro Cond";
-    font-size: 1.6em;
+    font-size: 1.4em;
 }
+
 .box_title{
-    margin: 0px;
-    font-family: "MyriadPro Cond";
-    font-size: 1.3em;
-    z-index: 20010;
-    color:white;
+    text-decoration: none;
+    z-index: 20010;    
     padding:3px;
+    font-family: "MyriadPro Cond";
+    color:white;
     text-shadow:1px 1px 1px black;
+    font-size: 1.3em;    
 }
+
 .content{
     padding: 10px;
     font-size: 11pt;

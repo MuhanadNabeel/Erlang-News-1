@@ -94,7 +94,10 @@ function getNewsJSON() {
         var json = parse.news;
         for( var i = 0 ; i < json.length ; i++ ) {
             isUserAction[json[i].newsID] = Array(false,false);
-            jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));            
+            if(archiveTable>1)
+                jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
+            else
+                jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
             if( i < 10 && i % 2 == 0 )
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 10 )
@@ -111,6 +114,7 @@ function getNewsJSON() {
             updateRight(archiveTable);
             
         }
+
         archiveTable++;
             
         

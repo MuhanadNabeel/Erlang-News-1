@@ -1,0 +1,19 @@
+                     <div class="bd">
+                      <div class="newsTemp"> 
+                       <p class="head">
+                           $title
+                       </p>
+                       
+                       <p class="main">
+                           <img src="$image" align="left">
+                           $description
+                       </p>
+                      <table class="btm">
+                       <tr>
+                           <td><img src="http://aux.iconpedia.net/uploads/2734341571442017405.png" class="thumb1"></td>
+                           <td><img src="http://aux.iconpedia.net/uploads/19199089191952032174.png" class="thumb2"></td>
+                           <td><img src="icon_report_48.png" class="thumb3"></td>
+                       </tr>    
+                      </table> 
+                   </div>
+                   </div>

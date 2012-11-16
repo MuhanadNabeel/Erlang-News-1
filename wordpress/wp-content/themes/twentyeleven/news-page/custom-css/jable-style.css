@@ -1,0 +1,52 @@
+table.leftTable{
+    width: 100%;
+    border-style: none;
+    vertical-align: top;
+}
+
+td.left{
+    /*background-color: lightgrey;*/
+    width: 65%;
+    vertical-align: top;
+}
+
+div.newsTemp{
+    /*background-color: #F8F8FF;*/
+}
+
+h1{ 
+    font: bold italic 1.5em/1em "Times New Roman", "MS Serif", "New York", serif;
+    padding-left: 10px;
+    border-top: solid medium;
+    border-bottom: dotted thin;
+}
+
+div.newsTemp p.main{
+    font-family: sans-serif;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 0px;
+    padding-bottom:0px;
+}
+
+div.newsTemp img{
+    width: 100px;
+    height: auto;
+   
+    padding-right: 10px;
+    padding-bottom:10px;
+}
+
+.absolute_24x24_centerback {
+    position: absolute;
+    top:0px;
+    width: 24px;
+    height: 24px;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding-bottom: 10px; 
+}
+
+.recent{
+    background-color: black;
+}

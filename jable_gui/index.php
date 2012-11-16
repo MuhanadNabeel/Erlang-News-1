@@ -1,6 +1,10 @@
 <?php
-    // Philip
-?>
+/*
+Template Name: News-page
+*/
+
+get_header()?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -299,7 +303,7 @@ Thumbs up and down.
                 buttons = jQuery("#"+id+"_all_vote_buttons").clone();
                 buttons.css('display', 'block');
                 jQuery('#box-vote-buttons').append(buttons);
-                jQuery('#box_title').html(title);
+                jQuery('#box_title').html("<a class='box_title' target='_blank' style='text-decoration:none;' href='redirect.php?id="+id+"&url="+URL+"'>"+title+"</a>");
                 jQuery('#frame_content').attr('src', URL);
                 jQuery('#bigframe').css('display', 'block');
              }
@@ -315,7 +319,7 @@ Thumbs up and down.
         <button onclick="getNewsJSON()">update</button>   
     </head>
     <body>
-        <div id="bigframe" style="display:none">
+        <div id="bigframe" style="display:none" class="bigframe">
             <div style="position:fixed;background-color:black;left:0;top:0;opacity:.3;width:100%;height:100%;z-index:20000;" onclick="closeBox();"></div>
             <div style="position:fixed;background-color:white;width:80%;height:92%;z-index:20001;box-shadow:0px 0px 100px black;left:50%; margin-left:-40%;top:4%;">
                 
@@ -323,8 +327,9 @@ Thumbs up and down.
                 <div style="position:absolute;z-index:20;width:100%;height:auto;background-color:rgba(0,0,0,.5);top:0px;">
                     <table><tr>
                         <td id="box-vote-buttons"></td>
-                        <td style="vertical-align:top;"><div id="box_title" class="box_title"></div></td>
-                        </tr></table>
+                        <td style="vertical-align:top;"><div id="box_title"></div></td>
+                        </tr>
+                    </table>
 
                 </div>
 
