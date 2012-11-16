@@ -11,7 +11,7 @@
 
 -export([start_link/2,start/2]).
 
--export([init/2]).
+-export([init/2,get_hrefs/1]).
 
 -include("records.hrl").
 
@@ -92,6 +92,7 @@ iterate(Atom,[H|T],List) ->
 %% Return List of #rss_item
 iterate(_Atom,[],List) ->
     List.
+	
 
 %% <Accumulated from="http://www.1011ltd.com/web/blog/post/elegant_xml_parsing">
 parse(File) ->

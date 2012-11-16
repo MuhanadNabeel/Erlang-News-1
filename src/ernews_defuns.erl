@@ -201,6 +201,31 @@ split_text([X | Str], Word, Words) ->
 %% Remaining code is note in current version
 %%
 	
+
+%% Author: Ingimar Samuelsson
+%% 60 = "<", 97 = "a", 65 = "A", 47 = "/"
+%% h = 104, r = 114, e = 101, f = 102, = = 61, space = 32, " = 34
+%% 60,97,32,104,114,101,102,61,34	
+get_hrefs(Str) ->
+	get_hrefs(string:to_lower(Str),[],false).
+	
+get_hrefs([60,97,32,104,114,101,102,61,34|T],List,_) ->
+	get_hrefs(tl(T),[hd(T)|List],true);
+
+get_hrefs([34,62|T],List,true) ->
+	get_hrefs(T,List,false);
+	
+get_hrefs([H|T],[LH|LT],true) when is_list(LH) == true ->
+	get_hrefs(T,[LH++[H]|LT],true);
+	
+get_hrefs([H|T],[LH|LT],true) ->
+	get_hrefs(T,[[LH]++[H]|LT],true);
+	
+get_hrefs([_|T],List,false) ->
+	get_hrefs(T,List,false);
+	
+get_hrefs([],List,_) ->
+	List.
 	
 
 %% Author: Muhanad Nabeel & Ingimar Samuelsson
