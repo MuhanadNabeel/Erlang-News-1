@@ -1,10 +1,9 @@
 %%%-------------------------------------------------------------------
 %%% @author Ingimar <ingimar@student.gu.se>
-%%% @author Joel <joelhjalta@gmail.com>
 %%% @author Khashayar <khashayar@localhost.localdomain>
 %%% @author Magnus <magnus@localhost.localdomain>
 %%%
-%%% @copyright (C) 2012, Ingimar, Joel, Khashayar, Magnus, Muhanad
+%%% @copyright (C) 2012, Ingimar, Khashayar, Magnus
 %%%
 %%% @end
 %%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
@@ -89,29 +88,6 @@ read_words() ->
 		ernews_db:getList(irrelevant),
 		ernews_db:getList(tag)}.
 		
-%% Author: Joel Hjaltason
-%% Removes tags from string - except <a></a>
-remove_tags_except_a_href(Str) ->
-	remove_tags_except_a_href(Str,false).
-remove_tags_except_a_href([60|T],_) when length(T) > 0, hd(T) == 97  ->
-	["<"] ++ remove_tags_except_a_href(T,false);
-remove_tags_except_a_href([60|T],_) when length(T) > 0, hd(T) == 65  ->
-	["<"] ++ remove_tags_except_a_href(T,false);
-remove_tags_except_a_href([60|T],_) when length(T) > 1, hd(T) == 47, hd(tl(T)) == 97  ->
-	["<"] ++ remove_tags_except_a_href(T,false);
-remove_tags_except_a_href([60|T],_) when length(T) > 1, hd(T) == 47, hd(tl(T)) == 65  ->
-	["<"] ++ remove_tags_except_a_href(T,false);
-remove_tags_except_a_href([60|T],_) ->
-	remove_tags_except_a_href(T,true);
-remove_tags_except_a_href([62|T],true) ->
-	remove_tags_except_a_href(T,false);
-remove_tags_except_a_href([_|T],true) ->
-	remove_tags_except_a_href(T,true);
-remove_tags_except_a_href([H|T],false) ->
-	[H] ++ remove_tags_except_a_href(T,false);
-remove_tags_except_a_href([],_) ->
-	[].
-
 %%	
 %% Following is related to relevant-check
 %% and tag-generator
