@@ -9,6 +9,7 @@
 %%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
 %%%-------------------------------------------------------------------
 -module(ernews_defuns).
+%%-export([read_web/2,convert_date/1,read_words/0,is_relevant/4,split_text/1]).
 -compile(export_all).
 
 
@@ -181,6 +182,7 @@ compare_concat_str(Str1,Str2) ->
 	
 	
 %% Author: Muhanad Nabeel
+%% Split string into list, devided " "
 split_text(Str) ->
 	split_text(Str, [], []).
 split_text([], [], Words) ->
