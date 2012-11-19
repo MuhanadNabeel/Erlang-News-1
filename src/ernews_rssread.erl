@@ -11,7 +11,7 @@
 
 -export([start_link/2,start/2]).
 
--export([init/2,get_hrefs/1]).
+-export([init/2]).
 
 -include("records.hrl").
 
