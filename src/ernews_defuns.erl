@@ -127,6 +127,21 @@ count_words([H|T],List,Counter) ->
 	end.
 	
 %% Author: Ingimar Samuelsson
+%% Removes duplicates from a list
+remove_duplist(List) ->
+	remove_duplist(List,[]).
+remove_duplist([H|T],List) ->
+	case lists:member(H,List) of
+		true ->
+			remove_duplist(T,List);
+		false ->
+			remove_duplist(T,[H|List])
+	end;
+remove_duplist([],List) ->
+	List.
+
+	
+%% Author: Ingimar Samuelsson
 %% Checks for relevancy of article using a list of words from db
 is_relevant(List,Good,Bad,Tags) ->
 	Html = string:tokens(List," "),
@@ -145,7 +160,7 @@ is_relevant(List,Good,Bad,Tags) ->
 is_relevant(0,_,_) ->
 	{error,not_relevant};
 is_relevant(_,0,{Html,Tags}) ->
-	{ok,get_tags(Tags,Html)};
+	{ok,remove_duplist( get_tags(Tags,Html) )};
 is_relevant(_,_,_) ->
 	{error,bad_language}.
 
@@ -202,30 +217,54 @@ split_text([X | Str], Word, Words) ->
 %%
 	
 
-%% Author: Ingimar Samuelsson
 %% 60 = "<", 97 = "a", 65 = "A", 47 = "/"
 %% h = 104, r = 114, e = 101, f = 102, = = 61, space = 32, " = 34
 %% 60,97,32,104,114,101,102,61,34	
-get_hrefs(Str) ->
-	get_hrefs(string:to_lower(Str),[],false).
+get_hrefs(URL,Str) ->
+	get_hrefs(URL,string:to_lower(Str),[],false).
 	
-get_hrefs([60,97,32,104,114,101,102,61,34|T],List,_) ->
-	get_hrefs(tl(T),[hd(T)|List],true);
+get_hrefs(URL,[60,97,32,104,114,101,102,61,34|T],List,_) ->
+	get_hrefs(URL,tl(T),[hd(T)|List],true);
 
-get_hrefs([34,62|T],List,true) ->
-	get_hrefs(T,List,false);
+get_hrefs(URL,[34|T],List,true) ->
+	get_hrefs(URL,T,List,false);
 	
-get_hrefs([H|T],[LH|LT],true) when is_list(LH) == true ->
-	get_hrefs(T,[LH++[H]|LT],true);
+get_hrefs(URL,[H|T],[LH|LT],true) when is_list(LH) == true ->
+	get_hrefs(URL,T,[LH++[H]|LT],true);
 	
-get_hrefs([H|T],[LH|LT],true) ->
-	get_hrefs(T,[[LH]++[H]|LT],true);
+get_hrefs(URL,[H|T],[LH|LT],true) ->
+	get_hrefs(URL,T,[[LH]++[H]|LT],true);
 	
-get_hrefs([_|T],List,false) ->
-	get_hrefs(T,List,false);
+get_hrefs(URL,[_|T],List,false) ->
+	get_hrefs(URL,T,List,false);
 	
-get_hrefs([],List,_) ->
+get_hrefs(URL,[],List,_) ->
+	get_hrefs(URL,List,[]).
+	
+get_hrefs(URL,[H|T],List) ->
+	try string:len(H) of
+		L -> 
+		Len = string:len(H),
+		case Len > 3 of
+			true ->
+				Left = string:left(H,4),
+				case Left == "http" of
+					true ->
+						get_hrefs(URL,T,[H|List]);
+					false ->
+						get_hrefs(URL,T,[URL++H|List])
+				end;
+			false ->
+				get_hrefs(URL,T,[URL++H|List])
+		end
+	catch 
+		_:Error -> get_hrefs(URL,T,List)
+	end;
+	
+get_hrefs(_,[],List) ->
 	List.
+	
+	
 	
 
 %% Author: Muhanad Nabeel & Ingimar Samuelsson
