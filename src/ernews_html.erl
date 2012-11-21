@@ -1,10 +1,11 @@
 %%%-------------------------------------------------------------------
-%%% @author Muhanad Nabeel <Muhanad@Muhanads-MacBook-Pro.local>
-%%% @copyright (C) 2012, Muhanad Nabeel
+%%% @author Muhanad Nabeel <gusnabemu@student.gu.se>
+%%% @copyright (C) 2012, Jáble Muhanad Nabeel
 %%% @doc
-%%%
+%%%     This module is about passing and checking if the information recieved
+%%%     is vaild 
 %%% @end
-%%% Created : 10 Oct 2012 by Muhanad Nabeel <Muhanad@Muhanads-MacBook-Pro.local>
+%%% Created : 10 Oct 2012 by Muhanad Nabeel <gusnabemu@student.gu.se>
 %%%-------------------------------------------------------------------
 -module(ernews_html).
 
@@ -26,20 +27,23 @@
 %%%===================================================================
 %%% API
 %%%===================================================================
-
-%% The start_link includes the nessecary sources for the functions to handle
-%% and from there the gen_fsm starts 
-
+%%% @author Muhanad Nabeel
+%%% @doc
+%%%        The start_link includes the nessecary sources for the functions to handle
+%%%        and from there the gen_fsm starts 
+%%% @end
 start_link(Url,Source,Ts,Words) ->
     gen_fsm:start(?MODULE, [Url,Source,Ts,Words], []).
 
 %%%===================================================================
 %%% gen_fsm callbacks
 %%%===================================================================
-
-%% Assigning the data to the state
-%% and passing the state to the end_url function.
-
+%%% @author Muhanad Nabeel
+%%% @doc
+%%%          Assigning the data to the state
+%%%          and passing the state to the end_url function. 
+%%%       
+%%% @end
 init([Url, Source, Ts, Words]) ->
     State = #state{url=Url, source=Source, ts=Ts,
 		   check_counter = 0 ,words = Words},
@@ -48,14 +52,17 @@ init([Url, Source, Ts, Words]) ->
 
 
 %------------------------------------------------------------------------
-
-%% the end_url function check if the url and the source is valid with a 
-%% function from htmlfuns, if an error is returned then checking if it's 
-%% bigger then 3 from the check_counter recieved at the beginning
-%% then pass it to the terminate otherwise call the same function and puls
-%% the checker with +1
-%% If the function return a vaild url then pass it to the duplicate function
-%% with a new state
+%%% @author Muhanad Nabeel
+%%% @doc
+%%%         the end_url function check if the url and the source is valid with a 
+%%%         function from htmlfuns, if an error is returned then checking if it's 
+%%%         bigger then 3 from the check_counter recieved at the beginning
+%%%         then pass it to the terminate otherwise call the same function and puls
+%%%         the checker with +1
+%%%         If the function return a vaild url then pass it to the duplicate function
+%%%         with a new state    
+%%%       
+%%% @end
 end_url(end_url, Record=#state{}) ->
     case ernews_htmlfuns:end_url(
 		    Record#state.source, Record#state.url) of
@@ -77,11 +84,14 @@ end_url(end_url, Record=#state{}) ->
 
 
 %------------------------------------------------------------------------
-%% The duplicate function check if the url already exists in the dataebase
-%% with the help from the function exists from ernews_db module
-%% if it's true pass it to the terminate otherwise pass it to the read_url
-%% function 
-
+%%% @author Muhanad Nabeel
+%%% @doc
+%%%            The duplicate function check if the url already exists in the dataebase
+%%%            with the help from the function exists from ernews_db module
+%%%            if it's true pass it to the terminate otherwise pass it to the read_url
+%%%            function 
+%%%       
+%%% @end
 duplicate(duplicate, Record=#state{}) ->
     case ernews_db:exists("news", {"URL" ,Record#state.url}) of
 	true ->
@@ -93,16 +103,18 @@ duplicate(duplicate, Record=#state{}) ->
 
 
 %------------------------------------------------------------------------
-
-%% The read_url function passes the url to htmlfuns function and 
-%% gets information back from that module, those will be checked
-%% by the function check_all which handles all the possible outcomes
-%% from get_info function in the module ernews_htmlfuns and pass them
-%% to the state which is going to the check_relevency function
-%% if the function returns an error then go through the function again
-%% and add to the check_counter +1 if it's more then 3 then pass it 
-%% to the terminate
-
+%%% @author Muhanad Nabeel
+%%% @doc
+%%%            The read_url function passes the url to htmlfuns function and 
+%%%            gets information back from that module, those will be checked
+%%%            by the function check_all which handles all the possible outcomes
+%%%            from get_info function in the module ernews_htmlfuns and pass them
+%%%            to the state which is going to the check_relevency function
+%%%            if the function returns an error then go through the function again
+%%%            and add to the check_counter +1 if it's more then 3 then pass it 
+%%%            to the terminate
+%%%       
+%%% @end
 read_url(read_url, Record=#state{}) ->
     Info_List = ernews_htmlfuns:get_info(Record#state.url),
     case check_all(Info_List) of
@@ -126,12 +138,14 @@ read_url(read_url, Record=#state{}) ->
 
 
 %------------------------------------------------------------------------
-
-%% This function pass the new information stored in the state
-%% to the function in the module htmlfuns if the function returns
-%% ok then submit it to the terminate otherwise terminate it with error
-%% message
-
+%%% @author Muhanad Nabeel
+%%% @doc
+%%%         This function pass the new information stored in the state
+%%%         to the function in the module htmlfuns if the function returns
+%%%         ok then submit it to the terminate otherwise terminate it with error
+%%%         message  
+%%%       
+%%% @end
 check_relevancy(check_relevancy, Record=#state{}) ->
     case ernews_htmlfuns:relevancy_check(Record#state.url, Record#state.words) of
 	{ok, Tags} ->
@@ -197,11 +211,15 @@ handle_info(_Info, StateName, State) ->
     {next_state, StateName, State}.
 
 %------------------------------------------------------------------------
+%%% @author Muhanad Nabeel
+%%% @doc
+%%%           This function recieves the error messages and pass them to the linkserver
+%%%           The already_exists error will be passed to the linkserver and other errors 
+%%%           with a reason. Other wise submit the vaild information also to the linkserver
+%%%       
+%%% @end
 
 
-%% This function recieves the error messages and pass them to the linkserver
-%% The already_exists error will be passed to the linkserver and other errors 
-%% with a reason. Other wise submit the vaild information also to the linkserver
 
 terminate({error, already_exists} , _StateName, _State) ->
     ok;
@@ -244,8 +262,13 @@ code_change(_OldVsn, StateName, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 
-%% This function checks all the possible messages recieved from
-%% the function get_info from the module htmlfuns and add it to the buffer.
+%%% @author Khashayar Abdoli, Muhanad Nabeel
+%%% @doc
+%%%           This function checks all the possible messages recieved from
+%%%           the function get_info from the module htmlfuns and add it to the buffer.
+%%%       
+%%% @end
+
 
 check_all({error,Reason}) ->
     {error,Reason};
