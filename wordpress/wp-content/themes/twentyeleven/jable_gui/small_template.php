@@ -32,12 +32,12 @@
                         	<table id="{id}_all_vote_buttons" style="display:none;">
 	                        	<tr>
 		                    		<td>
-			                            <div id="{id}_vote_up_{datatype}" class="thumb-up-shadowed" onclick="articleAction(this,1,false);getNewsJSON(false, true)"></div>
-			                            <div id="{id}_vote_up_{datatype}_active" class="thumb-up-active-shadowed" onclick="articleAction(this,1,true);getNewsJSON(false, true)"></div>
+			                            <div id="{id}_vote_up_{datatype}_extra" class="thumb-up-shadowed" onclick="articleAction(this,1,false);getNewsJSON(false, true)"></div>
+			                            <div id="{id}_vote_up_{datatype}_extra_active" class="thumb-up-active-shadowed" onclick="articleAction(this,1,true);getNewsJSON(false, true)"></div>
 			                        </td>
 			                        <td>
-			                            <div id="{id}_vote_down_{datatype}" class="thumb-down-shadowed" onclick="articleAction(this,0,false);getNewsJSON(false, true)"></div>
-			                            <div id="{id}_vote_down_{datatype}_active" class="thumb-down-active-shadowed" onclick="articleAction(this,0,true);getNewsJSON(false, true)"></div>
+			                            <div id="{id}_vote_down_{datatype}_extra" class="thumb-down-shadowed" onclick="articleAction(this,0,false);getNewsJSON(false, true)"></div>
+			                            <div id="{id}_vote_down_{datatype}_extra_active" class="thumb-down-active-shadowed" onclick="articleAction(this,0,true);getNewsJSON(false, true)"></div>
 		                            </td>
 	                        	</tr>
                         	</table>
