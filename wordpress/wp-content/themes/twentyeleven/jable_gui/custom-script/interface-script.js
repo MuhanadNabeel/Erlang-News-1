@@ -21,7 +21,7 @@ jQuery(document).ready(function() {
 })
 
 function animate(id){
-    alert();
+//    alert();
     closeAllStuff(function(){
         var $filteredData = $data.find('li[data-type=right_archive_'+id+']');
         $holder.quicksand($filteredData, {

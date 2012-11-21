@@ -30,7 +30,6 @@ function articleAction(item,action,undo) {
         jQuery('#' + jQuery(item).attr('id') + '_active').css('opacity','1');
         jQuery('#' + jQuery(item).attr('id')).css('opacity','1');
     });
-    getNewsJSON();
     function updateCounter(id,action,undo) {
         if( undo == true && action == 0 )
             iterateCounter('#' + id + '_down_vote_count',false);
