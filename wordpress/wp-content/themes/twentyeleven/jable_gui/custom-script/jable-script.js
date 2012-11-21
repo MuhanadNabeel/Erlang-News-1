@@ -38,11 +38,13 @@ function articleAction(item,action,undo) {
         else if( undo == false && action == 0 ) {
             iterateCounter('#' + id + '_down_vote_count',true);
             if( jQuery('#' + id + '_vote_up_archive_' + archiveTable + '_active').is(':visible') )
-                iterateCounter('#' + id + '_up_vote_count',false);
+                alert('shit');
+                //iterateCounter('#' + id + '_up_vote_count',false);
         } else if( undo == false && action == 1 ) {
             iterateCounter('#' + id + '_up_vote_count',true);
             if( jQuery('#' + id + '_vote_down_archive_' + archiveTable + '_active').is(':visible') )
-                iterateCounter('#' + id + '_down_vote_count',false);
+                alert('fuck');
+                //iterateCounter('#' + id + '_down_vote_count',false);
         }
     }
     function iterateCounter(id,up) {
