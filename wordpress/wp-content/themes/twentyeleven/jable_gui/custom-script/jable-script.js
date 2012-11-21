@@ -94,11 +94,15 @@ function articleAction(item,action,undo) {
     }
 
 }
+var lastUpdate = null;
 var archiveTable = 1;
 function getNewsJSON(where) {
     jQuery.get(jableDir + '_get_news.php',function(outcome) {
         jQuery('#main_loading_space').remove();
         var parse = jQuery.parseJSON(outcome);
+        if( lastUpdate != null && lastUpdate == parse )
+            return;
+        lastUpdate = parse;
         var json = parse.news;
         if(json.length == 0){
             setTimeout('getNewsJSON()', 30000);
