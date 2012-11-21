@@ -52,7 +52,7 @@ function animate(id){
 function updateRight(id){
     $data = $holder.clone();                
     var $filteredData = $data.find('li[data-type=right_archive_'+(id-1)+']');
-    $holder.quicksand($filteredData, {
+ /*   $holder.quicksand($filteredData, {
         duration: 0,
         easing: 'swing'},function(){
             if(id > 2){
@@ -62,7 +62,7 @@ function updateRight(id){
     
         
     
-    animate(id);
+//    animate(id);*/
     
 }
 
