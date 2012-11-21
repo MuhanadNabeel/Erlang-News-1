@@ -19,7 +19,7 @@ function articleAction(item,action,undo) {
     var id = jQuery(item).attr('id').substring(0,jQuery(item).attr('id').indexOf('_'));
     if( isUserAction[id][Math.floor(action/2)] == true )
         return;
-    updateCounter(id,action,undo);
+    updateCounter(id,item,action,undo);
     isUserAction[id][Math.floor(action/2)] = true;
     changeUserButtons(id,item,undo);
     var interval = setInterval("articleActionBlink('" 
@@ -30,7 +30,7 @@ function articleAction(item,action,undo) {
         jQuery('#' + jQuery(item).attr('id') + '_active').css('opacity','1');
         jQuery('#' + jQuery(item).attr('id')).css('opacity','1');
     });
-    function updateCounter(id,action,undo) {
+    function updateCounter(id,item,action,undo) {
 
         if( undo == true && action == 0 )
             iterateCounter('#' + id + '_down_vote_count',false);
@@ -40,13 +40,13 @@ function articleAction(item,action,undo) {
             iterateCounter('#' + id + '_down_vote_count',true);
             if( jQuery('#' + id + '_vote_up_archive_' + (archiveTable-1) + '_active').is(':visible') ) {
                 iterateCounter('#' + id + '_up_vote_count',false);
-                jQuery('#' + id + '_vote_up_archive_' + (archiveTable-1) + '_active').hide();
+                changeUserButtons(id,item,undo);
             }
         } else if( undo == false && action == 1 ) {
             iterateCounter('#' + id + '_up_vote_count',true);
             if( jQuery('#' + id + '_vote_down_archive_' + (archiveTable-1) + '_active').is(':visible') ) {
                 iterateCounter('#' + id + '_down_vote_count',false);
-                jQuery('#' + id + '_vote_down_archive_' + (archiveTable-1) + '_active').hide();
+                changeUserButtons(id,item,undo);
             }
         }
     }
