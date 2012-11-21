@@ -3,8 +3,8 @@ var newsTemplate = '';
 var newsRightTemplate = '';
 
 jQuery(document).ready(function() {
-    jQuery('body').prepend('<div style="text-align:center;position:absolute;left:50%;'
-            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');
+  /*  jQuery('body').prepend('<div style="text-align:center;position:absolute;left:50%;'
+            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');*/
     
     jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
         var split = str.split('<split_between_templates>')
@@ -110,7 +110,7 @@ function getNewsJSON(where) {
                 jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
             else
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
-            if( i < 10)
+            if( i < 10 )
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 10 )
                 jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
