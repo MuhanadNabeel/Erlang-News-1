@@ -38,12 +38,16 @@ function articleAction(item,action,undo) {
             iterateCounter('#' + id + '_up_vote_count',false);
         else if( undo == false && action == 0 ) {
             iterateCounter('#' + id + '_down_vote_count',true);
-            if( jQuery('#' + id + '_vote_up_archive_' + (archiveTable-1) + '_active').is(':visible') )
+            if( jQuery('#' + id + '_vote_up_archive_' + (archiveTable-1) + '_active').is(':visible') ) {
                 iterateCounter('#' + id + '_up_vote_count',false);
+                jQuery('#' + id + '_vote_up_archive_' + (archiveTable-1) + '_active').hide();
+            }
         } else if( undo == false && action == 1 ) {
             iterateCounter('#' + id + '_up_vote_count',true);
-            if( jQuery('#' + id + '_vote_down_archive_' + (archiveTable-1) + '_active').is(':visible') )
+            if( jQuery('#' + id + '_vote_down_archive_' + (archiveTable-1) + '_active').is(':visible') ) {
                 iterateCounter('#' + id + '_down_vote_count',false);
+                jQuery('#' + id + '_vote_down_archive_' + (archiveTable-1) + '_active').hide();
+            }
         }
     }
     function iterateCounter(id,up) {
