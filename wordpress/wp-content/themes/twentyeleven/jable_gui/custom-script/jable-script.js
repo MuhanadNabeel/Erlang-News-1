@@ -47,10 +47,15 @@ function articleAction(item,action,undo) {
     }
     function iterateCounter(id,up) {
         var org = parseInt( jQuery(id).text(), 10 );
-        if( up )
+        alert(org);
+        if( up ){
             jQuery(id).text( ( org + 1 ) );
-        else
+            jQuery(id + '_active').text( ( org + 1 ) );
+        }else{            
             jQuery(id).text( ( org - 1 ) );
+            jQuery(id + '_active').text( ( org - 1 ) );
+        }
+            
     }
     var articleActionBlinkIndex = 1;
     function articleActionBlink(id) {

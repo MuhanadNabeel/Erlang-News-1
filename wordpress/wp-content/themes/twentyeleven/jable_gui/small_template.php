@@ -17,10 +17,10 @@
 		<tr><td class="voteButtons" >
 			<div >
 				<table>
-					<tr><div class="vote-up" id="{id}_vote_up_{datatype}" onclick="articleAction(this,1,false)" align="center"><a class="likes">{up}</a></div>
-						<div class="vote-up-active" id="{id}_vote_up_{datatype}_active" onclick="articleAction(this,1,true)" align="center"><a id="{id}_up_vote_count" class="likes">{up}</a></div></tr>
-					<tr><div class="vote-down" id="{id}_vote_down_{datatype}" onclick="articleAction(this,0,false)" align="center"><a class="likes">{down}</a></div>
-						<div class="vote-down-active" id="{id}_vote_down_{datatype}_active" onclick="articleAction(this,0,true)" align="center"><a id="{id}_down_vote_count" class="likes">{down}</a></div></tr>
+					<tr><div class="vote-up" id="{id}_vote_up_{datatype}" onclick="articleAction(this,1,false)" align="center"><a id="{id}_up_vote_count" class="likes">{up}</a></div>
+						<div class="vote-up-active" id="{id}_vote_up_{datatype}_active" onclick="articleAction(this,1,true)" align="center"><a id="{id}_up_vote_count_active" class="likes">{up}</a></div></tr>
+					<tr><div class="vote-down" id="{id}_vote_down_{datatype}" onclick="articleAction(this,0,false)" align="center"><a id="{id}_down_vote_count" class="likes">{down}</a></div>
+						<div class="vote-down-active" id="{id}_vote_down_{datatype}_active" onclick="articleAction(this,0,true)" align="center"><a id="{id}_down_vote_count_active" class="likes">{down}</a></div></tr>
 				</table>
 				</div>
 			</td>
