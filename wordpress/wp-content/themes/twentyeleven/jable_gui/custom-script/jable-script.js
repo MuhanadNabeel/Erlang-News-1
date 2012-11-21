@@ -126,6 +126,8 @@ function getNewsJSON(where) {
             if( json[i] != '' ) {
                 jQuery('#' + json[i] + str).hide();
                 jQuery('#' + json[i] + str + '_active').show();
+                jQuery('#' + json[i] + str + '_extra').hide();
+                jQuery('#' + json[i] + str + '_extra_active').show();
             }
         }
     }
