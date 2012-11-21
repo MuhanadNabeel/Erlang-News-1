@@ -55,9 +55,9 @@ function updateRight(id){
     $holder.quicksand($filteredData, {
         duration: 0,
         easing: 'swing'},function(){
-            if(id > 2){
+ /*           if(id > 2){
                 $data.find('li[data-type=right_archive_'+(id-2)+']').empty();
-            }
+            }*/
         });
     
         

@@ -11,7 +11,7 @@ jQuery(document).ready(function() {
         newsRightTemplate = split[0];
         newsTemplate = split[1];
         getNewsJSON();
-        setInterval('getNewsJSON();',300000);
+        setInterval('getNewsJSON();',30000);
     });
 });
 
