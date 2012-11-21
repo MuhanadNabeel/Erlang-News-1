@@ -31,25 +31,23 @@ function articleAction(item,action,undo) {
         jQuery('#' + jQuery(item).attr('id')).css('opacity','1');
     });
     function updateCounter(id,action,undo) {
+
         if( undo == true && action == 0 )
             iterateCounter('#' + id + '_down_vote_count',false);
         else if( undo == true && action == 1 )
             iterateCounter('#' + id + '_up_vote_count',false);
         else if( undo == false && action == 0 ) {
             iterateCounter('#' + id + '_down_vote_count',true);
-            if( jQuery('#' + id + '_vote_up_archive_' + archiveTable + '_active').is(':visible') )
-                alert('shit');
-                //iterateCounter('#' + id + '_up_vote_count',false);
+            if( jQuery('#' + id + '_vote_up_archive_' + (archiveTable-1) + '_active').is(':visible') )
+                iterateCounter('#' + id + '_up_vote_count',false);
         } else if( undo == false && action == 1 ) {
             iterateCounter('#' + id + '_up_vote_count',true);
-            if( jQuery('#' + id + '_vote_down_archive_' + archiveTable + '_active').is(':visible') )
-                alert('fuck');
-                //iterateCounter('#' + id + '_down_vote_count',false);
+            if( jQuery('#' + id + '_vote_down_archive_' + (archiveTable-1) + '_active').is(':visible') )
+                iterateCounter('#' + id + '_down_vote_count',false);
         }
     }
     function iterateCounter(id,up) {
         var org = parseInt( jQuery(id).text(), 10 );
-        alert(org);
         if( up ){
             jQuery(id).text( ( org + 1 ) );
             jQuery(id + '_active').text( ( org + 1 ) );
