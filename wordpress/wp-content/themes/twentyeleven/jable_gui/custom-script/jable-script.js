@@ -30,6 +30,7 @@ function articleAction(item,action,undo) {
         jQuery('#' + jQuery(item).attr('id') + '_active').css('opacity','1');
         jQuery('#' + jQuery(item).attr('id')).css('opacity','1');
     });
+    getNewsJSON();
     function updateCounter(id,action,undo) {
         if( undo == true && action == 0 )
             iterateCounter('#' + id + '_down_vote_count',false);
@@ -104,7 +105,7 @@ function getNewsJSON() {
                 jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
             else
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
-            if( i < 10 && i % 2 == 0 )
+            if( i < 10)
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 10 )
                 jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
@@ -118,11 +119,11 @@ function getNewsJSON() {
         
         if (archiveTable>1){
             updateRight(archiveTable);
-            
         }
 
+
+
         archiveTable++;
-            
         
 
     });

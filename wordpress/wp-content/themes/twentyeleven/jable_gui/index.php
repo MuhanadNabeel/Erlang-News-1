@@ -53,7 +53,7 @@ Div fonts
                 <div style="position:absolute;z-index:20;width:100%;height:auto;background-color:rgba(0,0,0,.5);top:0px;">
                     <table><tr>
                         <td id="box-vote-buttons" style="padding:5px;"></td>
-                        <td style="vertical-align:top;"><div id="box_title"></div></td>
+                        <td style="vertical-align:top;"><div id="box_title" class="box_title"></div></td>
                         </tr>
                     </table>
 
@@ -74,7 +74,7 @@ Div fonts
                     <table>
                         <tr>
                             <td id="article_container"><ul style="list-style-type:none;" id="news_article_left"></ul></td>
-                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_right"></ul></td>
+<!--                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_right"></ul></td>-->
                         </tr>
                     </table>
                 </td>

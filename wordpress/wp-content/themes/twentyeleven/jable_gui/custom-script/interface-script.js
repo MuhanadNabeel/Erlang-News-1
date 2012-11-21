@@ -21,6 +21,7 @@ jQuery(document).ready(function() {
 })
 
 function animate(id){
+    alert();
     closeAllStuff(function(){
         var $filteredData = $data.find('li[data-type=right_archive_'+id+']');
         $holder.quicksand($filteredData, {
@@ -71,7 +72,6 @@ function closeAllStuff(cbFunc){
         return (jQuery(this).is(':visible'));
     })
     a.slideUp('400', cbFunc);
-     
  }
 
  function openBox(URL, title, id, datatype){

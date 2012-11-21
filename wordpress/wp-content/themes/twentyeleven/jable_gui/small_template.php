@@ -1,7 +1,7 @@
 
-<li data-id="{id}_left_item" data-type="left_{datatype}">
+<li data-id="{id}_left_item" id="left_{datatype}">
 <div>
-<div class="newsTemp">
+<div class="newsTemp" id="{datatype}">
 
 	<div class="title">
 		<table><tr><td style="vertical-align:top;"><img src="{image}" align="left" style="max-height:32px;max-width:32px;margin-top:10px;margin-right:-6px;"></td>
@@ -26,18 +26,18 @@
 			</td>
 			<td style="width:2em;height:4em;"></td>
 			<td><div class="content">
-			{description} <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
+			<div style="line-height:100%;">{description}</div> <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
 				
 				
                         	<table id="{id}_all_vote_buttons" style="display:none;">
 	                        	<tr>
 		                    		<td>
-			                            <div id="{id}_vote_up_{datatype}" class="thumb-up-shadowed" onclick="articleAction(this,1,false)"></div>
-			                            <div id="{id}_vote_up_{datatype}_active" class="thumb-up-active-shadowed" onclick="articleAction(this,1,true)"></div>
+			                            <div id="{id}_vote_up_{datatype}" class="thumb-up-shadowed" onclick="articleAction(this,1,false);getNewsJSON(false, true)"></div>
+			                            <div id="{id}_vote_up_{datatype}_active" class="thumb-up-active-shadowed" onclick="articleAction(this,1,true);getNewsJSON(false, true)"></div>
 			                        </td>
 			                        <td>
-			                            <div id="{id}_vote_down_{datatype}" class="thumb-down-shadowed" onclick="articleAction(this,0,false)"></div>
-			                            <div id="{id}_vote_down_{datatype}_active" class="thumb-down-active-shadowed" onclick="articleAction(this,0,true)"></div>
+			                            <div id="{id}_vote_down_{datatype}" class="thumb-down-shadowed" onclick="articleAction(this,0,false);getNewsJSON(false, true)"></div>
+			                            <div id="{id}_vote_down_{datatype}_active" class="thumb-down-active-shadowed" onclick="articleAction(this,0,true);getNewsJSON(false, true)"></div>
 		                            </td>
 	                        	</tr>
                         	</table>
@@ -48,8 +48,7 @@
 
 	</table>
 </br>
-	<span class="readMore"><a style="cursor:pointer;" style="font-size:0.7em;" id="{id}_report" onclick="articleAction(this,2,false)">report article</a></span>
-	<span class="readMore"><a style="cursor:pointer;" style="font-size:0.7em;" id="{id}_report" onclick="articleAction(this,2,false)">report article</a></span>
+	<span class="readMore" style="font-size:8pt;"><a style="cursor:pointer;" style="font-size:6pt;" id="{id}_report" onclick="articleAction(this,2,false)">report article</a></span>
 	
 	<div style="height:1px;width:100%;background-color:#c6c6c6;"></div>
 
