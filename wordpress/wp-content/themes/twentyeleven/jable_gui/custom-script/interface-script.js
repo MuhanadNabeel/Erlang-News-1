@@ -52,17 +52,17 @@ function animate(id){
 function updateRight(id){
     $data = $holder.clone();                
     var $filteredData = $data.find('li[data-type=right_archive_'+(id-1)+']');
-    $holder.quicksand($filteredData, {
+ /*   $holder.quicksand($filteredData, {
         duration: 0,
         easing: 'swing'},function(){
- /*           if(id > 2){
+            if(id > 2){
                 $data.find('li[data-type=right_archive_'+(id-2)+']').empty();
-            }*/
+            }
         });
     
         
     
-    animate(id);
+//    animate(id);*/
     
 }
 
