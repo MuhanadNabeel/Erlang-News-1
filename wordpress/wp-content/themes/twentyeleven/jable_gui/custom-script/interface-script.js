@@ -12,7 +12,6 @@ jQuery(document).ready(function() {
     
     // get the action filter option item on page load
     $holder = jQuery('#archive');
-    $data = $holder.clone();
 
     /*var $filteredData = $data.find('li[data-type=type1]');
         $holder.quicksand($filteredData, {
@@ -21,10 +20,9 @@ jQuery(document).ready(function() {
 })
 
 function animate(id){
-//    alert();
     closeAllStuff(function(){
-        var $filteredData = $data.find('li[data-type=right_archive_'+id+']');
-        $holder.quicksand($filteredData, {
+        var $filteredData2 = $data.find('li[data-type=right_archive_'+id+']');
+        $holder.quicksand($filteredData2, {
             duration: 700,
             easing: 'swing'},
             function(){
@@ -50,19 +48,19 @@ function animate(id){
  }
 
 function updateRight(id){
-    $data = $holder.clone();                
-    var $filteredData = $data.find('li[data-type=right_archive_'+(id-1)+']');
- /*   $holder.quicksand($filteredData, {
+    $data = $holder.clone();
+    var $filteredData1 = $data.find('li[data-type=right_archive_'+(id-1)+']');
+    $holder.quicksand($filteredData1, {
         duration: 0,
         easing: 'swing'},function(){
             if(id > 2){
-                $data.find('li[data-type=right_archive_'+(id-2)+']').empty();
+//                $data.find('li[data-type=right_archive_'+(id-2)+']').empty();
             }
         });
     
         
     
-//    animate(id);*/
+    animate(id);
     
 }
 
@@ -71,7 +69,10 @@ function closeAllStuff(cbFunc){
     a = t.filter(function(){
         return (jQuery(this).is(':visible'));
     })
-    a.slideUp('400', cbFunc);
+    if(a.size()==0)
+        cbFunc();
+    else
+        a.slideUp('400', cbFunc);
  }
 
  function openBox(URL, title, id, datatype){

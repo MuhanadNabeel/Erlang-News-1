@@ -11,7 +11,7 @@ jQuery(document).ready(function() {
         newsRightTemplate = split[0];
         newsTemplate = split[1];
         getNewsJSON();
-        setInterval('getNewsJSON();',30000);
+        setInterval('getNewsJSON();',300000);
     });
 });
 
@@ -98,6 +98,8 @@ var lastUpdate = null;
 var archiveTable = 1;
 function getNewsJSON(where) {
     jQuery.get(jableDir + '_get_news.php',function(outcome) {
+        jQuery('#news_article_left').html('');
+        jQuery('#news_article_right').html('');
         jQuery('#main_loading_space').remove();
         var parse = jQuery.parseJSON(outcome);
         if( lastUpdate != null && lastUpdate == parse )

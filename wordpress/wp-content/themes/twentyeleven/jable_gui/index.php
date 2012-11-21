@@ -41,8 +41,6 @@ Div fonts
 
 </style>
 
-        
-<button onclick="getNewsJSON()">update</button>
     
     
         <div id="bigframe" style="display:none" class="bigframe">
