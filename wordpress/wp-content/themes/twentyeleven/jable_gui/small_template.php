@@ -6,7 +6,7 @@
 	<div class="title">
 		<table><tr><td style="vertical-align:top;"><img src="{image}" align="left" style="max-height:32px;max-width:32px;margin-top:10px;margin-right:-6px;"></td>
 			<td><span class="main-title"><a style="cursor:pointer;" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
-           return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');">{title}</a></span></td></tr></table>
+           return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');">{id}_vote_up_{datatype} {title}</a></span></td></tr></table>
 		
 		
 	</div>
