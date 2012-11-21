@@ -84,14 +84,9 @@ function articleAction(item,action,undo) {
 
 }
 var archiveTable = 1;
-function getNewsJSON() {
-
+function getNewsJSON(where) {
     jQuery.get(jableDir + '_get_news.php',function(outcome) {
-
         jQuery('#main_loading_space').remove();
-        jQuery('#news_article_left').html('');
-        jQuery('#news_article_right').html('');
-    //    jQuery('#archive').html('');
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
         if(json.length == 0){
