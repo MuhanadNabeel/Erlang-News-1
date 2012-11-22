@@ -24,9 +24,14 @@
                         </div>
                     </td>
                     <td>
-                    <div><div class="desc">{description}</div><span class="readMore" ><a style="cursor:pointer;"  target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
+                    <div><div class="desc" style="line-height:130%;">{description}</div><span class="readMore" ><a style="cursor:pointer;"  target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
                             return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</a></span>
-                        <div class="seperator"></div>
+                        <div class="seperator" style="margin-top:20px"></div>
+                        <span class="readMore" style="font-size:8pt;">
+                            <a style="cursor:pointer;" id="{id}_report" onclick="fadeWindow('{id}_reported_window', 'reported!');">report article</a>
+                        </span>
+                        <div class="window" style="margin-top:-5px;" id="{id}_reported_window"><div id="{id}_reported_window_text"></div></div>
+    
                     </div>
                     </td>
                 </tr>

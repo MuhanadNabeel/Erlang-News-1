@@ -25,6 +25,15 @@ jQuery(document).ready(function() {
 
 })
 
+function fadeWindow(id, text){
+    jQuery('#'+id+'_text').html(text);
+    jQuery('#'+id).fadeIn('slow', function(){
+        setTimeout("jQuery('#"+id+"').fadeOut('slow')", 2000);
+        
+    });
+}
+
+
 function animate(id){
     closeAllStuff(function(){
         var $filteredData2 = $data.find('li[data-type=right_archive_'+id+']');

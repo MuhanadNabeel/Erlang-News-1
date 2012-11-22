@@ -4,7 +4,8 @@
 <div class="newsTemp" id="{datatype}">
 
 	<div class="title">
-		<table cellspacing="0" cellpadding="0"><tr><td style="vertical-align:top;"><img src="{icon}" align="left" style="max-height:32px;max-width:32px;margin-top:10px;margin-right:-6px;visibility:{icon_hide};"></td>
+		<table cellspacing="0" cellpadding="0"><tr><td style="vertical-align:top;">
+			<img src="{icon}" align="left" style="height:18px;width:18px;margin-top:6px;margin-right:0px;visibility:{icon_hide};"></td>
 			<td><span class="main-title"><a style="cursor:pointer;" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
            return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');">{title}</a></span></td></tr></table>
 		
@@ -12,9 +13,9 @@
 	</div>
 	<div align="right" style="height:.5em;background-color:#aacc77;"><div class="triangle-topright"></div></div>
 	<div id="pub">Published: 2012-02-13</div>
-	<table style="width:100%;" cellspacing="0" cellpadding="0">
+	<table style="width:100%;margin-bottom:5px;" cellspacing="0" cellpadding="0">
 
-		<tr><td class="voteButtons" >
+		<tr><td class="voteButtons">
 			<div >
 				<table>
 					<tr><div class="vote-up" id="{id}_vote_up_{datatype}" onclick="articleAction(this,1,false)" align="center"><a id="{id}_up_vote_count" class="likes">{up}</a></div>
@@ -46,9 +47,25 @@
 			</tr>
 
 	</table>
-	<span class="readMore" style="font-size:8pt;"><a style="cursor:pointer;" style="font-size:6pt;" id="{id}_report" onclick="articleAction(this,2,false)">report article</a></span>
+	<div style="vertical-align:top;width:100%;position:relative;height:10pt;">
+		<div style="position:absolute;left:0;margin-top:10px;">
+			<span class="readMore" style="font-size:8pt;">
+				<a style="cursor:pointer;" id="{id}_report" onclick="fadeWindow('{id}_reported_window', 'reported!');">report article</a>
+			</span>
+		</div>
+		<div style="position:absolute;right:0;margin-top:10px;">
+			<span class="right_source" style="font-size:8pt;">Source: 
+		        <a onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')" style="font-size:8pt;cursor:pointer;">{host}</a>
+		    </span>
+	    </div>
 	
-	<div style="height:1px;width:100%;background-color:#c6c6c6;"></div>
+	<div class="window" id="{id}_reported_window"><div id="{id}_reported_window_text"></div></div>
+	</div>
+
+
+
+		<div style="height:1px;width:100%;background-color:#c6c6c6;"></div>
+	
 
 	</br>
 </div>

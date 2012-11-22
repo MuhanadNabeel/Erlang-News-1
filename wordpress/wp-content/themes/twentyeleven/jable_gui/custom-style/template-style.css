@@ -261,6 +261,26 @@ Thumbs up and down.
 }
 
 
+.window{
+    display:none;
+    position:absolute;
+    margin-left: -8px;
+    margin-top:27px;
+    background:url(../custom-img/window.png) no-repeat 0 0;
+    width: 60px;
+    height: 100px;
+    background-size: 100%;
+    text-align: center;
+}
+.window div{
+    margin-top:6px;
+    color:white;
+    font-size: 10pt;
+    font-family: "MyriadPro Cond";
+    text-shadow:1px 1px 1px black;
+}
+
+
 .close-button {
     position: absolute;
     z-index: 30000;
@@ -289,15 +309,9 @@ Thumbs up and down.
     color: #aacc77;
 }
 .readMore a{color: #aacc77;}
-.readMore:hover{
-    color: #74a22f;
-}
-.readMore:active{
-    color: black;
-}
-.readMore:visited{
-    color: #aacc77;
-}
+.readMore:hover{color: #74a22f;}
+.readMore:active{color: black;}
+.readMore:visited{color: #aacc77;}
 
 #pub{
     font: italic 0.7em "MyriadPro Cond";
