@@ -12,9 +12,39 @@
 %-export([get_content_from_list/4,get_content_from_list/3,
 	 %check_content/2,pull_content/2]).
 -compile(export_all).
-    
-%----------------------------END URL <iocoder> ----------------------------------------------%
-    
+   
+
+%------------------------------------------------------------------------------%
+ 
+%%% @author Magnus Thulin
+%%% @doc
+%%% Get info is the outer-function called externally. 
+%%% It returns title, description, icon and image from a URL
+%%% @end
+
+get_info(Url)->
+    Result = ernews_defuns:read_web(default,Url),
+    case Result of
+	{success, {_, Body}}->
+	    Html = mochiweb_html:parse(Body),
+	    [get_title(Html),get_descriptions(desc,Html),get_icon(Html,Url),
+	     get_image(Html,Url)];    
+          
+	{error, Reason} ->
+	    {error,Reason}
+		
+    end.
+
+%------------------------------------------------------------------------------%
+
+%%% @author Magnus Thulin
+%%% @doc
+%%% According to the RSS source, the function returns the end URL for a given RSS 
+%%% url. The genuine Read web function from defuns is called to open the httpd 
+%%% connection. iocoder returns a link with auto-redirect disabled. Reddit 
+%%% returns the end-url from source by parsing XHTML.
+%%% @end
+
 
 end_url(iocoder,Url)->   
     Result  = ernews_defuns:read_web(iocoder, Url),
@@ -32,21 +62,18 @@ end_url(iocoder,Url)->
 
     end;
 
+
 end_url(reddit,Url)->
     Tag = ".xml",
     Result = ernews_defuns:read_web(default, Url++Tag),
     case Result of
 	{success,{_,Body}}->
 	    { Xml, _ } = xmerl_scan:string(Body),
-
+	    
 	    Extract ="//channel/item/description[1]/text()[11]",
 	    [{_,_,_,_,[_|Link],_}] = xmerl_xpath:string(Extract, Xml),
 	    Link,
-	
-	    % If the XML returns a link that starts with http:// 
-	    % Think link redirects to another wepage
-	    % If it doesn't, then the link is originating from self.reddit 
-	    % Return the Url from rssfuns 
+	    
 	    case lists:sublist(Link, 4) =:= "http" of 
 	        true ->
 		    Link;
@@ -58,49 +85,77 @@ end_url(reddit,Url)->
 	   {error, Reason}
     end;
 
+
 end_url(google,Url)->   
     end_url(iocoder,Url);
       
+end_url(trap_exit, Url)->
+    Url;
+
+end_url(dzone, Url)->
+    Url;
+
+end_url(default,Url)->
+    Url;
+
 end_url(_,_) ->
     {error, unknown_source}. 
 
-%----------------------------HTML META DATA-------------------------------------------%
 
 
+%------------------------------------------------------------------------------%
 
-%%--------------------------------------------------------------------
-%% @doc 
-% Get's the description from the HTML in the following casses:
-% a) First ensure connectivity to the host is successful (Inets does not catch any errors)
-% b) Get the description from the description tag (the most common)
-% c) If it doesnt exist, then get the description from the og:description tag
-% d) If that doesnt return anything, get the descirption from the <p> tags
-%    According to the Facebooks' implementation of posting URL's, <p> tags must contain
-%    More than 120 characters (breaklist function) to return the article
-% e) Catch an error message if no description is found in all cases
-%% @spec
-%% @end
-%%--------------------------------------------------------------------
+%%% @author Magnus Thulin
+%%% @doc
+% According to the Facebook implementation of posting URL's, the function first
+% looks to find the 'description' tag in the meta. If that is not found, it will
+% return the 'OG:Description' tag from meta. Lastly, it will return the article
+% in the '<p>' tag which is larger than 120 characters. 
+%%% @end
 
-get_info(Url)->
-    Result = ernews_defuns:read_web(default,Url),
-    case Result of
-	{success, {_, Body}}->
-	    Html = mochiweb_html:parse(Body),
-	    [get_title(Html),get_description(Html),get_icon(Html),get_image(Html,Url)];
-	   %  [get_title(Html),get_description(Html),get_icon(Html)];
-        
-	{error, Reason} ->
-	    {error,Reason}
-		
+
+get_descriptions(desc,Html)->
+    Meta_Data = get_value([Html],"meta" ,[]),
+    Description_Tag = get_content_from_list(Meta_Data ,  {"name","description"},"content"),
+    io:format("Des:~p~n",[Description_Tag]),
+    case length(Description_Tag) < 20 of 
+	true -> get_descriptions(ogdesc,Html);
+	false -> {ok, Description_Tag}
+    end;
+
+get_descriptions(ogdesc,Html) ->
+    Meta_Data = get_value([Html],"meta" ,[]),
+    OGDescription_Tag = get_content_from_list(Meta_Data , {"name" ,"og:description"},"content"),
+io:format("OG:~p~n",[OGDescription_Tag]),
+    case length(OGDescription_Tag) < 20 of 
+	true -> get_descriptions(ptag,Html);
+	false -> {ok, OGDescription_Tag}
+    end;   
+
+get_descriptions(ptag,Html) ->
+    PTag_Data= get_value([Html],"p" ,[]),
+    PTag_Article = break_list(lists:reverse(PTag_Data)),
+    ParsedToHtml = mochiweb_html:to_html({"html",[],PTag_Article }),
+    PTag_Description = bitstring_to_list(iolist_to_binary(ParsedToHtml)), 
+   io:format("PTAG:~p~n",[PTag_Description]),
+    case length(PTag_Description) < 20 of
+	true -> {error, description_not_found};
+	false ->{ok,PTag_Description}
     end.
+    
+
+
+%-------------------------------------------------------------------------------%
+%%% @author Magnus Thulin
+%%% @doc
+% Returns the article value from the Mochiweb parsed HTML data which is bigger
+% than 120 characters. 
+%%% @end
 
 break_list([])->
     [];
 break_list([{_,_,V}|T])->
-
-    %% Check if the size of the article is bigger than 120 characters
-    %% As implemented in the posting of links on Facebook
+    
     case counter(V , 0 ) > 120  of
 	true ->
 	    V;
@@ -108,42 +163,11 @@ break_list([{_,_,V}|T])->
 	    break_list(T)
     end.
 
-get_description(Html)->
-   
-	    List = get_value([Html],"meta" ,[]),
-	    Description = 
-		get_content_from_list(List , 
-				      {"name" ,"description"} , "content"),
-    case Description of
-	[]->
-		    
-	    NextDescription = get_content_from_list(List , 
-						    {"name" ,"og:description"} , "content"),
-		    
-	    case NextDescription of
-		[]->
-		    PTags= get_value([Html],"p" ,[]),
-		    PTagArticle = break_list(lists:reverse(PTags)),
-			    
-		    case PTagArticle of
-			[] ->
-			    {error, description_not_found};
-			_ ->
-			    
-			    ParsedToHtml = mochiweb_html:to_html({"html",[],PTagArticle}),
-			    
-			    {ok, bitstring_to_list(iolist_to_binary(ParsedToHtml))}
-		        
-		    end;
-			
-		_ -> {ok,NextDescription}
-	    end;
-		
-	_ ->
-	    {ok,Description}
-
-		
-    end.
+%------------------------------------------------------------------------------%
+%%% @author Magnus Thulin
+%%% @doc
+% From the parsed HTML the function, extract the title.
+%%% @end
 
 
 get_title(Html)-> 
@@ -161,72 +185,116 @@ get_title(Html)->
 			
     end.
 
-
+%------------------------------------------------------------------------------%
+%%% @author Magnus Thulin
+%%% @doc
+% From the parsed HTML the function, extract the image from the meta tag. If
+% it doesnt exist, return the largest image from the body of the HTML. The
+% size of the image is determined by calling a PHP function. 
+% Only allow images are larger than 80x80 
+% Diminishes possibility of non-related image
+%%% @end
 
 
 get_image(Html,Url)->
-    List = get_value([Html],"meta" ,[]),
-    Image = 
-	get_content_from_list(List , 
+    Meta_Data = get_value([Html],"meta" ,[]),
+    Meta_OGImage = 
+	get_content_from_list(Meta_Data , 
 			      {"property" ,"og:image"} , "content"),
-    case Image of
+    case Meta_OGImage of
 	[] ->
-	    List2 = get_value([Html],"img" ,[]),
-	    case find_image(List2,[],Url) of
+	    Img = get_value([Html],"img" ,[]),
+
+	    case find_image(Img,[],Url) of
 		[] ->
 		    {ok, "undef"};
-		Images ->
-		    lists:max(Images)
+		All_Images ->
+		   {ok, element(2,lists:max(All_Images))}
 	    end;
+
 	_ ->
-	    % Ensure images are larger than 45x45
-	    {success, {_, Body}} =  ernews_defuns:read_web(default,						   "http://recallin.com/?url="
-							   ++Url),
-	    {Height,Width}=seperate(Body,[]),
 	    
-	    case Height*Width > 1600 of
-		true -> {ok, Image};
-		false -> {ok, "undef"}
-	    end
+	   case  ernews_defuns:read_web(default,
+					"http://recallin.com/_img_size.php?url=" ++Url) of
+	       {success, {_, Body}} ->
+		   {Height,Width}=seperate(Body,[]),
+
+		   case Height*Width >  5625 of
+		       true -> {ok, Meta_OGImage};
+		       false -> {ok, "undef"}
+		   end;
+	       _ ->
+		   {0,""}
+	   end
+	    
+		       
 	    
     end.
-		
 
-get_icon(Html)->
-    List = get_value([Html],"link" ,[]),
-    Icon = 
-	get_content_from_list(List , 
+%------------------------------------------------------------------------------%
+%%% @author Magnus Thulin
+%%% @doc
+% Returns the icon from the meta data in the HTML. Some icon links do not
+% contain the entire URL (eg. /favicon.icon) therefore the function checks
+% and compiles a complete link.
+%%% @end
+
+get_icon(Html,Url)->
+    Meta_Data = get_value([Html],"link" ,[]),
+    Shortcut_Icon = 
+	get_content_from_list(Meta_Data , 
 			      {"rel" ,"shortcut icon"} , "href"),
-    case Icon of
+    case Shortcut_Icon of
 	[] ->
-	    Icon2 = get_content_from_list(List, {"rel","icon"},"href"),
+	    Icon = get_content_from_list(Meta_Data, {"rel","icon"},"href"),
 	    
-	    case Icon2 of
+	    case Icon of
 		[]->
 		    {ok, "undef"};
 		_ ->
-		    {ok, Icon2}
+		    
+		    case lists:sublist(hd(Icon),1) =:="/" of
+			true ->
+			    {ok,get_main_url(Url)++hd(Icon)};
+			 false ->
+			    {ok, Icon}
+		    end
+			
 	    end;
 	
 	_ ->
-	    {ok, Icon}
+	    
+	    case lists:sublist(hd(Shortcut_Icon),1) =:="/" of
+		true ->
+		    {ok,get_main_url(Url)++hd(Shortcut_Icon)};
+		false ->
+		    {ok,  Shortcut_Icon}
+	    end
 		
     end.
 
-    
+%------------------------------------------------------------------------------%
+%%% @author Magnus Thulin
+%%% @doc
+% Calls the relevency function. 
+%%% @end
+
 relevancy_check(Url,{Good,Bad,Tags})->
     Result = ernews_defuns:read_web(default,Url),
     case Result of
 	{success, {_, Body}}->
 	    Html = mochiweb_html:parse(Body),
-	    PTags= get_value([Html],"p" ,[]),
-	    ParsedToHtml = mochiweb_html:to_html({"html",[],PTags}),
-	   % io:format("~p~s",[bitstring_to_list(iolist_to_binary(ParsedToHtml))]);
-	    ernews_defuns:is_relevant(bitstring_to_list(iolist_to_binary(ParsedToHtml)),Good,Bad,Tags);
-	{error, Reason} -> {error, Reason}
+	    P_Tags= get_value([Html],"p" ,[]),
+	    ParsedToHtml = mochiweb_html:to_html({"html",[],P_Tags}),
+	    ernews_defuns:is_relevant(bitstring_to_list(iolist_to_binary(
+						  ParsedToHtml)),Good,Bad,Tags);
+	{error, Reason} -> 
+	    {error, Reason}
     end.
 
-%----------------------------HTML LIST BREAKDOWN----------------------------------------%
+
+
+%-------------------------------------------------------------------------------%
 %% @author Khashayar Abdoli 
 get_content_from_list(List,Filter,Value) ->
     get_content_from_list(List,Filter,Value,[]).
@@ -266,7 +334,7 @@ check_content([{Key,Val}|T] , {FKey , FVal}) ->
 check_content([],_) ->
     false.
 
-%--------------------------------HTML DATA RECIEVER------------------------------------%
+%-------------------------------------------------------------------------------%
 %% @author Khashayar Abdoli
 
 get_value([{Key,Attr,Val=[{_IK,_IA,_IV}|_IT]}|T] , Filter , Buff) ->
@@ -301,16 +369,12 @@ counter([] , Acc) ->
     Acc.
 
 
-%--------------------------------IMG Inner Functions------------------------------------%
+%-------------------------------------------------------------------------------%
+%%% @author Khashayar Abdoli
+%%% @doc
+%
+%%% @end
 
-seperate([$||_],[])->
-    {0,0};
-seperate([$||T],Buff)->
-    {list_to_integer(Buff),list_to_integer(T)};
-seperate([H|T],Buff) ->
-    seperate(T,Buff++[H]);
-seperate(_,_) ->
-    {0,0}.
 get_main_url(Url) ->		
     get_main_url(Url,0,"").
 get_main_url([$/|_],2,Buff) ->	
@@ -320,12 +384,31 @@ get_main_url([$/|T],C,Buff) ->
 get_main_url([H|T],C,Buff) ->	
     get_main_url(T,C,Buff ++ [H]).
 
+%------------------------------------------------------------------------------%
+%%% @author Khashayar Abdoli
+%%% @doc
+%
+%%% @end
+
+seperate([$||_],[])->
+    {0,0};
+seperate([$||T],Buff)->
+    {list_to_integer(Buff),list_to_integer(T)};
+seperate([H|T],Buff) ->
+    seperate(T,Buff++[H]);
+seperate(_,_) ->
+    {0,0}.
+
+
+%------------------------------------------------------------------------------%
+%%% @author Khashayar Abdoli & Magnus Thulin
+%%% @doc
+% 
+%%% @end
+
 find_image([],Buffer,_)->
     % Filters the list to only allow images with the size of 45x45
-    lists:filter(fun({Size,_}) ->  Size > 1600 end, Buffer);
-
-
-  
+    lists:filter(fun({Size,_}) ->  Size > 5625 end, Buffer);
 
 find_image([{Key,List,_}|T], Buffer,Url)  ->
     case Key == list_to_bitstring("img") of
@@ -348,29 +431,33 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 	     case lists:sublist(bitstring_to_list(Value), 1) =:= "/" of 
 		 true	->   
 		     
-			 % Call PHP function to get the width and height of the image
+			 % Call PHP function to get  width and height
 			 % Some links don't contain a full URL
 			 % Add the image url + source url together 
 		     case  ernews_defuns:read_web(default,
-					        "http://recallin.com/?url="
+					        "http://recallin.com/_img_size.php?url="
 						++get_main_url(Url)
 						++bitstring_to_list(Value)) of
 			 {success, {_, Body}} -> 		
 			
 			     {Height,Width}=seperate(Body,[]),
-			     {Height*Width,
-			      get_main_url(Url)++ bitstring_to_list(Value)};
+			    get_image_property(T,{Height*Width,
+			      get_main_url(Url)++ bitstring_to_list(
+						    Value)},Url);
 			 _ ->
 			     {0,""}
 		     end;
 		 false ->
 
 		     case ernews_defuns:read_web(default,
-						 "http://recallin.com/?url="
+						 "http://recallin.com/_img_size.php?url="
 						 ++bitstring_to_list(Value)) of
 			 {success, {_, Body}} -> 		    
 			     {Height,Width}=seperate(Body,[]),
-			     {Height*Width,bitstring_to_list(Value)};
+			     get_image_property(T,{Height*Width,
+						   bitstring_to_list(
+						     Value)},Url);
+			 
 			 _ ->
 			     {0,""}
 		     end
@@ -390,25 +477,30 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 	    get_image_property(T,{Size,Source},Url)
     end.
 
-%%-------------------------------------------------------------------%%
 
 
 
+%------------------------------------------------------------------------------%
+%%% @author Magnus Thulin
+%%% @doc
+% Returns the icon from the meta data in the HTML. Some icon links do not
+% contain the entire URL (eg. /favicon.icon) therefore the function checks
+% and compiles a complete link.
+%%% @end
 
 
-
-
-test()->
+test(Url)->
     
-    	{success, {_, Body}} = ernews_defuns:read_web(default,"http://localhost:8888/_img_size.php?url=http://basho.com/images/raspi-boot.jpg"),
-    Body.
+   % 	{success, {_, Body}} = ernews_defuns:read_web(default,"http://localhost:8888/_img_size.php?url=http://basho.com/images/raspi-boot.jpg"),
+    %Body.
     %Html = mochiweb_html:parse(H).
 %    file:write_file("/Users/magnus/Desktop/image.txt", io_lib:fwrite("~s", [Body])).
 
     
     %PTags= get_value([Html],"image" ,[]).
 
-   % {success, {_, Body}} = ernews_defuns:read_web(default,Url),
+    {success, {_, Body}} = ernews_defuns:read_web(default,Url),
+    Html = mochiweb_html:parse(Body).
    % get_description(readlines("/Users/magnus/Desktop/html.txt")).
 
 %  Html = mochiweb_html:pars(readlines("/Users/magnus/Desktop/html.txt")),
