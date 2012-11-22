@@ -149,7 +149,7 @@ function getNewsJSON(where) {
     }
     function getNewsArticle(json,datatype) {
         var icon_hide = 'visible';
-        if( json.Icon == '' )
+        if( json.Icon == 'undef' )
             icon_hide = 'hidden';
         return newsTemplate.replace(/{title}/g,json.Title.replace(/'/g, "´"))
                             .replace(/{down}/g,json.Down_Vote)
