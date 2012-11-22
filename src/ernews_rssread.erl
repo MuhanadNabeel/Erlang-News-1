@@ -8,10 +8,11 @@
 %%%-------------------------------------------------------------------
 
 -module(ernews_rssread).
+-compile(export_all).
 
--export([start_link/2,start/2]).
+%-export([start_link/2,start/2]).
 
--export([init/2]).
+%-export([init/2]).
 
 -include("records.hrl").
 
@@ -25,6 +26,8 @@ start(Atom,Source) ->
 %% Start process
 %% Reads the RSS source using ernews_defuns:read_web/2
 %% Sends the result to read/3
+init(dzone,Source) ->
+    read(start,ernews_defuns:read_web(dzone,Source),dzone);
 init(Atom,Source) ->
     read(start,ernews_defuns:read_web(default,Source),Atom).
 	
@@ -122,8 +125,6 @@ event(_Event = {characters, Chars},
 
 ?QUOTE_VALUE("pubDate");
 ?QUOTE_VALUE("link");
-?QUOTE_VALUE("description");
-?QUOTE_VALUE("title");
 
 event(_Event, _Location, State) ->
     State.

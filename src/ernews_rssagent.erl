@@ -61,19 +61,27 @@ init([]) ->
 	"/feeds?hl=en&gl=us&q=erlang&um=1&ie=UTF-8&output=rss", 
     Coder_Source = "http://coder.io/tag/erlang.rss" ,
     Reddit_Source = "http://www.reddit.com/r/erlang.rss" ,
-    Hacker_Source = "http://news.ycombinator.com/rss",
+    Hacker_Source = "https://news.ycombinator.com/rss",
+    Trap_Source = "http://planet.trapexit.org/rss20.xml",
+    DZone_Source = "http://www.dzone.com/links/feed/search/erlang/rss.xml",
+    
+
 
     Coder = #rss_source{name = iocoder , source = Coder_Source ,
-		    delay = 300 , time = Now},
+		    delay = 600 , time = Now},
     Reddit = #rss_source{name = reddit , source = Reddit_Source ,
 		    delay = 300 , time = Now},
     Google = #rss_source{name = google , source = Google_Source ,
-		    delay = 300 , time = Now},
+		    delay = 1200 , time = Now},
     Hacker = #rss_source{name = hacker , source = Hacker_Source ,
-		    delay = 3 , time = Now},
+		    delay = 120 , time = Now},
+    Trap = #rss_source{name = trap_exit , source = Trap_Source ,
+		    delay = 30 , time = Now},
+    DZone = #rss_source{name = dzone , source = DZone_Source ,
+		    delay = 150 , time = Now},
     
     gen_fsm:send_event(?RSSAGENT, run),
-    {ok, run, [Coder, Reddit, Google]}.
+    {ok, run, [Reddit,Google,DZone,Hacker,Coder]}.
 
 %%--------------------------------------------------------------------
 %% @private

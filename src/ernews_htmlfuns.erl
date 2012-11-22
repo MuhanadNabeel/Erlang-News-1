@@ -23,7 +23,7 @@
 %%% @end
 
 get_info(Url)->
-    Result = ernews_defuns:read_web(default,Url),
+    Result = ernews_defuns:read_web(dzone,Url),
     case Result of
 	{success, {_, Body}}->
 	    Html = mochiweb_html:parse(Body),
@@ -93,9 +93,22 @@ end_url(trap_exit, Url)->
     Url;
 
 end_url(dzone, Url)->
-    Url;
+  Result  = ernews_defuns:read_web(dzone, Url),
+    case Result of
+	{success,{Header, _}}->
+	    End_Url =proplists:get_value("location", Header),
+	    case End_Url of
+	        undefined ->
+		    {error, end_url_not_found};
+		_ ->
+		    End_Url
+	    end;
+	{error, Reason}->
+	    {error, Reason}
 
-end_url(default,Url)->
+    end;
+
+end_url(hacker,Url)->
     Url;
 
 end_url(_,_) ->
@@ -117,7 +130,6 @@ end_url(_,_) ->
 get_descriptions(desc,Html)->
     Meta_Data = get_value([Html],"meta" ,[]),
     Description_Tag = get_content_from_list(Meta_Data ,  {"name","description"},"content"),
-    io:format("Des:~p~n",[Description_Tag]),
     case length(Description_Tag) < 20 of 
 	true -> get_descriptions(ogdesc,Html);
 	false -> {ok, Description_Tag}
@@ -126,7 +138,6 @@ get_descriptions(desc,Html)->
 get_descriptions(ogdesc,Html) ->
     Meta_Data = get_value([Html],"meta" ,[]),
     OGDescription_Tag = get_content_from_list(Meta_Data , {"name" ,"og:description"},"content"),
-io:format("OG:~p~n",[OGDescription_Tag]),
     case length(OGDescription_Tag) < 20 of 
 	true -> get_descriptions(ptag,Html);
 	false -> {ok, OGDescription_Tag}
@@ -137,7 +148,6 @@ get_descriptions(ptag,Html) ->
     PTag_Article = break_list(lists:reverse(PTag_Data)),
     ParsedToHtml = mochiweb_html:to_html({"html",[],PTag_Article }),
     PTag_Description = bitstring_to_list(iolist_to_binary(ParsedToHtml)), 
-   io:format("PTAG:~p~n",[PTag_Description]),
     case length(PTag_Description) < 20 of
 	true -> {error, description_not_found};
 	false ->{ok,PTag_Description}

@@ -46,7 +46,12 @@ read_web(default,Src) ->
 read_web(iocoder,Src) ->
     ssl:start(),
     inets:start(),
-    read_web(httpc:request(get, {Src, []}, [{autoredirect, false}], [])).
+    read_web(httpc:request(get, {Src, []}, [{autoredirect, false}], []));
+read_web(dzone,Src) ->
+    ssl:start(),
+    inets:start(),
+    read_web(httpc:request(get, {Src, [{"User-Agent","Jable"}]}, 
+			   [{autoredirect, false}], [])).
 
 %% Author: Khashayar Abdoli
 %% Converts pubDate from RSS document to Erlang date
