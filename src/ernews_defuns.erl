@@ -150,13 +150,10 @@ remove_duplist([],List) ->
 %% Checks for relevancy of article using a list of words from db
 is_relevant(List,Good,Bad,Tags) ->
 	Html = string:tokens(List," "),
-	ErlangCalc = list_words_occur_insens("erlang calculator",Html),
-	ErlangFormula = list_words_occur_insens("erlang formula",Html),
-	case {ErlangCalc,ErlangFormula} of
-		{true,_} ->
-			{error,erlang_calculator};
-		{_,true} ->
-			{error,erlang_formula};
+	Erlang = list_words_occur_insens("erlang",Html),
+	case Erlang of
+		false ->
+			{error,erlang_not_found};
 		_Else ->
 			is_relevant(count_words(Good,Html),
 				count_words(Bad,Html),
