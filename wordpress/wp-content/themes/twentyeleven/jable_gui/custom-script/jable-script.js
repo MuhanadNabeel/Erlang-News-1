@@ -4,8 +4,7 @@ var newsRightTemplate = '';
 
 jQuery(document).ready(function() {
   /*  jQuery('body').prepend('<div style="text-align:center;position:absolute;left:50%;'
-            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');*/
-    
+            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');*/    
     jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
         var split = str.split('<split_between_templates>')
         newsRightTemplate = split[0];
@@ -149,7 +148,9 @@ function getNewsJSON(where) {
         }
     }
     function getNewsArticle(json,datatype) {
-        var precent = calcPrecent(parseInt(json.Up_Vote,10),parseInt(json.Down_Vote,10));
+        var icon_hide = 'visible';
+        if( json.Icon == '' )
+            icon_hide = 'hidden';
         return newsTemplate.replace(/{title}/g,json.Title.replace(/'/g, "´"))
                             .replace(/{down}/g,json.Down_Vote)
                             .replace(/{up}/g,json.Up_Vote)
@@ -157,19 +158,13 @@ function getNewsJSON(where) {
                             .replace(/{host}/g,json.host)
                             .replace(/{description}/g,json.Description)
                             .replace(/{image}/g,json.Image)
+                            .replace(/{icon}/g,json.Icon)
                             .replace(/{URL}/g,json.URL)
-                            .replace(/{vote_bar}/g,precent)
+                            .replace(/{icon_hide}/g,icon_hide)
                             .replace(/{datatype}/g,'archive_' + datatype)
                             .replace(/{id}/g,json.newsID);
     }
     
-    function calcPrecent(up,down) {
-        if( up == 0 && down == 0 )
-            return 50;
-        var total = up + down;
-        return parseInt( (up/total)*100 ,10);
-    }
-
     function addNewsLink(json,datatype) {
         var title = '';
         if( json.Title.length < 60 )
@@ -177,7 +172,6 @@ function getNewsJSON(where) {
         else
             title = json.Title.substring(0,55) + ' ...';
 
-        var precent = calcPrecent(parseInt(json.Up_Vote,10),parseInt(json.Down_Vote,10));
         return newsRightTemplate.replace(/{title}/g,title.replace(/'/g, "´"))
                                 .replace(/{down}/g,json.Down_Vote)
                                 .replace(/{up}/g,json.Up_Vote)
@@ -185,7 +179,6 @@ function getNewsJSON(where) {
                                 .replace(/{description}/g,json.Description)
                                 .replace(/{URL}/g,json.URL)
                                 .replace(/{host}/g,json.host)
-                                .replace(/{vote_bar}/g,precent)
                                 .replace(/{datatype}/g,'archive_' + datatype)
                                 .replace(/{image}/g,json.Image)
                                 .replace(/{id}/g,json.newsID);
