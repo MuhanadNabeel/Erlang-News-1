@@ -130,7 +130,7 @@ end_url(_,_) ->
 get_descriptions(desc,Html)->
     Meta_Data = get_value([Html],"meta" ,[]),
     Description_Tag = get_content_from_list(Meta_Data ,  {"name","description"},"content"),
-    case length(Description_Tag) < 20 of 
+    case length(lists:concat(Description_Tag)) < 20 of 
 	true -> get_descriptions(ogdesc,Html);
 	false -> {ok, Description_Tag}
     end;
@@ -138,7 +138,7 @@ get_descriptions(desc,Html)->
 get_descriptions(ogdesc,Html) ->
     Meta_Data = get_value([Html],"meta" ,[]),
     OGDescription_Tag = get_content_from_list(Meta_Data , {"name" ,"og:description"},"content"),
-    case length(OGDescription_Tag) < 20 of 
+    case length(lists:concat(OGDescription_Tag)) < 20 of 
 	true -> get_descriptions(ptag,Html);
 	false -> {ok, OGDescription_Tag}
     end;   
