@@ -50,7 +50,7 @@
 	<div style="vertical-align:top;width:100%;position:relative;height:10pt;">
 		<div style="position:absolute;left:0;margin-top:10px;">
 			<span class="readMore" style="font-size:8pt;">
-				<a style="cursor:pointer;" id="{id}_report" onclick="fadeWindow('{id}_reported_window', 'reported!');">report article</a>
+				<a style="cursor:pointer;" id="{id}_report" onclick="articleAction(this,2,false);fadeWindow('{id}_reported_window', 'reported!');">report article</a>
 			</span>
 		</div>
 		<div style="position:absolute;right:0;margin-top:10px;">

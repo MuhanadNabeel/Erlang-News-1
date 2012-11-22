@@ -28,7 +28,7 @@
                             return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</a></span>
                         <div class="seperator" style="margin-top:20px"></div>
                         <span class="readMore" style="font-size:8pt;">
-                            <a style="cursor:pointer;" id="{id}_report" onclick="fadeWindow('{id}_reported_window', 'reported!');">report article</a>
+                            <a style="cursor:pointer;" id="{id}_report" onclick="articleAction(this,2,false);fadeWindow('{id}_reported_window', 'reported!');">report article</a>
                         </span>
                         <div class="window" style="margin-top:-5px;" id="{id}_reported_window"><div id="{id}_reported_window_text"></div></div>
     
