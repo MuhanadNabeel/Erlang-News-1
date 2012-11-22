@@ -7,8 +7,8 @@
 connect() ->
     mysql:start(p1, "db.student.chalmers.se", 
 				3306, "abdoli", "kgcH8v7c", "abdoli").
-	 
-	 
+
+
 %% News-table should also have date and default votes, rank and visits
 write(news, {Source, Url, Title, Description , Icon , 
 			Image , PubDate, Tags}) ->
@@ -17,7 +17,8 @@ write(news, {Source, Url, Title, Description , Icon ,
 	"(Source, Url, Title, Description, Icon, "++
 	"Image, PubDate, TimeStamp, LastClicked) Values('"
 	++ qFix(Source) ++ "', '" ++ qFix(Url) ++ "', '" 
-	++ qFix(Title) ++ "', '" ++  qFix(Description) ++ "', '" 
+	++ remove_html_tags(qFix(Title)) ++ "', '" 
+	++  remove_html_tags(qFix(Description)) ++ "', '" 
 	++ qFix(Icon) ++ "', '" ++ qFix(Image) ++ "', '"
 	++ qFix(PubDate) ++ "', '" ++ qFix(Now) ++ "', '"
 	++ qFix(Now) ++ "')", 
@@ -27,7 +28,7 @@ write(news, {Source, Url, Title, Description , Icon ,
 	{ok, updated} ->
 	    ID=qFunc(get, "Select newsID FROM ernews_news WHERE URL='" ++ 
 						qFix(Url) ++ "'"),
-	    write(tag, Tags, integer_to_list(hd(hd(ID))))
+	    write(tag, Tags, integer_to_list(ID))
     end;
 			
 	
@@ -54,7 +55,7 @@ write(tag, [H|T], ID) ->
     write(tag, T, ID).
 	
 	
-				 
+	
 qFix(A) when is_atom(A) ->
     qFix(atom_to_list(A),[]);
 	
@@ -127,6 +128,23 @@ qFunc(exists, Q) ->
 		{error, no_connection}
 	end;
 	
+qFunc(get, Q) ->
+%    {_,{_,_,[[Result]],_,_,_,_,_}} = mysql:fetch(p1, Q),
+%    Result;
+	try mysql:fetch(p1, Q) of 
+		Result ->
+			case mysql:fetch(p1, Q) of 
+				{_,{_,_,[[R]],_,_,_,_,_}} = Result ->
+					R;		
+				{R,{_,_,_,_,_,_,_,_}} = Result ->
+					R
+			end
+	catch 
+	exit:_Exit -> 
+		%{Res, _} = Exit,
+		{error, no_connection}
+	end;
+	
 qFunc(getList, Q) ->
 %    {_,{_,_,Result,_,_,_,_,_}} = mysql:fetch(p1, Q),
 %    Result.
@@ -168,18 +186,49 @@ getList(irrelevant) ->
 getList(Q) ->
 	case List = qFunc(getList, Q) of
 		[H|T] = List ->
-			sendTags(List, []);
+			sendList(List, []);
 		H = List ->
 			H;	
 		_ ->
 			else
 	end,		
-	sendTags(List, []).
+	sendList(List, []).
 
-%% Return all tags from DB
-sendTags([H|T], NL) ->
+%% Return all tags/relevant/irrelevant from DB
+sendList([H|T], NL) ->
 	[P] = H,
-	NL ++ [bitstring_to_list(P)] ++ sendTags(T, NL);
+	NL ++ [bitstring_to_list(P)] ++ sendList(T, NL);
 	
-sendTags([], NL) ->
+sendList([], NL) ->
 	[].
+	
+
+%% Removes tags from string - except <a></a>
+remove_html_tags(Str) ->
+	remove_html_tags(Str,false).
+remove_html_tags([60|T],_) when length(T) > 0, hd(T) == 97  ->
+	["<"] ++ remove_html_tags(T,false);
+remove_html_tags([60|T],_) when length(T) > 0, hd(T) == 65  ->
+	["<"] ++ remove_html_tags(T,false);
+remove_html_tags([60|T],_) when length(T) > 1, hd(T) == 47, hd(tl(T)) == 97  ->
+	["<"] ++ remove_html_tags(T,false);
+remove_html_tags([60|T],_) when length(T) > 1, hd(T) == 47, hd(tl(T)) == 65  ->
+	["<"] ++ remove_html_tags(T,false);
+remove_html_tags([60|T],_) ->
+	remove_html_tags(T,true);
+remove_html_tags([62|T],true) ->
+	remove_html_tags(T,false);
+remove_html_tags([_|T],true) ->
+	remove_html_tags(T,true);
+remove_html_tags([H|T],false) ->
+	[H] ++ remove_html_tags(T,false);
+remove_html_tags([],_) ->
+	[].	
+	
+	
+tester() ->
+	write(news, {"testSource", "testUrl", "testTitle", "<html>WARNING: This program is
+	rated<a href=\"http://en.wikipedia.org/wiki/Not_safe_for_work\">NSFW</a>. It conta
+	ins stronglanguage and BDSM themes. Very dark. It is intended only for matureaud
+	iences. Viewer discretion advised. Seriously, itâ?Ts fucked up.</html>" , "testIcon" , 
+			"testImage" , "2012-03-31 15:18:44", ["Riak"]}).
