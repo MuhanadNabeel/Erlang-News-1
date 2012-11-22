@@ -170,7 +170,7 @@ is_relevant(_,_,_) ->
 	{error,bad_language}.
 
 %% Author: Ingimar Samuelsson
-%% Checks if word(s) occur in a String - not case sensative
+%% Checks if word(s) occur in a String - not case sensetive
 list_words_occur_insens(Words,List) ->
 	Split = string:tokens(Words," "),
 	list_words_occur_insens(lists:concat(Split),List,length(Split)).
@@ -178,10 +178,12 @@ list_words_occur_insens(_,List,Length) when length(List) < Length ->
 	false;
 list_words_occur_insens(WordConcat,List,Length) ->
 	ListConcat = lists:concat(lists:sublist(List,1,Length)),
-	case compare_concat_str(WordConcat,ListConcat) of
-		true ->
+	CompareLength = length(ListConcat) < length(WordConcat),
+	%%io:format("~p < ~p = ~p~n",[length(ListConcat),length(WordConcat),CompareLength]),
+	case {compare_concat_str(WordConcat,ListConcat),CompareLength} of
+		{true,true} ->
 			true;
-		false ->
+		{_,_} ->
 			list_words_occur_insens(WordConcat,tl(List),Length)
 	end.
 	
@@ -220,55 +222,6 @@ split_text([X | Str], Word, Words) ->
 %%
 %% Remaining code is note in current version
 %%
-	
-
-%% 60 = "<", 97 = "a", 65 = "A", 47 = "/"
-%% h = 104, r = 114, e = 101, f = 102, = = 61, space = 32, " = 34
-%% 60,97,32,104,114,101,102,61,34	
-get_hrefs(URL,Str) ->
-	get_hrefs(URL,string:to_lower(Str),[],false).
-	
-get_hrefs(URL,[60,97,32,104,114,101,102,61,34|T],List,_) ->
-	get_hrefs(URL,tl(T),[hd(T)|List],true);
-
-get_hrefs(URL,[34|T],List,true) ->
-	get_hrefs(URL,T,List,false);
-	
-get_hrefs(URL,[H|T],[LH|LT],true) when is_list(LH) == true ->
-	get_hrefs(URL,T,[LH++[H]|LT],true);
-	
-get_hrefs(URL,[H|T],[LH|LT],true) ->
-	get_hrefs(URL,T,[[LH]++[H]|LT],true);
-	
-get_hrefs(URL,[_|T],List,false) ->
-	get_hrefs(URL,T,List,false);
-	
-get_hrefs(URL,[],List,_) ->
-	get_hrefs(URL,List,[]).
-	
-get_hrefs(URL,[H|T],List) ->
-	try string:len(H) of
-		L -> 
-		Len = string:len(H),
-		case Len > 3 of
-			true ->
-				Left = string:left(H,4),
-				case Left == "http" of
-					true ->
-						get_hrefs(URL,T,[H|List]);
-					false ->
-						get_hrefs(URL,T,[URL++H|List])
-				end;
-			false ->
-				get_hrefs(URL,T,[URL++H|List])
-		end
-	catch 
-		_:Error -> get_hrefs(URL,T,List)
-	end;
-	
-get_hrefs(_,[],List) ->
-	List.
-	
 	
 	
 
