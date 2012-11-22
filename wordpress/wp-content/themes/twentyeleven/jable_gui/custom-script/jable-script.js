@@ -1,16 +1,17 @@
 var isUserAction = new Object();
-var newsTemplate = '';
-var newsRightTemplate = '';
+var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '';
 
 jQuery(document).ready(function() {
-  /*  jQuery('body').prepend('<div style="text-align:center;position:absolute;left:50%;'
-            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');*/    
+    jQuery('#first_loading').prepend('<div style="text-align:center;position:absolute;left:50%;'
+            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');   
     jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
         var split = str.split('<split_between_templates>')
         newsRightTemplate = split[0];
-        newsTemplate = split[1];
+        newsBigTemplate = split[1];
+        newsMediumTemplate = split[2];
+        newsSmallTemplate = split[3];
         getNewsJSON();
-        setInterval('getNewsJSON();',150000);
+        setInterval('getNewsJSON();',180000);
     });
 });
 
@@ -97,9 +98,9 @@ var lastUpdate = null;
 var archiveTable = 1;
 function getNewsJSON(where) {
     jQuery.get(jableDir + '_get_news.php',function(outcome) {
+        jQuery('#first_loading').remove();
         jQuery('#news_article_left').html('');
         jQuery('#news_article_right').html('');
-        jQuery('#main_loading_space').remove();
         var parse = jQuery.parseJSON(outcome);
         if( lastUpdate != null && lastUpdate == parse )
             return;
@@ -115,9 +116,9 @@ function getNewsJSON(where) {
                 jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
             else
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
-            if( i < 10 )
+            if( i < 14 )
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
-            else if( i < 10 )
+            else if( i < 14 )
                 jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
             else{
                 jQuery('#archive').append( addNewsLink(json[i], archiveTable) );
@@ -127,15 +128,10 @@ function getNewsJSON(where) {
         setUserClicked(parse.cookies.Up_Vote,'_vote_up_archive_'+archiveTable);
         setUserClicked(parse.cookies.Down_Vote,'_vote_down_archive_'+archiveTable);
         
-        if (archiveTable>1){
+        if( archiveTable > 1 ){
             updateRight(archiveTable);
         }
-
-
-
         archiveTable++;
-        
-
     });
     function setUserClicked(json,str) {
         for( var i = 0 ; i < json.length ; i++ ) {
@@ -148,10 +144,11 @@ function getNewsJSON(where) {
         }
     }
     function getNewsArticle(json,datatype) {
+        var template = newsBigTemplate;
         var icon_hide = 'visible';
         if( json.Icon == 'undef' )
             icon_hide = 'hidden';
-        return newsTemplate.replace(/{title}/g,json.Title.replace(/'/g, "´"))
+        return template.replace(/{title}/g,json.Title.replace(/'/g, "´"))
                             .replace(/{down}/g,json.Down_Vote)
                             .replace(/{up}/g,json.Up_Vote)
                             .replace(/{clicks}/g,json.Clicks)
