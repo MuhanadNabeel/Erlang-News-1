@@ -4,7 +4,7 @@
 <div class="newsTemp" id="{datatype}">
 
 	<div class="title">
-		<table><tr><td style="vertical-align:top;"><img src="{image}" align="left" style="max-height:32px;max-width:32px;margin-top:10px;margin-right:-6px;"></td>
+		<table cellspacing="0" cellpadding="0"><tr><td style="vertical-align:top;"><img src="{icon}" align="left" style="max-height:32px;max-width:32px;margin-top:10px;margin-right:-6px;visibility:{icon_hide};"></td>
 			<td><span class="main-title"><a style="cursor:pointer;" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
            return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');">{title}</a></span></td></tr></table>
 		
@@ -24,7 +24,6 @@
 				</table>
 				</div>
 			</td>
-			<td style="width:2em;height:4em;"></td>
 			<td><div class="content">
 			<div style="line-height:100%;">{description}</div> <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
 				
@@ -47,7 +46,6 @@
 			</tr>
 
 	</table>
-</br>
 	<span class="readMore" style="font-size:8pt;"><a style="cursor:pointer;" style="font-size:6pt;" id="{id}_report" onclick="articleAction(this,2,false)">report article</a></span>
 	
 	<div style="height:1px;width:100%;background-color:#c6c6c6;"></div>

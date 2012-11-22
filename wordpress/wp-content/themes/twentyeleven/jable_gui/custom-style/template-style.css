@@ -283,7 +283,7 @@ Thumbs up and down.
 
 
 .readMore{
-    margin: 10px;
+/*    margin: 10px;*/
     font-family: "MyriadPro Cond";
     font-size: 1em;
     color: #aacc77;
@@ -305,7 +305,7 @@ Thumbs up and down.
 }
 
 .voteButtons{
-    position: absolute;
+    position: relative;
     margin-right: 20px;
     padding: 5px;
     height:4.46em;
