@@ -323,9 +323,7 @@ Thumbs up and down.
     margin-right: 20px;
     padding: 5px;
     height:4.46em;
-    vertical-align:top;
-    opacity:1;
-    filter:alpha(opacity=10); /* For IE8 and earlier */
+    vertical-align:top; /* For IE8 and earlier */
 }
 
 .vote-up{

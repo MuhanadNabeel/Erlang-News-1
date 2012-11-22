@@ -33,7 +33,6 @@ function fadeWindow(id, text){
     });
 }
 
-
 function animate(id){
     closeAllStuff(function(){
         var $filteredData2 = $data.find('li[data-type=right_archive_'+id+']');
