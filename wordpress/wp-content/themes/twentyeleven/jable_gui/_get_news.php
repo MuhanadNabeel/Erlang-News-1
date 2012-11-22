@@ -7,6 +7,15 @@ $outcome = Array();
 while( ($row = mysql_fetch_array($result)) !== FALSE ) {
     $purl = parse_url($row['URL']);
     $row['host'] = $purl['host'];
+    $icon = $row['Icon'];
+    if( substr($icon, 0, 4) !== 'http' && substr($icon, 0, 1) === '/' ) {
+        $parse_url = parse_url($row['URL']);
+        $host = $parse_url['host'];
+        $row['Icon'] = $host . $icon;
+    } else if( substr($icon, 0, 4) !== 'http' ) {
+        $location = substr( $row['URL'], 0, strripos($row['URL'], '/') );
+        $row['Icon'] = $location . '/' . $icon;
+    }
     $outcome[] = $row;
 }
 
@@ -15,5 +24,4 @@ if( class_exists('User') === FALSE )
 
 echo json_encode(Array('cookies'=>User::getUserClickList(),'news'=>$outcome));
 
-//echo json_encode ( $outcome );
 ?>
