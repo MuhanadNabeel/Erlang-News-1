@@ -4,8 +4,14 @@ var $data;
 function openTest(){
                 alert('lol');
 }
+
+var $id;
 function openUpStuff(id){
+    if($id!=id)
+        closeLastOne();
+    
     jQuery('#'+id+'_expand').slideToggle('400');
+    $id = id;
 }
 
 jQuery(document).ready(function() {
@@ -23,7 +29,7 @@ function animate(id){
     closeAllStuff(function(){
         var $filteredData2 = $data.find('li[data-type=right_archive_'+id+']');
         $holder.quicksand($filteredData2, {
-            duration: 700,
+            duration: 1200,
             easing: 'swing'},
             function(){
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
@@ -72,7 +78,15 @@ function closeAllStuff(cbFunc){
     if(a.size()==0)
         cbFunc();
     else
-        a.slideUp('400', cbFunc);
+        a.slideUp('slow', function(){setTimeout(cbFunc,2000,lang)});
+ }
+
+ function closeLastOne(cbFunc){
+    t = jQuery('#archive').find('div[class="right_content"]');
+    a = t.filter(function(){
+        return jQuery(this).is(':visible');
+    });
+    a.slideUp('slow', cbFunc);
  }
 
  function openBox(URL, title, id, datatype){

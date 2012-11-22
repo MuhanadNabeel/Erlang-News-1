@@ -12,7 +12,7 @@
 	</div>
 	<div align="right" style="height:.5em;background-color:#aacc77;"><div class="triangle-topright"></div></div>
 	<div id="pub">Published: 2012-02-13</div>
-	<table style="width:100%;">
+	<table style="width:100%;" cellspacing="0" cellpadding="0">
 
 		<tr><td class="voteButtons" >
 			<div >
