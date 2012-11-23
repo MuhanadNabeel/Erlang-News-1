@@ -10,7 +10,7 @@ while( ($row = mysql_fetch_array($result)) !== FALSE ) {
     $row['Icon'] = getAbsolutePath($row['Icon'],$row['URL']);
     $image = explode('|', $row['Image']);
     $row['Image'] = $image[0];
-    $imageRatio = explode('*', $row['Image']);
+    $imageRatio = explode('*', $image[1]);
     $row['Image'] = getAbsolutePath($row['Image'],$row['URL']);
     $row['imgwidth'] = $imageRatio[0];
     $row['imgheight'] = $imageRatio[1];
