@@ -226,11 +226,13 @@ get_image(Html,Url)->
 	    
 	   case  ernews_defuns:read_web(default,
 					"http://recallin.com/_img_size.php?url="
-				+	+Meta_OGImage) of
+					++hd(Meta_OGImage)) of
 	       {success, {_, Body}} ->
 		   {Height,Width}=seperate(Body,[]),
 		   case Height*Width >  5625 of
-		       true -> {ok, Meta_OGImage};
+		       true -> {ok, hd(Meta_OGImage)++"|"
+				++integer_to_list(Width) ++ "*" 
+				++integer_to_list(Height)};
 		       false -> {ok, "undef"}
 		   end;
 	       _ ->
@@ -455,7 +457,9 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 			     {Height,Width}=seperate(Body,[]),
 			    get_image_property(T,{Height*Width,
 			      get_main_url(Url)++ bitstring_to_list(
-						    Value)},Url);
+						    Value) ++ "|"
+						  ++integer_to_list(Width) ++ "*" 
+						  ++integer_to_list(Height)},Url);
 			 _ ->
 			     {0,""}
 		     end;
@@ -468,8 +472,9 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 			     {Height,Width}=seperate(Body,[]),
 			     get_image_property(T,{Height*Width,
 						   bitstring_to_list(
-						     Value)},Url);
-			 
+						     Value) ++ "|"
+						   ++integer_to_list(Width) ++ "*" 
+						   ++integer_to_list(Height)},Url);						     			 
 			 _ ->
 			     {0,""}
 		     end
