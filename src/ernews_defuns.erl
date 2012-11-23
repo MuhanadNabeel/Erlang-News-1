@@ -150,7 +150,7 @@ remove_duplist([],List) ->
 %% Checks for relevancy of article using a list of words from db
 is_relevant(List,Good,Bad,Tags) ->
 	Html = string:tokens(List," "),
-	Erlang = list_words_occur_insens("erlang",Html),
+	Erlang = list_words_occur_insens("Erlang",Html),
 	case Erlang of
 		false ->
 			{error,erlang_not_found};
