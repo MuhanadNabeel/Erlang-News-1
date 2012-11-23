@@ -75,7 +75,7 @@ Div fonts
                     <table>
                         <tr>
                             <td id="article_container"><ul style="list-style-type:none;" id="news_article_left"></ul></td>
-                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_right"></ul></td>
+<!--                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_right"></ul></td>-->
                         </tr>
                     </table>
                 </td>
