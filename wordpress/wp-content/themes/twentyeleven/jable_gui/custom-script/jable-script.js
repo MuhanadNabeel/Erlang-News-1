@@ -146,6 +146,7 @@ function getNewsJSON() {
         }
     }
     function getNewsArticle(json,datatype) {
+        alert(json.imgwidth);
         var template = newsSmallTemplate;
         if( json.imgwidth > 300 )
             template = newsBigTemplate;
