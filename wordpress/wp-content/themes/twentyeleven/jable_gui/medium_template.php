@@ -25,13 +25,10 @@
 				</table>
 				</div>
 			</td>
-			<td>
-				<img src="{image}" style="background-size:100%;max-width:180px;margin-top:10px;vertical-align:top;">
-			</td>
-			<td style="width:1px;height:100%;background-color:#c6c6c6;">
-			</td>
+				
 			<td style="vertical-align:top;"><div class="content">
-			<div style="line-height:100%;">{description}</div> <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
+
+			<div style="line-height:100%;vertical-align:top;"><img onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');" src="{image}" style="background-size:100%;max-width:180px;cursor:pointer;float:left">{description}</div> <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
 				
 				
                         	<table id="{id}_all_vote_buttons" style="display:none;">

@@ -72,10 +72,11 @@ Div fonts
             <table>
             <tr>
                 <td style="vertical-align:top;">
-                    <table>
+                    <table style="width:104%;">
                         <tr>
-                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_left"></ul></td>
-<!--                            <td id="article_container"><ul style="list-style-type:none;" id="news_article_right"></ul></td>-->
+                            <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
+                            <td style="width:1px;height:90%;background-color:#c6c6c6;"><div></div></td>
+                            <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_right"></ul></td>
                         </tr>
                     </table>
                 </td>

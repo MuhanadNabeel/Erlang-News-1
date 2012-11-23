@@ -26,7 +26,7 @@
 				</div>
 			</td>
 			<td><div class="content">
-				<div style="border:solid 5px #5a5a5a;background:url({image}) 0 -50px no-repeat;background-size:100%;width:100%;height:100px;margin-bottom:10px;margin-top:-5px;cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');"></div>
+				<div style="background:url({image}) 0 -50px no-repeat;background-size:100%;width:100%;height:100px;margin-bottom:10px;margin-top:-5px;cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');"></div>
 			<div style="line-height:100%;">{description}</div> <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
 				
 				

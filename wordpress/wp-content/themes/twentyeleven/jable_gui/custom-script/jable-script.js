@@ -115,7 +115,7 @@ function getNewsJSON() {
             else
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
             
-            if( i < 14 )
+            if( i < 14 && i%2 == 0 )
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 14 )
                 jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
@@ -146,11 +146,10 @@ function getNewsJSON() {
         }
     }
     function getNewsArticle(json,datatype) {
-        alert(json.imgwidth);
         var template = newsSmallTemplate;
-        if( json.imgwidth > 300 )
+        if( json.imgwidth > 180 )
             template = newsBigTemplate;
-        else if( json.imgwidth > 150 )
+        else if( json.imgwidth > 120 )
             template = newsMediumTemplate
         var icon_hide = 'visible';
         if( json.Icon == 'undef' )
