@@ -8,11 +8,16 @@ function openTest(){
 var $id;
 function openUpStuff(id){
     if($id!=id)
-        closeLastOne();
-    
+        closeLastOne(function(){
+            jQuery('#'+$id+'_expand').css('width', 'auto');
+        });
+
+    jQuery('#'+id+'_expand').css('width', jQuery('#archive').find('div[class="right_row"]').css('width'));
     jQuery('#'+id+'_expand').slideToggle('400');
+
+
     $id = id;
-}
+ }
 
 jQuery(document).ready(function() {
     

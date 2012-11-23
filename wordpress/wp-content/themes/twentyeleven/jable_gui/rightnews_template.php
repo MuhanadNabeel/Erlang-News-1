@@ -24,7 +24,8 @@
                         </div>
                     </td>
                     <td>
-                    <div><div class="desc" style="line-height:130%;">{description}</div><span class="readMore" ><a style="cursor:pointer;"  target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
+                    <div style="width:100%;">
+                        <div class="desc" style="line-height:130%;">{description}</div><span class="readMore" ><a style="cursor:pointer;"  target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
                             return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</a></span>
                         <div class="seperator" style="margin-top:20px"></div>
                         <span class="readMore" style="font-size:8pt;">
@@ -54,6 +55,5 @@
 
         </div>
     </div>
-    <div class="right-bottom-line"></div>
     </div>
 </li>

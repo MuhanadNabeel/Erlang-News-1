@@ -69,9 +69,9 @@ Div fonts
                 
             </div>
         </div>
-            <table class="leftTable">
+            <table>
             <tr>
-                <td class="left">
+                <td style="vertical-align:top;">
                     <table>
                         <tr>
                             <td id="article_container"><ul style="list-style-type:none;" id="news_article_left"></ul></td>
@@ -79,7 +79,7 @@ Div fonts
                         </tr>
                     </table>
                 </td>
-                <td class="left">
+                <td style="vertical-align:top;width:29%;">
                     <div id="recent"></div>
                     <ul id="archive" style="list-style-type: none;"></ul>
 
