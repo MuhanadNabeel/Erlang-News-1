@@ -2,10 +2,8 @@ var isUserAction = new Object();
 var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '';
 
 jQuery(document).ready(function() {
-    jQuery('#first_loading').prepend('<div style="text-align:center;position:absolute;left:50%;'
-            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');   
     jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
-        var split = str.split('<split_between_templates>')
+        var split = str.split('<split_between_templates>');
         newsRightTemplate = split[0];
         newsBigTemplate = split[1];
         newsMediumTemplate = split[2];
@@ -21,7 +19,7 @@ function articleAction(item,action,undo) {
         return;
     updateCounter(id,action,undo);
     isUserAction[id][Math.floor(action/2)] = true;
-    changeUserButtons(id,item,undo);
+    changeUserButtons(id,item);
     var interval = setInterval("articleActionBlink('" 
         + jQuery(item).attr('id') + "');",250);
     jQuery.post(jableDir + '_article_action.php',{id:id,action:action,undo:undo},function() {
@@ -31,7 +29,6 @@ function articleAction(item,action,undo) {
         jQuery('#' + jQuery(item).attr('id')).css('opacity','1');
     });
     function updateCounter(id,action,undo) {
-
         if( undo == true && action == 0 )
             iterateCounter('#' + id + '_down_vote_count',false);
         else if( undo == true && action == 1 )
@@ -74,7 +71,7 @@ function articleAction(item,action,undo) {
         jQuery('#' + id + '_active').css('opacity',opacity);
         articleActionBlinkIndex++;
     }
-    function changeUserButtons(id,item,undo) {
+    function changeUserButtons(id,item) {
         jQuery(item).hide();
         if( jQuery(item).attr('id').indexOf('_active') != -1 )
             jQuery( '#' + jQuery(item).attr('id').substring(0, 
@@ -96,7 +93,7 @@ function articleAction(item,action,undo) {
 }
 var lastUpdate = null;
 var archiveTable = 1;
-function getNewsJSON(where) {
+function getNewsJSON() {
     jQuery.get(jableDir + '_get_news.php',function(outcome) {
         jQuery('#first_loading').remove();
         jQuery('#news_article_left').html('');
@@ -110,12 +107,14 @@ function getNewsJSON(where) {
             setTimeout('getNewsJSON()', 30000);
             return;
         }
+
         for( var i = 0 ; i < json.length ; i++ ) {
             isUserAction[json[i].newsID] = Array(false,false);
-            if(archiveTable>1)
+            if( archiveTable > 1 )
                 jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
             else
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
+            
             if( i < 14 )
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 14 )
@@ -125,26 +124,33 @@ function getNewsJSON(where) {
             }
                 
         }
-        setUserClicked(parse.cookies.Up_Vote,'_vote_up_archive_'+archiveTable);
-        setUserClicked(parse.cookies.Down_Vote,'_vote_down_archive_'+archiveTable);
+        setUserClicked(parse.cookies.Up_Vote,'_vote_up_archive_'+archiveTable,true);
+        setUserClicked(parse.cookies.Down_Vote,'_vote_down_archive_'+archiveTable,true);
+        setUserClicked(parse.cookies.Report_Count,'_report',false);
         
         if( archiveTable > 1 ){
             updateRight(archiveTable);
         }
         archiveTable++;
     });
-    function setUserClicked(json,str) {
+    function setUserClicked(json,str,isVote) {
         for( var i = 0 ; i < json.length ; i++ ) {
             if( json[i] != '' ) {
                 jQuery('#' + json[i] + str).hide();
                 jQuery('#' + json[i] + str + '_active').show();
-                jQuery('#' + json[i] + str + '_extra').hide();
-                jQuery('#' + json[i] + str + '_extra_active').show();
+                if( isVote ) {
+                    jQuery('#' + json[i] + str + '_extra').hide();
+                    jQuery('#' + json[i] + str + '_extra_active').show();
+                }
             }
         }
     }
     function getNewsArticle(json,datatype) {
-        var template = newsBigTemplate;
+        var template = newsSmallTemplate;
+        if( json.imgwidth > 300 )
+            template = newsBigTemplate;
+        else if( json.imgwidth > 150 )
+            template = newsMediumTemplate
         var icon_hide = 'visible';
         if( json.Icon == 'undef' )
             icon_hide = 'hidden';
@@ -161,6 +167,8 @@ function getNewsJSON(where) {
                             .replace(/{datatype}/g,'archive_' + datatype)
                             .replace(/{id}/g,json.newsID);
     }
+    
+    
     
     function addNewsLink(json,datatype) {
         var title = '';
