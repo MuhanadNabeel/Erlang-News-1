@@ -2,10 +2,8 @@ var isUserAction = new Object();
 var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '';
 
 jQuery(document).ready(function() {
-    jQuery('#first_loading').prepend('<div style="text-align:center;position:absolute;left:50%;'
-            +'top:40%;margin-left:-50px;margin-top:-10px;" id="main_loading_space"><img src="img/loading.gif" /></div>');   
     jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
-        var split = str.split('<split_between_templates>')
+        var split = str.split('<split_between_templates>');
         newsRightTemplate = split[0];
         newsBigTemplate = split[1];
         newsMediumTemplate = split[2];
@@ -95,7 +93,7 @@ function articleAction(item,action,undo) {
 }
 var lastUpdate = null;
 var archiveTable = 1;
-function getNewsJSON(where) {
+function getNewsJSON() {
     jQuery.get(jableDir + '_get_news.php',function(outcome) {
         jQuery('#first_loading').remove();
         jQuery('#news_article_left').html('');
@@ -109,6 +107,7 @@ function getNewsJSON(where) {
             setTimeout('getNewsJSON()', 30000);
             return;
         }
+
         for( var i = 0 ; i < json.length ; i++ ) {
             isUserAction[json[i].newsID] = Array(false,false);
             if( archiveTable > 1 )
