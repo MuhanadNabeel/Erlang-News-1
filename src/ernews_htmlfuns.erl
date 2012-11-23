@@ -226,7 +226,7 @@ get_image(Html,Url)->
 	    
 	   case  ernews_defuns:read_web(default,
 					"http://recallin.com/_img_size.php?url="
-					++Meta_OGImage) of
+				+	+Meta_OGImage) of
 	       {success, {_, Body}} ->
 		   {Height,Width}=seperate(Body,[]),
 		   case Height*Width >  5625 of
@@ -290,14 +290,16 @@ get_icon(Html,Url)->
 %%% @end
 
 relevancy_check(Url,{Good,Bad,Tags})->
-    Result = ernews_defuns:read_web(default,Url),
+    Result = ernews_defuns:read_web(dzone,Url),
     case Result of
 	{success, {_, Body}}->
 	    Html = mochiweb_html:parse(Body),
+	    {ok,Title} = get_title(Html),
 	    P_Tags= get_value([Html],"p" ,[]),
 	    ParsedToHtml = mochiweb_html:to_html({"html",[],P_Tags}),
 	    ernews_defuns:is_relevant(bitstring_to_list(iolist_to_binary(
-						  ParsedToHtml)),Good,Bad,Tags);
+						  ParsedToHtml)) 
+				      ++ Title,Good,Bad,Tags);
 	{error, Reason} -> 
 	    {error, Reason}
     end.
