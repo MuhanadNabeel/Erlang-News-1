@@ -71,7 +71,7 @@ init([]) ->
 			      ]
 			     },
 	       Restart , Shutdown , worker, [mysql]},
-    {ok, {SupFlags, [Link_Serv, Rss_Agent, My_Sql]}}.
+    {ok, {SupFlags, [My_Sql, Link_Serv, Rss_Agent]}}.
 
 %%%===================================================================
 %%% Internal functions
