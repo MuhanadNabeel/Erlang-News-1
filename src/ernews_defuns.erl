@@ -150,21 +150,15 @@ remove_duplist([],List) ->
 %% Checks for relevancy of article using a list of words from db
 is_relevant(List,Good,Bad,Tags) ->
 	Html = string:tokens(List," "),
-	Erlang = list_words_occur_insens("Erlang",Html),
-	case Erlang of
-		false ->
-			{error,erlang_not_found};
-		_Else ->
-			is_relevant(count_words(Good,Html),
+	is_relevant(count_words(Good,Html),
 				count_words(Bad,Html),
-				{Html,Tags})
-	end.
+				{Html,Tags}).
 is_relevant(0,_,_) ->
 	{error,not_relevant};
 is_relevant(_,0,{Html,Tags}) ->
 	{ok,remove_duplist( get_tags(Tags,Html) )};
 is_relevant(_,_,_) ->
-	{error,bad_language}.
+	{error,wrong_content}.
 
 %% Author: Ingimar Samuelsson
 %% Checks if word(s) occur in a String - not case sensetive
@@ -175,17 +169,19 @@ list_words_occur_insens(_,List,Length) when length(List) < Length ->
 	false;
 list_words_occur_insens(WordConcat,List,Length) ->
 	ListConcat = lists:concat(lists:sublist(List,1,Length)),
-	CompareLength = length(ListConcat) < length(WordConcat),
-	%%io:format("~p < ~p = ~p~n",[length(ListConcat),length(WordConcat),CompareLength]),
-	case {compare_concat_str(WordConcat,ListConcat),CompareLength} of
-		{true,true} ->
+	%CompareLength = length(ListConcat) == length(WordConcat),
+	Compare = string:to_lower(ListConcat) == string:to_lower(WordConcat),
+	io:format("~p = ~p = ~p~n",[ListConcat,WordConcat,Compare]),
+	case Compare of
+		true ->
 			true;
-		{_,_} ->
+		_ ->
 			list_words_occur_insens(WordConcat,tl(List),Length)
 	end.
 	
 %% Author: Ingimar Samuelsson	
 %% Compare two strings
+%% Unused
 compare_concat_str(Str1,Str2) ->
 	Left = string:to_lower(string:left(Str2,string:len(Str1))),
 	Right = string:to_lower(string:right(Str2,string:len(Str1))),
