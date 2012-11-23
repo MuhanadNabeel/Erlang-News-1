@@ -9,9 +9,12 @@ while( ($row = mysql_fetch_array($result)) !== FALSE ) {
     $row['host'] = $purl['host'];
     $row['Icon'] = getAbsolutePath($row['Icon'],$row['URL']);
     $row['Image'] = getAbsolutePath($row['Image'],$row['URL']);
+    /*
     $img_size = @getimagesize($row['Image']);
     $row['imgwidth'] = @$img_size[0];
     $row['imgheight'] = @$img_size[1];
+     * 
+     */
     $outcome[] = $row;
 }
 
