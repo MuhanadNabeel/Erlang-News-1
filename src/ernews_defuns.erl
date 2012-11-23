@@ -170,7 +170,7 @@ list_words_occur_insens(_,List,Length) when length(List) < Length ->
 list_words_occur_insens(WordConcat,List,Length) ->
 	ListConcat = lists:concat(lists:sublist(List,1,Length)),
 	%CompareLength = length(ListConcat) == length(WordConcat),
-	Compare = string:to_lower(ListConcat) == string:to_lower(WordConcat),
+	%Compare = string:to_lower(ListConcat) == string:to_lower(WordConcat),
 %	io:format("~p = ~p = ~p~n",[ListConcat,WordConcat,Compare]),
 	case compare_concat_str(WordConcat,ListConcat) of
 		true ->
