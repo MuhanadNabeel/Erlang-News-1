@@ -225,10 +225,10 @@ get_image(Html,Url)->
 	_ ->
 	    
 	   case  ernews_defuns:read_web(default,
-					"http://recallin.com/_img_size.php?url=" ++Url) of
+					"http://recallin.com/_img_size.php?url="
+					++Meta_OGImage) of
 	       {success, {_, Body}} ->
 		   {Height,Width}=seperate(Body,[]),
-
 		   case Height*Width >  5625 of
 		       true -> {ok, Meta_OGImage};
 		       false -> {ok, "undef"}
