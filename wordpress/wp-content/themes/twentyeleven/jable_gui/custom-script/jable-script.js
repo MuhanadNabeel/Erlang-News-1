@@ -108,6 +108,8 @@ function getNewsJSON() {
             return;
         }
 
+        var leftArc = 1;
+        var rightArc = 0;
         for( var i = 0 ; i < json.length ; i++ ) {
             isUserAction[json[i].newsID] = Array(false,false);
             if( archiveTable > 1 )
@@ -115,14 +117,15 @@ function getNewsJSON() {
             else
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
             
-            if( i < 14 && i%2 == 0 )
+            if( i < 14 && leftArc > rightArc )
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 14 )
                 jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
             else{
                 jQuery('#archive').append( addNewsLink(json[i], archiveTable) );
             }
-                
+            leftArc = jQuery('#news_article_left').height();
+            rightArc = jQuery('#news_article_right').height();
         }
         setUserClicked(parse.cookies.Up_Vote,'_vote_up_archive_'+archiveTable,true);
         setUserClicked(parse.cookies.Down_Vote,'_vote_down_archive_'+archiveTable,true);
