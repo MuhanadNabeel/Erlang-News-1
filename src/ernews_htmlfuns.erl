@@ -294,10 +294,12 @@ relevancy_check(Url,{Good,Bad,Tags})->
     case Result of
 	{success, {_, Body}}->
 	    Html = mochiweb_html:parse(Body),
+	    {ok,Title} = get_title(Html),
 	    P_Tags= get_value([Html],"p" ,[]),
 	    ParsedToHtml = mochiweb_html:to_html({"html",[],P_Tags}),
 	    ernews_defuns:is_relevant(bitstring_to_list(iolist_to_binary(
-						  ParsedToHtml)),Good,Bad,Tags);
+						  ParsedToHtml)) 
+				      ++ Title,Good,Bad,Tags);
 	{error, Reason} -> 
 	    {error, Reason}
     end.
