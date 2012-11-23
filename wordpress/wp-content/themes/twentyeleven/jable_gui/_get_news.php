@@ -8,13 +8,12 @@ while( ($row = mysql_fetch_array($result)) !== FALSE ) {
     $purl = parse_url($row['URL']);
     $row['host'] = $purl['host'];
     $row['Icon'] = getAbsolutePath($row['Icon'],$row['URL']);
+    $image = explode('|', $row['Image']);
+    $row['Image'] = $image[0];
+    $imageRatio = explode('*', $row['Image']);
     $row['Image'] = getAbsolutePath($row['Image'],$row['URL']);
-    /*
-    $img_size = @getimagesize($row['Image']);
-    $row['imgwidth'] = @$img_size[0];
-    $row['imgheight'] = @$img_size[1];
-     * 
-     */
+    $row['imgwidth'] = $imageRatio[0];
+    $row['imgheight'] = $imageRatio[1];
     $outcome[] = $row;
 }
 
