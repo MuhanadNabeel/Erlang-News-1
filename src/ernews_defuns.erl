@@ -1,20 +1,31 @@
 %%%-------------------------------------------------------------------
-%%% @author Ingimar <ingimar@student.gu.se>
-%%% @author Khashayar <khashayar@localhost.localdomain>
-%%% @author Magnus <magnus@localhost.localdomain>
-%%%
-%%% @copyright (C) 2012, Ingimar, Khashayar, Magnus
-%%%
+%%% @author Ingimar Samuelsson <ingimar@student.gu.se>
+%%% @author Khashayar Abdoli <khashayar@localhost.localdomain>
+%%% @author Magnus Tulin <magnus@localhost.localdomain>
+%%% @author Muhanad Nabeel <muhanad@localhost.localdomain>
+%%% @copyright (C) 2012, Jablé
+%%% @doc
+%%%	Various functions
 %%% @end
 %%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
 %%%-------------------------------------------------------------------
+
+
 -module(ernews_defuns).
 %%-export([read_web/2,convert_date/1,read_words/0,is_relevant/4,split_text/1]).
 -compile(export_all).
 
+test_rel(Src) ->
+	ernews_htmlfuns:relevancy_check(Src,read_words()).
+test1(A,B) ->
+	list_words_occur_insens(A,string:tokens(B," ")).
 
-%% Authors: Ingimar Samúelsson & Magnus Tulin
-%% read_web: Attempts to fetch and read a document from an URL
+
+%%%-------------------------------------------------------------------
+%%% @author Ingimar Samuelsson & Magnus Tulin
+%%% @doc
+%%%	Attempts to fetch and read a document from URL
+%%% @end
 read_web({ok, {{_Version, _, _ReasonPhrase}, Headers, Body}}) ->
 	{success,{Headers,Body}};
 read_web({error,no_scheme})->
@@ -52,9 +63,13 @@ read_web(dzone,Src) ->
     inets:start(),
     read_web(httpc:request(get, {Src, [{"User-Agent","Jable"}]}, 
 			   [{autoredirect, false}], [])).
+%%%-------------------------------------------------------------------
 
-%% Author: Khashayar Abdoli
-%% Converts pubDate from RSS document to Erlang date
+%%%-------------------------------------------------------------------
+%%% @author Khashayar Abdoli
+%%% @doc
+%%%	Converts pubDate from RSS document to Erlang date
+%%% @end
 convert_date(DateTime) ->
     {ok,[_Day, Date, MonthS, Year,HH,MM,SS], _} = 
 	io_lib:fread("~3s, ~2d ~3s ~4d ~2d:~2d:~2d" , DateTime),
@@ -85,27 +100,26 @@ convert_date(DateTime) ->
 		    12
 	    end,
     {{Year,Month,Date},{HH,MM,SS}}.
-
+%%%-------------------------------------------------------------------
 	
-%% Author: Ingimar Samuelsson
-%% Returns lists of strings from database
+%%%-------------------------------------------------------------------
+%%% @author Ingimar Samuelsson
+%%% @doc
+%%%	Returns three lists from database in a tuble:
+%%% Relevant words, Irrelevant words, Tags
+%%% @end
 read_words() ->
 	{ernews_db:getList(relevant),
 		ernews_db:getList(irrelevant),
 		ernews_db:getList(tag)}.
+%%%-------------------------------------------------------------------
 		
-%%	
-%% Following is related to relevant-check
-%% and tag-generator
-%%	
-test_rel(Src) ->
-	ernews_htmlfuns:relevancy_check(Src,read_words()).
-test1(A,B) ->
-	list_words_occur_insens(A,string:tokens(B," ")).
-
 	
-%% Author: Ingimar Samuelsson
-%% Generate tags for articles
+%%%-------------------------------------------------------------------
+%%% @author Ingimar Samuelsson
+%%% @doc
+%%%	Generate tags for articles
+%%% @end
 get_tags([],_) ->
 	[];	
 get_tags([H|T],List) ->
@@ -115,10 +129,13 @@ get_tags([H|T],List) ->
 		false ->
 			get_tags(T,List)
 	end.
+%%%-------------------------------------------------------------------
 	
-	
-%% Author: Ingimar Samuelsson
-%% Counts how many times a word occurs in a list
+%%%-------------------------------------------------------------------
+%%% @author Ingimar Samuelsson
+%%% @doc
+%%%	Counts how many times a word occurs in a list
+%%% @end
 count_words(WordList,CheckList) ->
 	count_words(WordList,CheckList,0).
 count_words([],_,Counter) ->
@@ -130,9 +147,13 @@ count_words([H|T],List,Counter) ->
 		false ->
 			count_words(T,List,Counter)
 	end.
+%%%-------------------------------------------------------------------
 	
-%% Author: Ingimar Samuelsson
-%% Removes duplicates from a list
+%%%-------------------------------------------------------------------
+%%% @author Ingimar Samuelsson
+%%% @doc
+%%%	Removes duplicates from a list
+%%% @end
 remove_duplist(List) ->
 	remove_duplist(List,[]).
 remove_duplist([H|T],List) ->
@@ -144,10 +165,13 @@ remove_duplist([H|T],List) ->
 	end;
 remove_duplist([],List) ->
 	List.
-
+%%%-------------------------------------------------------------------
 	
-%% Author: Ingimar Samuelsson
-%% Checks for relevancy of article using a list of words from db
+%%%-------------------------------------------------------------------
+%%% @author Ingimar Samuelsson
+%%% @doc
+%%%	Checks for relevancy of article using a list of words from db
+%%% @end
 is_relevant(List,Good,Bad,Tags) ->
 	Html = string:tokens(List," "),
 	is_relevant(count_words(Good,Html),
@@ -159,9 +183,13 @@ is_relevant(_,0,{Html,Tags}) ->
 	{ok,remove_duplist( get_tags(Tags,Html) )};
 is_relevant(_,_,_) ->
 	{error,wrong_content}.
+%%%-------------------------------------------------------------------
 
-%% Author: Ingimar Samuelsson
-%% Checks if word(s) occur in a String - not case sensetive
+%%%-------------------------------------------------------------------
+%%% @author Ingimar Samuelsson
+%%% @doc
+%%%	Checks if word(s) occur in a String - not case sensetive
+%%% @end
 list_words_occur_insens(Words,List) ->
 	Split = string:tokens(Words," "),
 	list_words_occur_insens(lists:concat(Split),List,length(Split)).
@@ -178,10 +206,13 @@ list_words_occur_insens(WordConcat,List,Length) ->
 		_ ->
 			list_words_occur_insens(WordConcat,tl(List),Length)
 	end.
+%%%-------------------------------------------------------------------
 	
-%% Author: Ingimar Samuelsson	
-%% Compare two strings
-%% Unused
+%%%-------------------------------------------------------------------
+%%% @author Ingimar Samuelsson	
+%%% @doc
+%%%	Compare two strings
+%%% @end
 compare_concat_str(Str1,Str2) ->
 	Left = string:to_lower(string:left(Str2,string:len(Str1))),
 	Right = string:to_lower(string:right(Str2,string:len(Str1))),
@@ -194,10 +225,13 @@ compare_concat_str(Str1,Str2) ->
 		true ->
 			false
 	end.
-	
-	
-%% Author: Muhanad Nabeel
-%% Split string into list, devided " "
+%%%-------------------------------------------------------------------
+		
+%%%-------------------------------------------------------------------
+%%% @author Muhanad Nabeel
+%%% @doc
+%%%	Split string into a list, devided with " "
+%%% @end
 split_text(Str) ->
 	split_text(Str, [], []).
 split_text([], [], Words) ->
@@ -210,7 +244,11 @@ split_text([$ | Str], Word, Words) ->
 	split_text(Str, [], [lists:reverse(Word) | Words]);
 split_text([X | Str], Word, Words) ->
 	split_text(Str, [X | Word], Words).
+%%%-------------------------------------------------------------------
 
+	
+	
+	
 	
 %%
 %% Remaining code is note in current version
