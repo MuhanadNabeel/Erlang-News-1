@@ -42,7 +42,6 @@ Div fonts
 
 </style>
 
-    
 <div id="first_loading" style="width:100%;">
     
 </div>    
@@ -69,21 +68,32 @@ Div fonts
                 
             </div>
         </div>
-            <table>
+        
+        <div style="poistion:relative;">
+            <div class="top_news"></div>
+            <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
+                
+                <div align="left" id="top_news" style="max-width:80%;background-color:white;padding:10px;"></div>
+            </div>
+        </div>
+            <table cellpadding="0" cellspacing="0" style="box-shadow:0 -10px 20px -10px black;">
             <tr>
                 <td style="vertical-align:top;">
-                    <table style="width:104%;">
-                        <tr>
-                            <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
-                            <td style="width:1px;height:90%;background-color:#c6c6c6;"><div></div></td>
-                            <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_right"></ul></td>
-                        </tr>
-                    </table>
+                    <div style="z-index:1000">
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
+                                <td style="width:1px;height:90%;background-color:#c6c6c6;"><div></div></td>
+                                <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_right"></ul></td>
+                            </tr>
+                        </table>
+                    </div>
                 </td>
-                <td style="vertical-align:top;width:29%;">
-                    <div id="recent"></div>
-                    <ul id="archive" style="list-style-type: none;"></ul>
+                <td style="padding-left:-100px;vertical-align:top;width:26%;">
+                    <div style="z-index:500;">
 
+                      <ul id="archive" style="list-style-type:none;margin:0;"></ul>
+                    </div>
                 </td>
             </tr>
         </table>

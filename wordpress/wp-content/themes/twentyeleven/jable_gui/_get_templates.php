@@ -7,4 +7,6 @@ echo '<split_between_templates>';
 include 'medium_template.php';
 echo '<split_between_templates>';
 include 'small_template.php';
+echo '<split_between_templates>';
+include 'top_template.php';
 ?>

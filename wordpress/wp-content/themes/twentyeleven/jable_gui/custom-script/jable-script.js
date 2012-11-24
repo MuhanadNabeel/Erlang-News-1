@@ -98,6 +98,7 @@ function getNewsJSON() {
         jQuery('#first_loading').remove();
         jQuery('#news_article_left').html('');
         jQuery('#news_article_right').html('');
+        jQuery('#top_news').html('');
         var parse = jQuery.parseJSON(outcome);
         if( lastUpdate != null && lastUpdate == parse )
             return;
@@ -116,8 +117,11 @@ function getNewsJSON() {
                 jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
             else
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
-            
-            if( i < 14 && leftArc > rightArc )
+
+
+            if( i < 1)
+                jQuery('#top_news').append( getNewsArticle(json[i], archiveTable) );
+            else if( i < 14 && leftArc < rightArc )
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 14 )
                 jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
@@ -150,7 +154,7 @@ function getNewsJSON() {
     }
     function getNewsArticle(json,datatype) {
         var template = newsSmallTemplate;
-        if( json.imgwidth > 180 )
+        if( json.imgwidth > 350 )
             template = newsBigTemplate;
         else if( json.imgwidth > 120 )
             template = newsMediumTemplate
@@ -168,7 +172,9 @@ function getNewsJSON() {
                             .replace(/{URL}/g,json.URL)
                             .replace(/{icon_hide}/g,icon_hide)
                             .replace(/{datatype}/g,'archive_' + datatype)
-                            .replace(/{id}/g,json.newsID);
+                            .replace(/{id}/g,json.newsID)
+                            .replace(/{imgpos}/g,0)
+                            .replace(/{imgsize}/g,(json.imgheight));
     }
     
     

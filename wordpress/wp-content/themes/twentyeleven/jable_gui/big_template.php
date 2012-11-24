@@ -1,12 +1,12 @@
 
 <li data-id="{id}_left_item" id="left_{datatype}">
 <div>
-<div class="newsTemp" id="{datatype}">
 
+<div class="newsTemp" id="{datatype}" style="background-color:rgba(255,255,255, 0.7)">
 	<div class="title">
-		<table cellspacing="0" cellpadding="0"><tr><td style="vertical-align:top;">
+		<table cellspacing="0" cellpadding="0"><tr><td style="vertical-align:top;padding-right:5px;">
 			<img src="{icon}" align="left" style="height:18px;width:18px;margin-top:6px;margin-right:0px;visibility:{icon_hide};"></td>
-			<td><span class="main-title"><a style="cursor:pointer;" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
+			<td><span class="main-title" style=""><a style="cursor:pointer;" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
            return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');">{title}</a></span></td></tr></table>
 		
 		
@@ -25,8 +25,8 @@
 				</table>
 				</div>
 			</td>
-			<td><div class="content">
-				<div style="background:url({image}) 0 -50px no-repeat;background-size:100%;width:100%;height:100px;margin-bottom:10px;margin-top:-5px;cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');"></div>
+			<td><div id="content" class="content">
+				<div style="background:url({image}) 0 {imgpos}px no-repeat;background-size:100%;width:100%;height:{imgsize}px;margin-bottom:10px;margin-top:-5px;cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');"></div>
 			<div style="line-height:100%;">{description}</div> <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
 				
 				
