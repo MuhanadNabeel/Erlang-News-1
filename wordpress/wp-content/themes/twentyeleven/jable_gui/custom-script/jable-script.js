@@ -14,8 +14,8 @@ jQuery(document).ready(function() {
             jQuery('#top_news_container').show();
             $(window).scroll(function(){
                 var y = $(window).scrollTop();
-                if((parseInt(jQuery("#top_news").css("height"), 10)+17) > ((y/2.5)+105))
-                    jQuery('#top_news_container').css('height', (y/2.5)+100);
+                if((parseInt(jQuery("#top_news").css("height"), 10)+25) > ((y/2.5)+105))
+                    jQuery('#top_news_container').css('height', (y/2.5)+105);
 
             });
         });
