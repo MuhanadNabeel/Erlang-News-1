@@ -2,6 +2,9 @@ var isUserAction = new Object();
 var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '';
 
 jQuery(document).ready(function() {
+    jQuery('#over_top_news').hide();
+    jQuery('#first_loading').css('text-align','center');
+    jQuery('#first_loading').html('<img src="' + jableDir + '/custom-img/loading.gif" style="">')
     jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
         var split = str.split('<split_between_templates>');
         newsRightTemplate = split[0];
@@ -95,7 +98,9 @@ var lastUpdate = null;
 var archiveTable = 1;
 function getNewsJSON() {
     jQuery.get(jableDir + '_get_news.php',function(outcome) {
-        jQuery('#first_loading').remove();
+        jQuery('#first_loading').fadeOut();
+        setTimeout("jQuery('#first_loading').remove();",1000);
+        jQuery('#over_top_news').show();
         jQuery('#news_article_left').html('');
         jQuery('#news_article_right').html('');
         jQuery('#top_news').html('');

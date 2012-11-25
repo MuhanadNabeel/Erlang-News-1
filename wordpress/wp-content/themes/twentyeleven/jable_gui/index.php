@@ -69,7 +69,7 @@ Div fonts
             </div>
         </div>
         
-        <div style="poistion:relative;">
+        <div style="poistion:relative;" id="over_top_news">
             <div class="top_news"></div>
             <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
                 
