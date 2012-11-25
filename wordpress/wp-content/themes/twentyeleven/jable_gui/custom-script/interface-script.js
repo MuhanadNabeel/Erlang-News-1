@@ -27,8 +27,20 @@ jQuery(document).ready(function() {
     /*var $filteredData = $data.find('li[data-type=type1]');
         $holder.quicksand($filteredData, {
             duration: 0});*/
+    
+
 
 })
+
+function startScroll() {
+    $(window).scroll(function(){
+        // get the height of #wrap
+        alert(jQuery('#top_news').css('height'));
+        var y = $(window).scrollTop();
+        if()
+        jQuery('#top_news_container').css('height', (y/4.5)+100);
+    });
+}
 
 function fadeWindow(id, text){
     jQuery('#'+id+'_text').html(text);
@@ -42,7 +54,7 @@ function animate(id){
     closeAllStuff(function(){
         var $filteredData2 = $data.find('li[data-type=right_archive_'+id+']');
         $holder.quicksand($filteredData2, {
-            duration: 1200,
+            duration: 800,
             easing: 'swing'},
             function(){
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
@@ -91,7 +103,7 @@ function closeAllStuff(cbFunc){
     if(a.size()==0)
         cbFunc();
     else
-        a.slideUp('slow', function(){setTimeout(cbFunc,2000,lang)});
+        a.slideUp('slow', function(){setTimeout(cbFunc(),2000,lang)});
  }
 
  function closeLastOne(cbFunc){
