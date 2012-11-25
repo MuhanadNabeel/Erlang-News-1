@@ -2,18 +2,26 @@ var isUserAction = new Object();
 var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '';
 
 jQuery(document).ready(function() {
-    jQuery('#over_top_news').hide();
-    jQuery('#first_loading').css('text-align','center');
-    jQuery('#first_loading').html('<img src="' + jableDir + '/custom-img/loading.gif" style="">')
+    jQuery('#first_loading').html('<img width="450px" height="200px" src="' + jableDir + '/custom-img/loading1.gif">');
     jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
         var split = str.split('<split_between_templates>');
         newsRightTemplate = split[0];
         newsBigTemplate = split[1];
         newsMediumTemplate = split[2];
         newsSmallTemplate = split[3];
-        getNewsJSON();
-        setInterval('getNewsJSON();',180000);
+        getNewsJSON(function(){
+            jQuery('#first_loading').slideUp('slow');
+            jQuery('#top_news_container').show();
+            $(window).scroll(function(){
+                var y = $(window).scrollTop();
+                if((parseInt(jQuery("#top_news").css("height"), 10)+17) > ((y/2.5)+105))
+                    jQuery('#top_news_container').css('height', (y/2.5)+100);
+
+            });
+        });
+        setInterval('getNewsJSON();',15000);
     });
+
 });
 
 function articleAction(item,action,undo) {
@@ -96,11 +104,8 @@ function articleAction(item,action,undo) {
 }
 var lastUpdate = null;
 var archiveTable = 1;
-function getNewsJSON() {
+function getNewsJSON(cbFunc) {
     jQuery.get(jableDir + '_get_news.php',function(outcome) {
-        jQuery('#first_loading').fadeOut();
-        setTimeout("jQuery('#first_loading').remove();",1000);
-        jQuery('#over_top_news').show();
         jQuery('#news_article_left').html('');
         jQuery('#news_article_right').html('');
         jQuery('#top_news').html('');
@@ -124,9 +129,10 @@ function getNewsJSON() {
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
 
 
-            if( i < 1)
+            if( i < 1){
                 jQuery('#top_news').append( getNewsArticle(json[i], archiveTable) );
-            else if( i < 14 && leftArc < rightArc )
+
+            }else if( i < 14 && leftArc < rightArc )
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 14 )
                 jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
@@ -144,6 +150,7 @@ function getNewsJSON() {
             updateRight(archiveTable);
         }
         archiveTable++;
+        cbFunc();
     });
     function setUserClicked(json,str,isVote) {
         for( var i = 0 ; i < json.length ; i++ ) {

@@ -41,10 +41,9 @@ Div fonts
 
 
 </style>
+<div align="center" id="first_loading" style="width:100%;height:auto;overflow:visible;"></div>    
 
-<div id="first_loading" style="width:100%;">
-    
-</div>    
+
         <div id="bigframe" style="display:none" class="bigframe">
             <div style="position:fixed;background-color:black;left:0;top:0;opacity:.3;width:100%;height:100%;z-index:20000;" onclick="closeBox();"></div>
             <div style="position:fixed;background-color:white;width:80%;height:92%;z-index:20001;box-shadow:0px 0px 100px black;left:50%; margin-left:-40%;top:4%;">
@@ -70,13 +69,16 @@ Div fonts
         </div>
         
         <div style="poistion:relative;" id="over_top_news">
+        <div id="top_news_container" style="poistion:relative;height:100px;overflow:hidden;display:none;">
             <div class="top_news"></div>
             <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
                 
-                <div align="left" id="top_news" style="max-width:80%;background-color:white;padding:10px;"></div>
+                <div align="left" id="top_news" style="max-width:80%;background-color:white;padding:10px;box-shadow:0 0px 20px black"></div>
             </div>
         </div>
+
             <table cellpadding="0" cellspacing="0" style="box-shadow:0 -10px 20px -10px black;">
+                
             <tr>
                 <td style="vertical-align:top;">
                     <div style="z-index:1000">
@@ -90,7 +92,7 @@ Div fonts
                     </div>
                 </td>
                 <td style="padding-left:-100px;vertical-align:top;width:26%;">
-                    <div style="z-index:500;">
+                    <div style="position:relative;z-index:500;">
 
                       <ul id="archive" style="list-style-type:none;margin:0;"></ul>
                     </div>
