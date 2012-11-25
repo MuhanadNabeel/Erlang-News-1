@@ -49,7 +49,7 @@ Div fonts
             <div style="position:fixed;background-color:white;width:80%;height:92%;z-index:20001;box-shadow:0px 0px 100px black;left:50%; margin-left:-40%;top:4%;">
                 
                 <div class="close-button" onclick="closeBox()"></div>
-                <div style="position:absolute;z-index:20;width:100%;height:auto;background-color:rgba(0,0,0,.5);top:0px;">
+                <div style="position:absolute;z-index:20;width:100%;height:100%;background-color:rgba(0,0,0,.5);top:0px;">
                     <table><tr>
                         <td id="box-vote-buttons" style="padding:5px;"></td>
                         <td style="vertical-align:top;"><div id="box_title" class="box_title"></div></td>
