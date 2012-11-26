@@ -113,7 +113,8 @@ function getNewsJSON(cbFunc) {
             return;
         jQuery('#latest_news').html('');
         for( var i = 0 ; i < json.length ; i++ ) {
-            jQuery('#latest_news').append( addNewsLink(json[i], archiveTable, true) );
+            if(archiveTable == 1)
+                jQuery('#latest_news').append( addNewsLink(json[i], archiveTable, true) );
         }
     });
     jQuery.get(jableDir + '_get_news.php',{query:'main'},function(outcome) {
