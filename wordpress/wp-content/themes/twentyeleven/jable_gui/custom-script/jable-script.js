@@ -112,12 +112,13 @@ function getNewsJSON(cbFunc) {
         if(json.length == 0)
             return;
         jQuery('#latest_news').html('');
-        for( var i = 0 ; i < json.length ; i++ )
+        for( var i = 0 ; i < json.length ; i++ ) {
             jQuery('#latest_news').append( addNewsLink(json[i], archiveTable) );
+        }
     });
     var mainQuery = 'SELECT *, ((clicks+up_vote-down_vote) * 100000/ '
         + 'pow((TIME_TO_SEC(TIMEDIFF(NOW(),pubdate))/3600 + 2),1.5)) score '
-        + 'from ernews_news order by score DESC';
+        + 'from ernews_news order by score DESC LIMIT 20';
     jQuery.get(jableDir + '_get_news.php',{query:mainQuery},function(outcome) {
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
@@ -139,9 +140,7 @@ function getNewsJSON(cbFunc) {
                 jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
 
 
-            if( i > 20 )
-                i = json.length-1;
-            else if( i == 0 )
+            if( i == 0 )
                 jQuery('#top_news').append( getNewsArticle(json[i], archiveTable) );
             else if( i < 7 && leftArc < rightArc )
                 jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
