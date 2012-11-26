@@ -111,10 +111,11 @@ function getNewsJSON(cbFunc) {
         var json = parse.news;
         if(json.length == 0)
             return;
-        jQuery('#latest_news').html('');
         for( var i = 0 ; i < json.length ; i++ ) {
-            if(archiveTable == 1)
+            if(archiveTable == 1){
+                jQuery('#latest_news').html('');
                 jQuery('#latest_news').append( addNewsLink(json[i], archiveTable, true) );
+            }
         }
     });
     jQuery.get(jableDir + '_get_news.php',{query:'main'},function(outcome) {

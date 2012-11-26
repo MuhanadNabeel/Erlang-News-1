@@ -2,7 +2,7 @@
     <div>
 
     <div class="right_row" onclick="openUpStuff('{id}')">
-        <table><tr><td style="vertical-align:middle;"><img src="{image}" style="border:solid 1px gray;margin-left:5px;margin-right:10px;max-width:40px;"></td>
+        <table><tr><td style="vertical-align:middle;"><img src="{image}" style="border:solid 1px gray;margin-left:5px;margin-right:0px;max-width:40px;"></td>
             <td style="vertical-align:top;">
                 <div style="padding:0.5em;line-height:80%;">
                         <a class="right_title">{title}</a></br>

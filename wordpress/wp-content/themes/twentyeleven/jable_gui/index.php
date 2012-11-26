@@ -140,8 +140,8 @@ Div fonts
                         </tr>
                     </table>
                 </td>
-                <td style="width:16.5%;background-color:#f7f7f7;height:20px;box-shadow:inset 3px 0 8px -5px black">
-                    <div></div>
+                <td style="width:16.5%;background-color:#f7f7f7;height:20px;box-shadow:inset 3px 0 8px -5px black;vertical-align:top;">
+                    <div style="font-family:'MyriadPro Cond';font-size:15pt;margin-left:25px;text-shadow:1px 1px 1px white;">Not available for now</div>
                 </td>
             </tr>
         </table>
