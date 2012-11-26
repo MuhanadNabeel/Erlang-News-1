@@ -105,9 +105,7 @@ function articleAction(item,action,undo) {
 }
 var archiveTable = 1;
 function getNewsJSON(cbFunc) {
-    
-    var recentQuery = 'SELECT * FROM ernews_news ORDER BY Pubdate DESC LIMIT 3';
-    jQuery.get(jableDir + '_get_news.php',{query:recentQuery},function(outcome) {
+    jQuery.get(jableDir + '_get_news.php',{query:'latest'},function(outcome) {
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
         if(json.length == 0)
@@ -117,10 +115,7 @@ function getNewsJSON(cbFunc) {
             jQuery('#latest_news').append( addNewsLink(json[i], archiveTable, true) );
         }
     });
-    var mainQuery = 'SELECT *, ((clicks+up_vote-down_vote) * 100000/ '
-        + 'pow((TIME_TO_SEC(TIMEDIFF(NOW(),pubdate))/3600 + 2),1.5)) score '
-        + 'from ernews_news order by score DESC LIMIT 20';
-    jQuery.get(jableDir + '_get_news.php',{query:mainQuery},function(outcome) {
+    jQuery.get(jableDir + '_get_news.php',{query:'main'},function(outcome) {
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
         if(json.length == 0){
