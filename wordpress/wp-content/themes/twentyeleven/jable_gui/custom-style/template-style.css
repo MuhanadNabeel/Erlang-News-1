@@ -412,8 +412,8 @@ Thumbs up and down.
 
 .top_news{
     position: absolute;
-    margin-top: -3px;
-    margin-left: -3px;
+    margin-top: -4px;
+    margin-left: -4px;
     background:url(../custom-img/top-news.png) 0 0 no-repeat;
     background-size: 100%;
     width:100px;

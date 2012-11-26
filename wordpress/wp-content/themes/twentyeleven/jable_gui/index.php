@@ -41,6 +41,7 @@ Div fonts
 
 
 </style>
+<button onclick="">rjfklmds</button>
 <div align="center" id="first_loading" style="width:100%;height:auto;overflow:visible;"></div>    
 
 
@@ -49,7 +50,7 @@ Div fonts
             <div style="position:fixed;background-color:white;width:80%;height:92%;z-index:20001;box-shadow:0px 0px 100px black;left:50%; margin-left:-40%;top:4%;">
                 
                 <div class="close-button" onclick="closeBox()"></div>
-                <div style="position:absolute;z-index:20;width:100%;height:100%;background-color:rgba(0,0,0,.5);top:0px;">
+                <div style="position:absolute;z-index:20;width:100%;height:auto;background-color:rgba(0,0,0,.5);top:0px;">
                     <table><tr>
                         <td id="box-vote-buttons" style="padding:5px;"></td>
                         <td style="vertical-align:top;"><div id="box_title" class="box_title"></div></td>
@@ -67,27 +68,46 @@ Div fonts
                 
             </div>
         </div>
-        
-        <div style="poistion:relative;" id="over_top_news">
-        <div id="top_news_container" style="poistion:relative;height:100px;overflow:hidden;display:none;">
+<!--        <div style="poistion:relative;" id="over_top_news">
+        <div id="top_news_container" style="poistion:relative;height:auto;overflow:hidden;display:none;">
             <div class="top_news"></div>
             <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
                 
                 <div align="left" id="top_news" style="max-width:80%;background-color:white;padding:10px;box-shadow:0 0px 20px black"></div>
             </div>
         </div>
+        </div>
 
-            <table cellpadding="0" cellspacing="0" style="box-shadow:0 -10px 20px -10px black;">
+<div class="top_news"></div>
+                                    
+    -->
+
+
+            <table cellpadding="0" cellspacing="0" style="">
                 
             <tr>
                 <td style="vertical-align:top;">
                     <div style="z-index:1000">
-                        <table style="width:100%;">
-                            <tr>
-                                <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
-                                <td style="width:1px;height:90%;background-color:#c6c6c6;"><div></div></td>
-                                <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_right"></ul></td>
-                            </tr>
+                        <table>
+                            <tr><td>
+                                <div style="poistion:relative;" id="over_top_news">
+                                <div id="top_news_container" style="poistion:relative;height:auto;overflow:hidden;display:none;">
+                                    <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
+                                        
+                                        <div align="left" id="top_news" style="max-width:80%;background-color:white;padding:10px;box-shadow:0 0px 20px black"></div>
+                                    </div>
+                                </div>
+                                </div>
+                            </td></tr>
+                            <tr><td>
+                                <table style="width:100%;box-shadow:0 -10px 20px -10px black;">
+                                    <tr>
+                                        <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
+                                        <td style="width:1px;height:90%;background-color:#c6c6c6;"><div></div></td>
+                                        <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_right"></ul></td>
+                                    </tr>
+                                </table>
+                            </td></tr>
                         </table>
                     </div>
                 </td>

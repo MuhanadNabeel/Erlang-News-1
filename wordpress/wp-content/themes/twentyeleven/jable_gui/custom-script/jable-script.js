@@ -2,6 +2,7 @@ var isUserAction = new Object();
 var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '';
 
 jQuery(document).ready(function() {
+
     jQuery('#first_loading').html('<img width="450px" height="200px" src="' + jableDir + '/custom-img/loading1.gif">');
     jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
         var split = str.split('<split_between_templates>');
@@ -12,12 +13,12 @@ jQuery(document).ready(function() {
         getNewsJSON(function(){
             jQuery('#first_loading').slideUp('slow');
             jQuery('#top_news_container').show();
-            $(window).scroll(function(){
+            /*$(window).scroll(function(){
                 var y = $(window).scrollTop();
-                if((parseInt(jQuery("#top_news").css("height"), 10)+25) > ((y/2.5)+105))
-                    jQuery('#top_news_container').css('height', (y/2.5)+105);
+                if((parseInt(jQuery("#top_news").css("height"), 10)+25) > ((y/4.5)))
+                    jQuery('#top_news_container').css('height', (y/4.5));
 
-            });
+            });*/
         });
         setInterval('getNewsJSON();',15000);
     });

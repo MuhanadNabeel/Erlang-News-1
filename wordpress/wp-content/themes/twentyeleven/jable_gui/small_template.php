@@ -7,7 +7,7 @@
 		<table cellspacing="0" cellpadding="0"><tr><td style="vertical-align:top;padding-right:5px;">
 			<img src="{icon}" align="left" style="height:18px;width:18px;margin-top:6px;margin-right:0px;visibility:{icon_hide};"></td>
 			<td><span class="main-title"><a style="cursor:pointer;" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
-           return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');">{title}</a></span></td></tr></table>
+           return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">{title}</a></span></td></tr></table>
 		
 		
 	</div>

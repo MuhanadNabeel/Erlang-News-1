@@ -1,9 +1,6 @@
 var $holder;
 var $data;
 
-function openTest(){
-                alert('lol');
-}
 
 var $id;
 function openUpStuff(id){
@@ -20,27 +17,9 @@ function openUpStuff(id){
  }
 
 jQuery(document).ready(function() {
-    
-    // get the action filter option item on page load
     $holder = jQuery('#archive');
 
-    /*var $filteredData = $data.find('li[data-type=type1]');
-        $holder.quicksand($filteredData, {
-            duration: 0});*/
-    
-
-
 })
-
-function startScroll() {
-    $(window).scroll(function(){
-        // get the height of #wrap
-        alert(jQuery('#top_news').css('height'));
-        var y = $(window).scrollTop();
-        if()
-        jQuery('#top_news_container').css('height', (y/4.5)+100);
-    });
-}
 
 function fadeWindow(id, text){
     jQuery('#'+id+'_text').html(text);
@@ -93,6 +72,10 @@ function updateRight(id){
     
     animate(id);
     
+}
+
+function test(){
+    alert();
 }
 
 function closeAllStuff(cbFunc){
