@@ -2,7 +2,6 @@ var isUserAction = new Object();
 var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '';
 
 jQuery(document).ready(function() {
-
     jQuery('#first_loading').html('<img width="450px" height="200px" src="' + jableDir + '/custom-img/loading1.gif">');
     jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
         var split = str.split('<split_between_templates>');
@@ -105,6 +104,7 @@ function articleAction(item,action,undo) {
 }
 var archiveTable = 1;
 function getNewsJSON(cbFunc) {
+    
     var recentQuery = 'SELECT * FROM ernews_news ORDER BY Pubdate DESC LIMIT 3';
     jQuery.get(jableDir + '_get_news.php',{query:recentQuery},function(outcome) {
         var parse = jQuery.parseJSON(outcome);
@@ -132,6 +132,7 @@ function getNewsJSON(cbFunc) {
 
         var leftArc = 1;
         var rightArc = 0;
+
         for( var i = 0 ; i < json.length ; i++ ) {
             isUserAction[json[i].newsID] = Array(false,false);
             if( archiveTable > 1 )
