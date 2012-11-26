@@ -41,7 +41,7 @@ Div fonts
 
 
 </style>
-<button onclick="slideLeft();"></button>
+
 <div style="overflow:hidden;width:100%;">
 <div align="center" id="first_loading" style="width:100%;height:auto;overflow:visible;"></div>    
 
@@ -99,7 +99,31 @@ Div fonts
                             </td>
                             <td style="padding-left:-100px;vertical-align:top;width:26%;">
                                 <div style="position:relative;z-index:500;">
-                                    <ul id="archive" style="list-style-type:none;margin:0;"></ul>
+                                    <table>
+                                        <tr><td class="news-headlines">Latest news</td></tr>
+                                        <tr>
+                                            <td>
+                                                <ul id="latest_news" style="list-style-type:none;margin:0;"></ul>
+                                            </td>
+                                        </tr>
+                                        <tr><td class="news-headlines">Top news</td></tr>
+                                        <tr>
+                                            <td>
+                                                <ul id="archive" style="list-style-type:none;margin:0;"></ul>
+                                            </td>
+                                        </tr>
+                                        <tr><td>
+                                            <table onclick="slideLeft();" class="archive-button" style="width:100%;">
+                                                <tr><td style="vertical-align:top;width:160%;">
+                                                        <div class="archive-button-button" align="center">Archive</div>
+                                                    </td>
+                                                    <td style="vertical-align:top">
+                                                        <div class="arrow-right"></div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td></tr>
+                                    </table>
                                 </div>
                             </td>
                         </tr>

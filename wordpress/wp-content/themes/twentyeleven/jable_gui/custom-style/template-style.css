@@ -422,6 +422,42 @@ Thumbs up and down.
     height:100px;
 }
 
+.news-headlines{
+    padding:4px;
+    color:white;
+    text-shadow:1px 1px 1px black;
+    font-family:'MyriadPro Cond';
+    background-color:rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+.archive-button{
+    cursor: pointer;
+    font-family: "MyriadPro Cond";
+    color: white;
+    text-shadow:1px 1px 1px black;
+    vertical-align: middle;
+}
+.archive-button-button{
+    background-color: rgba(0,0,0,0.5);
+    height:25px;
+}
+
+.archive-button:hover div.arrow-right{
+    border-top: 25px solid rgba(0,0,0,0.8);
+    border-right: 25px solid transparent;
+}
+.archive-button:hover div.archive-button-button{
+    background-color: rgba(0,0,0,0.8);
+}
+
+.arrow-right {
+    width: 0;
+    height: 0;
+    border-top: 25px solid rgba(0,0,0,0.5);
+    border-right: 25px solid transparent;
+}
+
 .main-title a{color: black;text-decoration: none;}
 .main-title a:visited {color:black;text-decoration: none;}  /* visited link */
 .main-title a:hover {color:#aacc77;text-decoration: none;}  /* mouse over link */
