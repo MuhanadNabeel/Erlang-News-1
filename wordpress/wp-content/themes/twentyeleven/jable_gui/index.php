@@ -41,6 +41,8 @@ Div fonts
 
 
 </style>
+<button onclick="slideLeft();"></button>
+<div style="overflow:hidden;width:100%;">
 <div align="center" id="first_loading" style="width:100%;height:auto;overflow:visible;"></div>    
 
 
@@ -60,62 +62,52 @@ Div fonts
 
                 
                             <iframe id="frame_content" src="" style="position:absolute;border-style:none;width:100%;height:100%;z-index:1;"></iframe>
-<!--                    <div style="position:absolute;background-color:#e4e4e4;width:100%;height:auto;z-index:2;bottom:0;box-shadow:0 -3px 10px #333333;white-space:nowrap;">
-    -->                    
+        
 
                     </div>
                 
-            </div>
         </div>
-<!--        <div style="poistion:relative;" id="over_top_news">
-        <div id="top_news_container" style="poistion:relative;height:auto;overflow:hidden;display:none;">
-            <div class="top_news"></div>
-            <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
-                
-                <div align="left" id="top_news" style="max-width:80%;background-color:white;padding:10px;box-shadow:0 0px 20px black"></div>
-            </div>
-        </div>
-        </div>
-
-<div class="top_news"></div>
-                                    
-    -->
-
-
-            <table cellpadding="0" cellspacing="0" style="">
-                
+        <table id="main_div" style="width:120%;">
             <tr>
-                <td style="vertical-align:top;">
-                    <div style="z-index:1000">
-                        <table>
-                            <tr><td>
-                                <div style="poistion:relative;" id="over_top_news">
-                                <div id="top_news_container" style="poistion:relative;height:auto;overflow:hidden;display:none;">
-                                    <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
-                                        
-                                        <div align="left" id="top_news" style="max-width:100%;background-color:white;padding:10px;box-shadow:0 0px 20px black"></div>
-                                    </div>
+                <td>
+                    <table cellpadding="0" cellspacing="0" style="background-color:white;width:100%;">
+                        <tr>
+                            <td style="vertical-align:top;">
+                                <div style="z-index:1000">
+                                    <table>
+                                        <tr><td>
+                                            <div style="poistion:relative;" id="over_top_news">
+                                            <div id="top_news_container" style="poistion:relative;height:auto;overflow:hidden;display:none;">
+                                                <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
+                                                    
+                                                    <div align="left" id="top_news" style="max-width:100%;background-color:white;padding:10px;box-shadow:0 0px 20px black"></div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </td></tr>
+                                        <tr><td>
+                                            <table style="width:100%;">
+                                                <tr>
+                                                    <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
+                                                    <td style="width:1px;height:90%;background-color:#c6c6c6;"><div></div></td>
+                                                    <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_right"></ul></td>
+                                                </tr>
+                                            </table>
+                                        </td></tr>
+                                    </table>
                                 </div>
+                            </td>
+                            <td style="padding-left:-100px;vertical-align:top;width:26%;">
+                                <div style="position:relative;z-index:500;">
+                                    <ul id="archive" style="list-style-type:none;margin:0;"></ul>
                                 </div>
-                            </td></tr>
-                            <tr><td>
-                                <table style="width:100%;">
-                                    <tr>
-                                        <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
-                                        <td style="width:1px;height:90%;background-color:#c6c6c6;"><div></div></td>
-                                        <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_right"></ul></td>
-                                    </tr>
-                                </table>
-                            </td></tr>
-                        </table>
-                    </div>
+                            </td>
+                        </tr>
+                    </table>
                 </td>
-                <td style="padding-left:-100px;vertical-align:top;width:26%;">
-                    <div style="position:relative;z-index:500;">
-
-                      <ul id="archive" style="list-style-type:none;margin:0;"></ul>
-                    </div>
+                <td style="width:16.5%;background-color:#f7f7f7;height:20px;box-shadow:inset 3px 0 8px -5px black">
+                    <div></div>
                 </td>
             </tr>
         </table>
-       
+</div>

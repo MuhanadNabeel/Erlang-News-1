@@ -74,8 +74,16 @@ function updateRight(id){
     
 }
 
-function test(){
-    alert();
+function slideLeft(){
+
+    if(jQuery('#main_div').css('margin-left')=='0px')
+        jQuery('#main_div').animate({
+            marginLeft: '-=16.5%'
+        }, 500);
+    else
+        jQuery('#main_div').animate({
+            marginLeft: '0px'
+        }, 500);
 }
 
 function closeAllStuff(cbFunc){
