@@ -86,20 +86,34 @@ function articleAction(item,action,undo) {
     }
     function changeUserButtons(id,item) {
         jQuery(item).hide();
-        if( jQuery(item).attr('id').indexOf('_active') != -1 )
+        if( jQuery(item).attr('id').indexOf('_active') != -1 ) {
             jQuery( '#' + jQuery(item).attr('id').substring(0, 
                 jQuery(item).attr('id').lastIndexOf('_')) ).show();
-        else
+            // Latest
+            jQuery( '#' + jQuery(item).attr('id').substring(0, 
+                jQuery(item).attr('id').lastIndexOf('_')) + '_latest' ).show();
+        }
+        else {
             jQuery( '#' + jQuery(item).attr('id') + '_active' ).show();
+            // Latest
+            jQuery( '#' + jQuery(item).attr('id') + '_active_latest' ).show();
+        }
+        
         if( jQuery(item).attr('id').indexOf('vote_up') != -1 && 
                 jQuery( '#' + id + '_vote_down_active' ).is(':visible') ) {
-                jQuery( '#' + id + '_vote_down_active' ).hide();
-                jQuery( '#' + id + '_vote_down' ).show();
+            jQuery( '#' + id + '_vote_down_active' ).hide();
+            jQuery( '#' + id + '_vote_down' ).show();
+            // Latest
+            jQuery( '#' + id + '_vote_down_active_latest' ).hide();
+            jQuery( '#' + id + '_vote_down_latest' ).show();
         }
         else if( jQuery(item).attr('id').indexOf('vote_down') != -1 && 
                 jQuery( '#' + id + '_vote_up_active' ).is(':visible') ) {
-                jQuery( '#' + id + '_vote_up_active' ).hide();
-                jQuery( '#' + id + '_vote_up' ).show();
+            jQuery( '#' + id + '_vote_up_active' ).hide();
+            jQuery( '#' + id + '_vote_up' ).show();
+            // Latest
+            jQuery( '#' + id + '_vote_up_active_latest' ).hide();
+            jQuery( '#' + id + '_vote_up_latest' ).show();
         }
     }
 
@@ -121,7 +135,7 @@ function getNewsJSON(cbFunc) {
     jQuery.get(jableDir + '_get_news.php',{query:'main'},function(outcome) {
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
-        if(json.length == 0){
+        if( json.length == 0 ){
             setTimeout('getNewsJSON()', 10000);
             return;
         }
@@ -167,9 +181,15 @@ function getNewsJSON(cbFunc) {
             if( json[i] != '' ) {
                 jQuery('#' + json[i] + str).hide();
                 jQuery('#' + json[i] + str + '_active').show();
+                // Latest
+                jQuery('#' + json[i] + str + '_latest').hide();
+                jQuery('#' + json[i] + str + '_active_latest').show();
                 if( isVote ) {
                     jQuery('#' + json[i] + str + '_extra').hide();
                     jQuery('#' + json[i] + str + '_extra_active').show();
+                    // Latest
+                    jQuery('#' + json[i] + str + '_extra_latest').hide();
+                    jQuery('#' + json[i] + str + '_extra_active_latest').show();
                 }
             }
         }
@@ -231,4 +251,3 @@ function getNewsJSON(cbFunc) {
 function countClicks(id) {
     jQuery.get(jableDir + '_count_clicks.php',{id:id});
 }
-
