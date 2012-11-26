@@ -123,13 +123,11 @@ function getNewsJSON(cbFunc) {
     jQuery.get(jableDir + '_get_news.php',{query:'latest'},function(outcome) {
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
-        if(json.length == 0)
+        if(json.length == 0 || archiveTable > 1)
             return;
+        jQuery('#latest_news').html('');
         for( var i = 0 ; i < json.length ; i++ ) {
-            if(archiveTable == 1){
-                jQuery('#latest_news').html('');
-                jQuery('#latest_news').append( addNewsLink(json[i], archiveTable, true) );
-            }
+            jQuery('#latest_news').append( addNewsLink(json[i], archiveTable, true) );
         }
     });
     jQuery.get(jableDir + '_get_news.php',{query:'main'},function(outcome) {
