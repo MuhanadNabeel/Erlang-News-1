@@ -12,7 +12,7 @@
 		
 	</div>
 	<div align="right" style="height:.5em;background-color:#aacc77;"><div class="triangle-topright"></div></div>
-	<div id="pub">Published: 2012-02-13</div>
+	<div id="pub">Published: {pubdate}</div>
 	<table style="width:100%;margin-bottom:5px;" cellspacing="0" cellpadding="0">
 
 		<tr><td class="voteButtons">
@@ -26,7 +26,7 @@
 				</div>
 			</td>
 			<td><div id="content" class="content">
-				<div style="background:url({image}) 0 {imgpos}px no-repeat;background-size:100%;width:100%;height:{imgsize}px;margin-bottom:10px;margin-top:-5px;cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');"></div>
+				<img src="{image}" style="width:100%;cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');">
 			<div style="line-height:100%;">{description}</div> <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
 				
 				

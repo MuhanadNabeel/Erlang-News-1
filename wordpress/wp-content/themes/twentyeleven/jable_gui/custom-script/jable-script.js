@@ -186,8 +186,8 @@ function getNewsJSON(cbFunc) {
                             .replace(/{icon_hide}/g,icon_hide)
                             .replace(/{datatype}/g,'archive_' + datatype)
                             .replace(/{id}/g,json.newsID)
-                            .replace(/{imgpos}/g,0)
-                            .replace(/{imgsize}/g,(json.imgheight));
+                            .replace(/{imgwidth}/g,(json.imgwidth/2))
+                            .replace(/{imgheight}/g,(json.imgheight/2));
     }
     
     
