@@ -2,7 +2,9 @@
 if(class_exists('MySQL') === FALSE)
     include 'MySQL.php';
 $sql = new MySQL();
-$result = $sql->sqlQuery("SELECT *, ((clicks+up_vote-down_vote) * 100000/ pow((TIME_TO_SEC(TIMEDIFF(NOW(),pubdate))/3600 + 2),1.5)) score from ernews_news order by score DESC");
+// SELECT *, ((clicks+up_vote-down_vote) * 100000/ pow((TIME_TO_SEC(TIMEDIFF(NOW(),pubdate))/3600 + 2),1.5)) score from ernews_news order by score DESC
+// SELECT * FROM ernews_news ORDER BY Pubdate DESC LIMIT 3;
+$result = $sql->sqlQuery($_GET['query']);
 $outcome = Array();
 while( ($row = mysql_fetch_array($result)) !== FALSE ) {
     $purl = parse_url($row['URL']);
