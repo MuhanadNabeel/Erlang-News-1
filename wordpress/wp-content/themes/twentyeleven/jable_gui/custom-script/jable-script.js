@@ -1,5 +1,5 @@
 var isUserAction = new Object();
-var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '', latestTemplate = '';
+var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '', latestImgTemplate = '', latestTemplate = '';
 
 jQuery(document).ready(function() {
     jQuery('#first_loading').html('<img width="450px" height="200px" src="' + jableDir + '/custom-img/loading1.gif">');
@@ -9,7 +9,8 @@ jQuery(document).ready(function() {
         newsBigTemplate = split[1];
         newsMediumTemplate = split[2];
         newsSmallTemplate = split[3];
-        latestTemplate = split[4];
+        latestImgTemplate = split[4];
+        latestTemplate = split[5];
         getNewsJSON(function(){
             jQuery('#first_loading').slideUp('slow');
             jQuery('#top_news_container').show();
@@ -202,7 +203,9 @@ function getNewsJSON(cbFunc) {
     function addNewsLink(json,datatype,latestBoolean) {
         var title = '';
         var template = newsRightTemplate;
-        if (latestBoolean)
+        if (latestBoolean && json.Image != 'undef')
+            template = latestImgTemplate;
+        else if(latestBoolean)
             template = latestTemplate;
 
         if( json.Title.length < 60 )

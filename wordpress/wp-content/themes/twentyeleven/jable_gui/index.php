@@ -112,23 +112,28 @@ Div fonts
                                                 <ul id="latest_news" style="list-style-type:none;margin:0;"></ul>
                                             </td>
                                         </tr>
+                                        <tr><td>
+                                            <table onclick="slideLeft();" class="archive-button" style="float:right;width:30%;">
+                                                <tr>
+                                                    <td style="vertical-align:top">
+                                                        <div class="arrow-right"></div>
+                                                    </td>
+                                                    <td style="vertical-align:top;width:160%;">
+                                                        <div class="archive-button-button" align="center">Archive</div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td></tr>
+                                        <tr><td style="height:30px;"></td></tr>
+
+
                                         <tr><td class="news-headlines">Top news</td></tr>
                                         <tr>
                                             <td>
                                                 <ul id="archive" style="list-style-type:none;margin:0;"></ul>
                                             </td>
                                         </tr>
-                                        <tr><td>
-                                            <table onclick="slideLeft();" class="archive-button" style="width:100%;">
-                                                <tr><td style="vertical-align:top;width:160%;">
-                                                        <div class="archive-button-button" align="center">Archive</div>
-                                                    </td>
-                                                    <td style="vertical-align:top">
-                                                        <div class="arrow-right"></div>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td></tr>
+                                        
                                     </table>
                                 </div>
                             </td>

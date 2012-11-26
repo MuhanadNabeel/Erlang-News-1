@@ -3,9 +3,10 @@
 
     <div class="right_row" onclick="openUpStuff('{id}')">
                 <div style="padding:0.5em;line-height:80%;">
-                        <a class="right_title">{title}</a></br>
+                        <a class="right_title"><img src="{image}" style="border:solid 1px gray;margin-right:10px;max-width:40px;float:left;">{title}</a></br>
                         <span class="right_source" style="margin-left:12px;"> 
-                        <a onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">{host}</a></span>  
+                        <a onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">{host}</a></span>
+                        <div style="clear:both"></div>
                 </div>  
     </div>
     </div>
