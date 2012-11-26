@@ -56,13 +56,14 @@
 				<a style="cursor:pointer;display:none;color:#b20000" id="{id}_report_active" onclick="articleAction(this,2,true);fadeWindow('{id}_reported_window', 'unreported!');">unreport article</a>
 			</span>
 		</div>
+		<div class="window" id="{id}_reported_window"><div id="{id}_reported_window_text"></div></div>
 		<div style="position:absolute;right:0;margin-top:10px;">
 			<span class="right_source" style="font-size:8pt;">Source: 
 		        <a onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')" style="font-size:8pt;cursor:pointer;">{host}</a>
 		    </span>
 	    </div>
 	
-	<div class="window" id="{id}_reported_window"><div id="{id}_reported_window_text"></div></div>
+	
 	</div>
 
 

@@ -21,7 +21,7 @@ jQuery(document).ready(function() {
 
             });*/
         });
-        setInterval('getNewsJSON();',15000);
+        setInterval('getNewsJSON();',300000);
     });
 
 });
@@ -193,7 +193,7 @@ function getNewsJSON(cbFunc) {
                             .replace(/{icon_hide}/g,icon_hide)
                             .replace(/{datatype}/g,'archive_' + datatype)
                             .replace(/{id}/g,json.newsID)
-                            .replace(/{pubdate}/g,json.Pubdate)
+                            .replace(/{pubdate}/g,json.Pubdate.split(' ')[0])
                             .replace(/{imgwidth}/g,(json.imgwidth/2))
                             .replace(/{imgheight}/g,(json.imgheight/2));
     }
@@ -222,7 +222,7 @@ function getNewsJSON(cbFunc) {
                                 .replace(/{host}/g,json.host)
                                 .replace(/{datatype}/g,'archive_' + datatype)
                                 .replace(/{image}/g,json.Image)
-                                .replace(/{pubdate}/g,json.Pubdate)
+                                .replace(/{pubdate}/g,json.Pubdate.split(' ')[0])
                                 .replace(/{id}/g,json.newsID);
     }
 }

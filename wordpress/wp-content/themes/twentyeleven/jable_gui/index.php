@@ -103,7 +103,7 @@ Div fonts
                                     </table>
                                 </div>
                             </td>
-                            <td style="padding-left:-100px;vertical-align:top;width:26%;">
+                            <td id="left-side" style="padding-left:-100px;vertical-align:top;width:26%;">
                                 <div style="position:relative;z-index:500;">
                                     <table>
                                         <tr><td class="news-headlines">Latest News</td></tr>

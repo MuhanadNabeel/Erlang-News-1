@@ -98,7 +98,7 @@ function closeAllStuff(cbFunc){
  }
 
  function closeLastOne(cbFunc){
-    t = jQuery('#archive').find('div[class="right_content"]');
+    t = jQuery('#left-side').find('div[class="right_content"]');
     a = t.filter(function(){
         return jQuery(this).is(':visible');
     });
