@@ -129,7 +129,7 @@ function getNewsJSON(cbFunc) {
         var leftArc = 1;
         var rightArc = 0;
 
-        for( var i = 0 ; i < json.length ; i++ ) {
+        for( var i = 0 ; i < 20 ; i++ ) {
             isUserAction[json[i].newsID] = Array(false,false);
             if( archiveTable > 1 )
                 jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
