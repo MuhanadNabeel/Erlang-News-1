@@ -1,5 +1,5 @@
 var isUserAction = new Object();
-var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '';
+var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '', latestTemplate = '';
 
 jQuery(document).ready(function() {
     jQuery('#first_loading').html('<img width="450px" height="200px" src="' + jableDir + '/custom-img/loading1.gif">');
@@ -9,6 +9,7 @@ jQuery(document).ready(function() {
         newsBigTemplate = split[1];
         newsMediumTemplate = split[2];
         newsSmallTemplate = split[3];
+        latestTemplate = split[4];
         getNewsJSON(function(){
             jQuery('#first_loading').slideUp('slow');
             jQuery('#top_news_container').show();
@@ -113,7 +114,7 @@ function getNewsJSON(cbFunc) {
             return;
         jQuery('#latest_news').html('');
         for( var i = 0 ; i < json.length ; i++ ) {
-            jQuery('#latest_news').append( addNewsLink(json[i], archiveTable) );
+            jQuery('#latest_news').append( addNewsLink(json[i], archiveTable, true) );
         }
     });
     var mainQuery = 'SELECT *, ((clicks+up_vote-down_vote) * 100000/ '
@@ -203,14 +204,18 @@ function getNewsJSON(cbFunc) {
     
     
     
-    function addNewsLink(json,datatype) {
+    function addNewsLink(json,datatype,latestBoolean) {
         var title = '';
+        var template = newsRightTemplate;
+        if (latestBoolean)
+            template = latestTemplate;
+
         if( json.Title.length < 60 )
             title = json.Title;
         else
             title = json.Title.substring(0,55) + ' ...';
 
-        return newsRightTemplate.replace(/{title}/g,title.replace(/'/g, "´"))
+        return template.replace(/{title}/g,title.replace(/'/g, "´"))
                                 .replace(/{down}/g,json.Down_Vote)
                                 .replace(/{up}/g,json.Up_Vote)
                                 .replace(/{clicks}/g,json.Clicks)

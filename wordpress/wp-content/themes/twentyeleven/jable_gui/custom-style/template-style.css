@@ -6,6 +6,7 @@
     text-shadow:1px 1px 1px white;
     text-decoration: none;
     cursor: pointer;
+    z-index: 50000;
 }
 .right_source{
     font-family: "Times New Roman";

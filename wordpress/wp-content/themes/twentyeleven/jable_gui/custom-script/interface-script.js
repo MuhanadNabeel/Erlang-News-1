@@ -106,6 +106,7 @@ function closeAllStuff(cbFunc){
  }
 
  function openBox(URL, title, id, datatype){
+    jQuery.get(jableDir + '_count_clicks.php',{id:id});
     jQuery.get("<?php echo bloginfo('template_directory') ?>/jable_gui/redirect.php", {id:id});
 
     buttons = jQuery("#"+id+"_all_vote_buttons").clone();

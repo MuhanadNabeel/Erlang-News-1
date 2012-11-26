@@ -37,13 +37,17 @@ Div fonts
   font-family: "Times New Roman";
   src:  url("<?php echo bloginfo('template_directory').'/jable_gui/' ?>custom-fonts/TimesNewRoman.ttf") format("truetype");   
 }
+@font-face {
+  font-family: "Visitor";
+  src:  url("<?php echo bloginfo('template_directory').'/jable_gui/' ?>custom-fonts/visitor1.ttf") format("truetype");   
+}
 
 
 
 </style>
 
 <div style="overflow:hidden;width:100%;">
-<div align="center" id="first_loading" style="width:100%;height:auto;overflow:visible;"></div>    
+<div align="center" id="first_loading" style="width:100%;height:auto;overflow:visible;"></div>   
 
 
         <div id="bigframe" style="display:none" class="bigframe">
@@ -75,6 +79,7 @@ Div fonts
                             <td style="vertical-align:top;">
                                 <div style="z-index:1000">
                                     <table>
+
                                         <tr><td>
                                             <div style="poistion:relative;" id="over_top_news">
                                             <div id="top_news_container" style="poistion:relative;height:auto;overflow:hidden;display:none;">
@@ -87,6 +92,7 @@ Div fonts
                                         </td></tr>
                                         <tr><td>
                                             <table style="width:100%;">
+
                                                 <tr>
                                                     <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
                                                     <td style="width:1px;height:90%;background-color:#c6c6c6;"><div></div></td>
@@ -100,7 +106,7 @@ Div fonts
                             <td style="padding-left:-100px;vertical-align:top;width:26%;">
                                 <div style="position:relative;z-index:500;">
                                     <table>
-                                        <tr><td class="news-headlines">Latest news</td></tr>
+                                        <tr><td class="news-headlines">Latest News</td></tr>
                                         <tr>
                                             <td>
                                                 <ul id="latest_news" style="list-style-type:none;margin:0;"></ul>
