@@ -25,7 +25,7 @@
 get_info(Url)->
     Result = ernews_defuns:read_web(dzone,Url),
     case Result of
-	{sucess,{Header,[]}}->
+	{success,{_,[]}}->
 	    {error, empty_body};
 
 	{success, {_, Body}}->
@@ -71,7 +71,7 @@ end_url(reddit,Url)->
     Result = ernews_defuns:read_web(default, Url++Tag),
     case Result of
 
-	{sucess,{Header,[]}}->
+	{success,{_,[]}}->
 	    {error, empty_body};
 
 	{success,{_,Body}}->
