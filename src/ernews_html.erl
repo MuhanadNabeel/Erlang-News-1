@@ -149,7 +149,7 @@ read_url(read_url, Record=#state{}) ->
 check_relevancy(check_relevancy, Record=#state{}) ->
     case ernews_htmlfuns:relevancy_check(Record#state.url, Record#state.words) of
 	{ok, Tags} ->
-	    {stop, submit, Record#state{tags= Tags}};
+	    {stop, {shutdown,submit}, Record#state{tags= Tags}};
 	{error, Reason} ->
 	    {stop, {shutdown, Reason} , Record}
     end.
@@ -228,7 +228,7 @@ terminate({shutdown, Reason} , _StateName, Record = #state{}) ->
     gen_server:cast(ernews_linkserv, 
 		    {error, Reason, Record#state.url, Record#state.source}),
     normal;
-terminate(submit, _StateName,Record = #state{}) -> 
+terminate({shutdown, submit}, _StateName,Record = #state{}) -> 
     gen_server:cast(ernews_linkserv,
 		    {submit, Record#state.source , Record#state.url,
 		     Record#state.title, Record#state.description, 
