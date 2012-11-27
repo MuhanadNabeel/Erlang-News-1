@@ -25,17 +25,17 @@
 get_info(Url)->
     Result = ernews_defuns:read_web(dzone,Url),
     case Result of
+	{sucess,{Header,[]}}->
+	    {error, empty_body};
+
 	{success, {_, Body}}->
 	    Html = mochiweb_html:parse(Body),
 	    [get_title(Html),get_descriptions(desc,Html),get_icon(Html,Url),
 	     get_image(Html,Url)];    
           
 	{error, Reason} ->
-	    {error,Reason};
-	
-	[] ->
-	    {error,body_is_empty}
-		
+	    {error,Reason}
+	        
     end.
 
 %------------------------------------------------------------------------------%
@@ -70,6 +70,10 @@ end_url(reddit,Url)->
     Tag = ".xml",
     Result = ernews_defuns:read_web(default, Url++Tag),
     case Result of
+
+	{sucess,{Header,[]}}->
+	    {error, empty_body};
+
 	{success,{_,Body}}->
 	    { Xml, _ } = xmerl_scan:string(Body),
 	    
@@ -85,10 +89,8 @@ end_url(reddit,Url)->
 	    end;
 
 	{error,Reason}->
-	    {error, Reason};
+	    {error, Reason}
 
-	[] ->
-	    {error,body_is_empty} 
     end;
 
 
@@ -101,6 +103,7 @@ end_url(trap_exit, Url)->
 end_url(dzone, Url)->
   Result  = ernews_defuns:read_web(dzone, Url),
     case Result of
+	
 	{success,{Header, _}}->
 	    End_Url =proplists:get_value("location", Header),
 	    case End_Url of
@@ -110,10 +113,7 @@ end_url(dzone, Url)->
 		    End_Url
 	    end;
 	{error, Reason}->
-	    {error, Reason};
-
-	[] ->
-	    {error,body_is_empty} 
+	    {error, Reason}
 
     end;
 
