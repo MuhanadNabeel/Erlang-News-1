@@ -69,7 +69,7 @@ end_url(end_url, Record=#state{}) ->
 	{error, Reason} ->
 	    case Record#state.check_counter > 3 of
 		true ->
-		    {stop, {error, Reason}, Record};
+		    {stop, {shutdown, Reason}, Record};
 		false ->
 		    gen_fsm:send_event(self(), end_url),
 		    {next_state, end_url, 
@@ -95,7 +95,7 @@ end_url(end_url, Record=#state{}) ->
 duplicate(duplicate, Record=#state{}) ->
     case ernews_db:exists("news", {"URL" ,Record#state.url}) of
 	true ->
-	    {stop, {error, already_exists}, Record};
+	    {stop, {shutdown, already_exists}, Record};
 	false ->
 	    gen_fsm:send_event(self(), read_url),
 	    {next_state, read_url, Record}
@@ -128,7 +128,7 @@ read_url(read_url, Record=#state{}) ->
 	{error, Reason} ->
 	    case Record#state.check_counter > 3 of
 		true ->
-		  {stop,{error, Reason}, Record};
+		  {stop,{shutdown, Reason}, Record};
 		false ->
 		  gen_fsm:send_event(self(), read_url),
 		  {next_state, read_url, 
@@ -151,7 +151,7 @@ check_relevancy(check_relevancy, Record=#state{}) ->
 	{ok, Tags} ->
 	    {stop, submit, Record#state{tags= Tags}};
 	{error, Reason} ->
-	    {stop, {error, Reason} , Record}
+	    {stop, {shutdown, Reason} , Record}
     end.
 
 
@@ -222,22 +222,24 @@ handle_info(_Info, StateName, State) ->
 
 
 
-terminate({error, already_exists} , _StateName, _State) ->
-    ok;
-terminate({error, Reason} , _StateName, Record = #state{}) ->
+terminate({shutdown, already_exists} , _StateName, _State) ->
+    normal;
+terminate({shutdown, Reason} , _StateName, Record = #state{}) ->
     gen_server:cast(ernews_linkserv, 
-		    {error, Reason, Record#state.url, Record#state.source});
+		    {error, Reason, Record#state.url, Record#state.source}),
+    normal;
 terminate(submit, _StateName,Record = #state{}) -> 
     gen_server:cast(ernews_linkserv,
 		    {submit, Record#state.source , Record#state.url,
 		     Record#state.title, Record#state.description, 
 		     Record#state.ts, Record#state.icon, 
 		     Record#state.image, Record#state.tags
-		    });
-terminate(Reason , _ , Record = #state{}) -> 
-    io:format("====================================================~n",[]),
-    io:format("UNKNOWN - URL ~p~n-  ~p~n", [Record#state.url, Reason ]),
-    io:format("====================================================~n",[]), 
+		    }),
+    normal;
+terminate(Reason , StateName , Record = #state{}) -> 
+    error_logger:error_report(["Error in HtmlFuns",{state,StateName},
+			       {source,Record#state.source},
+			       {url,Record#state.url},{reason,Reason}]),
     ok.
 
 
