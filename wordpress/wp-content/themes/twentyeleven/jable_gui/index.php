@@ -47,7 +47,6 @@ Div fonts
 </style>
 
 <div style="overflow:hidden;width:100%;">
-<div align="center" id="first_loading" style="width:100%;height:auto;overflow:visible;"></div>   
 
 
         <div id="bigframe" style="display:none" class="bigframe">
@@ -141,4 +140,5 @@ Div fonts
                 </td>-->
             </tr>
         </table>
+<div id="first_loading" style="text-align:center;display:none;"></div>   
 </div>
