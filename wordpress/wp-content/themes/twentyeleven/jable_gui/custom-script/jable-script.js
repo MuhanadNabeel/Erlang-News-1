@@ -90,13 +90,16 @@ function articleAction(item,action,undo) {
             jQuery( '#' + jQuery(item).attr('id').substring(0, 
                 jQuery(item).attr('id').lastIndexOf('_')) ).show();
             // Latest
-            jQuery( '#' + jQuery(item).attr('id').substring(0, 
-                jQuery(item).attr('id').lastIndexOf('_')) + '_latest' ).show();
+            if( jQuery( '#' + jQuery(item).attr('id').substring(0, 
+                    jQuery(item).attr('id').lastIndexOf('_')) + '_latest' ).length > 0 )
+                jQuery( '#' + jQuery(item).attr('id').substring(0, 
+                    jQuery(item).attr('id').lastIndexOf('_')) + '_latest' ).show();
         }
         else {
             jQuery( '#' + jQuery(item).attr('id') + '_active' ).show();
             // Latest
-            jQuery( '#' + jQuery(item).attr('id') + '_active_latest' ).show();
+            if( jQuery( '#' + jQuery(item).attr('id') + '_active_latest' ).length > 0 )
+                jQuery( '#' + jQuery(item).attr('id') + '_active_latest' ).show();
         }
         
         if( jQuery(item).attr('id').indexOf('vote_up') != -1 && 
@@ -104,16 +107,22 @@ function articleAction(item,action,undo) {
             jQuery( '#' + id + '_vote_down_active' ).hide();
             jQuery( '#' + id + '_vote_down' ).show();
             // Latest
-            jQuery( '#' + id + '_vote_down_active_latest' ).hide();
-            jQuery( '#' + id + '_vote_down_latest' ).show();
+            if( jQuery( '#' + id + '_vote_down_active_latest' ).length > 0
+                    && jQuery( '#' + id + '_vote_down_latest' ).length > 0 ) {
+                jQuery( '#' + id + '_vote_down_active_latest' ).hide();
+                jQuery( '#' + id + '_vote_down_latest' ).show();
+            }
         }
         else if( jQuery(item).attr('id').indexOf('vote_down') != -1 && 
                 jQuery( '#' + id + '_vote_up_active' ).is(':visible') ) {
             jQuery( '#' + id + '_vote_up_active' ).hide();
             jQuery( '#' + id + '_vote_up' ).show();
             // Latest
-            jQuery( '#' + id + '_vote_up_active_latest' ).hide();
-            jQuery( '#' + id + '_vote_up_latest' ).show();
+            if( jQuery( '#' + id + '_vote_up_active_latest' ).length > 0 
+                    & jQuery( '#' + id + '_vote_up_latest' ).length > 0 ) {
+                jQuery( '#' + id + '_vote_up_active_latest' ).hide();
+                jQuery( '#' + id + '_vote_up_latest' ).show();
+            }
         }
     }
 
@@ -180,14 +189,20 @@ function getNewsJSON(cbFunc) {
                 jQuery('#' + json[i] + str).hide();
                 jQuery('#' + json[i] + str + '_active').show();
                 // Latest
-                jQuery('#' + json[i] + str + '_latest').hide();
-                jQuery('#' + json[i] + str + '_active_latest').show();
+                if( jQuery('#' + json[i] + str + '_latest').length > 0 
+                        && jQuery('#' + json[i] + str + '_active_latest').length > 0 ) {
+                    jQuery('#' + json[i] + str + '_latest').hide();
+                    jQuery('#' + json[i] + str + '_active_latest').show();
+                }
                 if( isVote ) {
                     jQuery('#' + json[i] + str + '_extra').hide();
                     jQuery('#' + json[i] + str + '_extra_active').show();
                     // Latest
-                    jQuery('#' + json[i] + str + '_extra_latest').hide();
-                    jQuery('#' + json[i] + str + '_extra_active_latest').show();
+                    if( jQuery('#' + json[i] + str + '_extra_latest').length > 0 
+                            && jQuery('#' + json[i] + str + '_extra_active_latest').length > 0 ) {
+                        jQuery('#' + json[i] + str + '_extra_latest').hide();
+                        jQuery('#' + json[i] + str + '_extra_active_latest').show();
+                    }
                 }
             }
         }
