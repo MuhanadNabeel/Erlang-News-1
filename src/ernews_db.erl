@@ -126,7 +126,7 @@ qFunc(exists, Q) ->
 	catch 
 	exit:_Exit -> 
 		%{Res, _} = Exit,
-		{error, no_connection}
+		{error, no_database_connection}
 	end;
 	
 qFunc(get, Q) ->

@@ -98,7 +98,9 @@ duplicate(duplicate, Record=#state{}) ->
 	    {stop, {shutdown, already_exists}, Record};
 	false ->
 	    gen_fsm:send_event(self(), read_url),
-	    {next_state, read_url, Record}
+	    {next_state, read_url, Record};
+	{error, Reason} ->
+	    {stop, {shutdown, Reason} , Record}
     end.
 
 
