@@ -1,7 +1,7 @@
 <li data-id="{id}_right_item" data-type="right_{datatype}">
     <div>
 
-    <div class="right_row" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">
+    <div class="right_row" onclick="$('#{id}_expand').toggle();">
                 <div style="padding:0.5em;line-height:80%;">
                         <a class="right_title">{title}</a></br>
                         <span class="right_source" style="margin-left:12px;"> 
@@ -9,7 +9,7 @@
                 </div>  
     </div>
     </div>
-<!--    <div id="{id}_expand" class="right_content">
+    <div id="{id}_expand" class="right_content">
         <div id="{id}_content">
             <div class="blue-seperator"></div>
             <table>
@@ -17,10 +17,10 @@
 
                     <td class="voting">
                         <div>
-                            <div id="{id}_vote_up_{datatype}_latest" class="thumb-up" onclick="articleAction(this,1,false)"></div>
-                            <div id="{id}_vote_up_{datatype}_active_latest" class="thumb-up-active" onclick="articleAction(this,1,true)"></div>
-                            <div id="{id}_vote_down_{datatype}_latest" class="thumb-down" onclick="articleAction(this,0,false)"></div>
-                            <div id="{id}_vote_down_{datatype}_active_latest" class="thumb-down-active" onclick="articleAction(this,0,true)"></div>
+                            <div id="{location}_{id}_{action1}" class="thumb-up" onclick="articleAction(this,1,false)"></div>
+                            <div id="{location}_{id}_{action1}_active" class="thumb-up-active" onclick="articleAction(this,1,true)"></div>
+                            <div id="{location}_{id}_{action0}" class="thumb-down" onclick="articleAction(this,0,false)"></div>
+                            <div id="{location}_{id}_{action0}_active" class="thumb-down-active" onclick="articleAction(this,0,true)"></div>
                         </div>
                     </td>
                     <td>
@@ -39,12 +39,12 @@
             <table id="{id}_all_vote_buttons" style="display:none;">
                                 <tr>
                                     <td>
-                                        <div id="{id}_vote_up_{datatype}_extra" class="thumb-up-shadowed" onclick="articleAction(this,1,false);getNewsJSON(false, true)"></div>
-                                        <div id="{id}_vote_up_{datatype}_extra_active" class="thumb-up-active-shadowed" onclick="articleAction(this,1,true);getNewsJSON(false, true)"></div>
+                                        <div id="{location}_{id}_{action1}_extra" class="thumb-up-shadowed" onclick="articleAction(this,1,false);getNewsJSON(false, true)"></div>
+                                        <div id="{location}_{id}_{action1}_extra_active" class="thumb-up-active-shadowed" onclick="articleAction(this,1,true);getNewsJSON(false, true)"></div>
                                     </td>
                                     <td>
-                                        <div id="{id}_vote_down_{datatype}_extra" class="thumb-down-shadowed" onclick="articleAction(this,0,false);getNewsJSON(false, true)"></div>
-                                        <div id="{id}_vote_down_{datatype}_extra_active" class="thumb-down-active-shadowed" onclick="articleAction(this,0,true);getNewsJSON(false, true)"></div>
+                                        <div id="{location}_{id}_{action0}_extra" class="thumb-down-shadowed" onclick="articleAction(this,0,false);getNewsJSON(false, true)"></div>
+                                        <div id="{location}_{id}_{action0}_extra_active" class="thumb-down-active-shadowed" onclick="articleAction(this,0,true);getNewsJSON(false, true)"></div>
                                     </td>
                                 </tr>
                             </table>
@@ -54,5 +54,5 @@
 
         </div>
     </div>
-    </div>-->
+    </div>
 </li>
