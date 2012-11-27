@@ -23,7 +23,7 @@
 %%% @end
 
 get_info(Url)->
-    Result = ernews_defuns:read_web(dzone,Url),
+    Result = ernews_defuns:read_web(default,Url),
     case Result of
 	{success,{_,[]}}->
 	    {error, empty_body};
