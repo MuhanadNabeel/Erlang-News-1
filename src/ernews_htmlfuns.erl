@@ -31,7 +31,10 @@ get_info(Url)->
 	     get_image(Html,Url)];    
           
 	{error, Reason} ->
-	    {error,Reason}
+	    {error,Reason};
+	
+	[] ->
+	    {error,body_is_empty}
 		
     end.
 
@@ -82,7 +85,10 @@ end_url(reddit,Url)->
 	    end;
 
 	{error,Reason}->
-	   {error, Reason}
+	    {error, Reason};
+
+	[] ->
+	    {error,body_is_empty} 
     end;
 
 
@@ -104,7 +110,10 @@ end_url(dzone, Url)->
 		    End_Url
 	    end;
 	{error, Reason}->
-	    {error, Reason}
+	    {error, Reason};
+
+	[] ->
+	    {error,body_is_empty} 
 
     end;
 
@@ -129,7 +138,8 @@ end_url(_,_) ->
 
 get_descriptions(desc,Html)->
     Meta_Data = get_value([Html],"meta" ,[]),
-    Description_Tag = get_content_from_list(Meta_Data ,  {"name","description"},"content"),
+    Description_Tag = get_content_from_list(Meta_Data ,  
+					    {"name","description"},"content"),
     case length(lists:concat(Description_Tag)) < 20 of 
 	true -> get_descriptions(ogdesc,Html);
 	false -> {ok, Description_Tag}
@@ -137,10 +147,21 @@ get_descriptions(desc,Html)->
 
 get_descriptions(ogdesc,Html) ->
     Meta_Data = get_value([Html],"meta" ,[]),
-    OGDescription_Tag = get_content_from_list(Meta_Data , {"name" ,"og:description"},"content"),
+    OGDescription_Tag = get_content_from_list(Meta_Data , 
+					      {"name" ,"og:description"},"content"),
     case length(lists:concat(OGDescription_Tag)) < 20 of 
-	true -> get_descriptions(ptag,Html);
+	true -> get_descriptions(capdesc,Html);
 	false -> {ok, OGDescription_Tag}
+    end;   
+
+get_descriptions(capdesc,Html) ->
+    Meta_Data3 = get_value([Html],"meta" ,[]),
+    CapDescription_Tag = get_content_from_list(Meta_Data3 , 
+					       {"name" ,"Description"},"content"),
+    
+    case length(lists:concat(CapDescription_Tag)) < 20 of 
+	true -> get_descriptions(ptag,Html);
+	false -> {ok, CapDescription_Tag}
     end;   
 
 get_descriptions(ptag,Html) ->

@@ -53,7 +53,8 @@ read_web(Reason) ->
 read_web(default,Src) ->
     ssl:start(),
     inets:start(),
-    read_web(httpc:request(Src));
+    read_web(httpc:request(get, {Src, [{"User-Agent","Jable"}]}, 
+			   [], []));
 read_web(iocoder,Src) ->
     ssl:start(),
     inets:start(),
