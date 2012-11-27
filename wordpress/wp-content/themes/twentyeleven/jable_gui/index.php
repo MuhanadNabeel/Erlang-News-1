@@ -141,7 +141,14 @@ Div fonts
                     </table>
                 </td>
                 <td align="center" style="width:20%;background-color:#f7f7f7;height:20px;box-shadow:inset 3px 0 8px -5px black;vertical-align:top;">
-                    <div style="font-family:'MyriadPro Cond';font-size:15pt;text-shadow:1px 1px 1px white;">Not available for now</div>
+                    <div style="font-family:'MyriadPro Cond';color:#252b38;font-size:15pt;text-shadow:1px 1px 1px white;width:100%;text-align:center;">
+                        Search in the archive
+                        <input class="jabel-search-bar" onfocusout="jQuery('#search_tips').fadeOut('fast');" onclick="jQuery('#search_tips').fadeIn('fast');" name="q" type="text" size="35%" placeholder="Search...">
+                        <div id="search_tips" style="display:none;font-family:'MyriadPro Regular';text-align:left;padding:5px;font-size:10pt;line-height:120%;color:white;text-shadow:1px 1px 1px black;border-radius:5px;position:absolute;margin-top:-50px;margin-left:18%;max-width:150px;background-color:rgba(0,0,0,0.5);">
+                            <div class="arrow-left" style="position:absolute;"></div>Search all of our archives using keywords like months, the title of the article and so forth.
+                        </div>
+                    </div>
+                    
                 </td>
             </tr>
         </table>

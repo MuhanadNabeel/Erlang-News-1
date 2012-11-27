@@ -17,7 +17,7 @@ function openUpStuff(id){
  }
 
 jQuery(document).ready(function() {
-    $holder = jQuery('#archive');
+    $holder = jQuery('#archive').clone();
 
 })
 
