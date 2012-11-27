@@ -78,7 +78,7 @@ function slideLeft(){
 
     if(jQuery('#main_div').css('margin-left')=='0px')
         jQuery('#main_div').animate({
-            marginLeft: '-=16.5%'
+            marginLeft: '-=25%'
         }, 500);
     else
         jQuery('#main_div').animate({

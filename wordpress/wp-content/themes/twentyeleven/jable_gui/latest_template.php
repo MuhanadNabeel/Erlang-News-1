@@ -17,10 +17,10 @@
 
                     <td class="voting">
                         <div>
-                            <div id="{id}_vote_up_{datatype}" class="thumb-up" onclick="articleAction(this,1,false)"></div>
-                            <div id="{id}_vote_up_{datatype}_active" class="thumb-up-active" onclick="articleAction(this,1,true)"></div>
-                            <div id="{id}_vote_down_{datatype}" class="thumb-down" onclick="articleAction(this,0,false)"></div>
-                            <div id="{id}_vote_down_{datatype}_active" class="thumb-down-active" onclick="articleAction(this,0,true)"></div>
+                            <div id="{id}_vote_up_{datatype}_latest" class="thumb-up" onclick="articleAction(this,1,false)"></div>
+                            <div id="{id}_vote_up_{datatype}_active_latest" class="thumb-up-active" onclick="articleAction(this,1,true)"></div>
+                            <div id="{id}_vote_down_{datatype}_latest" class="thumb-down" onclick="articleAction(this,0,false)"></div>
+                            <div id="{id}_vote_down_{datatype}_active_latest" class="thumb-down-active" onclick="articleAction(this,0,true)"></div>
                         </div>
                     </td>
                     <td>
