@@ -1,7 +1,7 @@
 <li data-id="{id}_right_item" data-type="right_{datatype}">
     <div>
 
-    <div class="right_row" onclick="openUpStuff('{id}')">
+    <div class="right_row" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">
                 <div style="padding:0.5em;line-height:80%;">
                         <a class="right_title">{title}</a></br>
                         <span class="right_source" style="margin-left:12px;"> 
@@ -9,7 +9,7 @@
                 </div>  
     </div>
     </div>
-    <div id="{id}_expand" class="right_content">
+<!--    <div id="{id}_expand" class="right_content">
         <div id="{id}_content">
             <div class="blue-seperator"></div>
             <table>
@@ -54,5 +54,5 @@
 
         </div>
     </div>
-    </div>
+    </div>-->
 </li>

@@ -1,7 +1,7 @@
 <li data-id="{id}_right_item" data-type="right_{datatype}">
     <div>
 
-    <div class="right_row" onclick="openUpStuff('{id}')">
+    <div class="right_row" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">
         <table><tr><td style="vertical-align:middle;"><img src="{image}" style="border:solid 1px gray;margin-left:5px;margin-right:0px;max-width:40px;"></td>
             <td style="vertical-align:top;">
                 <div style="padding:0.5em;line-height:80%;">
@@ -14,7 +14,7 @@
         </tr></table>
     </div>
     </div>
-    <div id="{id}_expand" class="right_content">
+<!--    <div id="{id}_expand" class="right_content">
         <div id="{id}_content">
             <div class="blue-seperator"></div>
             <table>
@@ -22,10 +22,10 @@
 
                     <td class="voting">
                         <div>
-                            <div id="{id}_vote_up_{datatype}" class="thumb-up" onclick="articleAction(this,1,false)"></div>
-                            <div id="{id}_vote_up_{datatype}_active" class="thumb-up-active" onclick="articleAction(this,1,true)"></div>
-                            <div id="{id}_vote_down_{datatype}" class="thumb-down" onclick="articleAction(this,0,false)"></div>
-                            <div id="{id}_vote_down_{datatype}_active" class="thumb-down-active" onclick="articleAction(this,0,true)"></div>
+                            <div id="{id}_vote_up_{datatype}_latest" class="thumb-up" onclick="articleAction(this,1,false)"></div>
+                            <div id="{id}_vote_up_{datatype}_active_latest" class="thumb-up-active" onclick="articleAction(this,1,true)"></div>
+                            <div id="{id}_vote_down_{datatype}_latest" class="thumb-down" onclick="articleAction(this,0,false)"></div>
+                            <div id="{id}_vote_down_{datatype}_active_latest" class="thumb-down-active" onclick="articleAction(this,0,true)"></div>
                         </div>
                     </td>
                     <td>
@@ -59,5 +59,5 @@
 
         </div>
     </div>
-    </div>
+    </div>-->
 </li>

@@ -71,7 +71,7 @@ Div fonts
                     </div>
                 
         </div>
-        <table id="main_div" style="width:125%;">
+        <table id="main_div" style="width:100%;">
             <tr>
                 <td>
                     <table cellpadding="0" cellspacing="0" style="background-color:white;width:100%;">
@@ -81,6 +81,11 @@ Div fonts
                                     <table>
 
                                         <tr><td>
+                                            <table>
+                                                <tr>
+                                                    <td>
+
+
                                             <div style="poistion:relative;" id="over_top_news">
                                             <div id="top_news_container" style="poistion:relative;height:auto;overflow:hidden;display:none;">
                                                 <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
@@ -89,6 +94,24 @@ Div fonts
                                                 </div>
                                             </div>
                                             </div>
+                                            </td>
+                                            <td>
+
+
+
+
+                                            <table>
+                                                <tr><td class="news-headlines">Latest News</td></tr>
+                                                <tr>
+                                                    <td>
+                                                        <ul id="latest_news" style="list-style-type:none;margin:0;"></ul>
+                                                    </td>
+                                                </tr>
+                                                
+                                            </table>
+                                            </td>
+                                                </tr>
+                                            </table>
                                         </td></tr>
                                         <tr><td>
                                             <table style="width:100%;">
@@ -103,44 +126,10 @@ Div fonts
                                     </table>
                                 </div>
                             </td>
-                            <td id="left-side" style="padding-left:-100px;vertical-align:top;width:26%;">
-                                <div style="position:relative;z-index:500;">
-                                    <table>
-                                        <tr><td class="news-headlines">Latest News</td></tr>
-                                        <tr>
-                                            <td>
-                                                <ul id="latest_news" style="list-style-type:none;margin:0;"></ul>
-                                            </td>
-                                        </tr>
-                                        <tr><td>
-                                            <table onclick="slideLeft();" class="archive-button" style="float:right;width:30%;">
-                                                <tr>
-                                                    <td style="vertical-align:top">
-                                                        <div class="arrow-right"></div>
-                                                    </td>
-                                                    <td style="vertical-align:top;width:160%;">
-                                                        <div class="archive-button-button" align="center">Archive</div>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td></tr>
-                                        <tr><td style="height:30px;"></td></tr>
-
-
-                                        <tr><td class="news-headlines">Top news</td></tr>
-                                        <tr>
-                                            <td>
-                                                <ul id="archive" style="list-style-type:none;margin:0;"></ul>
-                                            </td>
-                                        </tr>
-                                        
-                                    </table>
-                                </div>
-                            </td>
                         </tr>
                     </table>
                 </td>
-                <td align="center" style="width:20%;background-color:#f7f7f7;height:20px;box-shadow:inset 3px 0 8px -5px black;vertical-align:top;">
+ <!--               <td align="center" style="width:20%;background-color:#f7f7f7;height:20px;box-shadow:inset 3px 0 8px -5px black;vertical-align:top;">
                     <div style="font-family:'MyriadPro Cond';color:#252b38;font-size:15pt;text-shadow:1px 1px 1px white;width:100%;text-align:center;">
                         Search in the archive
                         <input class="jabel-search-bar" onfocusout="jQuery('#search_tips').fadeOut('fast');" onclick="jQuery('#search_tips').fadeIn('fast');" name="q" type="text" size="35%" placeholder="Search...">
@@ -149,7 +138,7 @@ Div fonts
                         </div>
                     </div>
                     
-                </td>
+                </td>-->
             </tr>
         </table>
 </div>
