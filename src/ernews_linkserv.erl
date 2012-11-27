@@ -98,7 +98,7 @@ handle_cast({submit, Source, Url, Title, Description,
     {noreply, State};
 handle_cast({error, Reason, Url, Source}, State) ->
     %io:format("ERRORRR HERE :  ~p~n",[Reason]),
-%    error_logger:warning_report(["Not Submitting",{url,Url},{source,Source},
+%   error_logger:info_report(["Not Submitting",{url,Url},{source,Source},
 %			      {reason,Reason}]),
     ernews_db:write(broken, {Url, Reason, Source}),
     {noreply, State};

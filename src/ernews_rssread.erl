@@ -57,7 +57,6 @@ read(start,{success,{_Head,Body}},Atom) ->
     read(Atom,iterate(Atom,Body)).
 read(Atom,[#rss_item{link=Link,pubDate=PubDate}|T]) ->
     gen_server:cast(ernews_linkserv,{parse,Atom,Link,PubDate}),
-	%io:format("~p --> ~p~n",[PubDate,Link]),
     read(Atom,T);
 read(_Atom,[]) ->
     ok.

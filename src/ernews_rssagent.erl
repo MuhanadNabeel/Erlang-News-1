@@ -81,7 +81,7 @@ init([]) ->
 		    delay = 150 , time = Now},
     
     gen_fsm:send_event(?RSSAGENT, run),
-    {ok, run, [Reddit,Google,DZone,Hacker,Coder]}.
+    {ok, run, [Reddit,Google,Coder,Hacker,DZone]}.
 
 %%--------------------------------------------------------------------
 %% @private
