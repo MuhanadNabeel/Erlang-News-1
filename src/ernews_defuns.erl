@@ -27,7 +27,13 @@ test1(A,B) ->
 %%%	Attempts to fetch and read a document from URL
 %%% @end
 read_web({ok, {{_Version, _, _ReasonPhrase}, Headers, Body}}) ->
-	{success,{Headers,Body}};
+    case string:str(proplists:get_value("content-type",Headers),"text/html") of
+	0 ->
+	    {error,page_not_text};
+	_ ->
+	    {success,{Headers,Body}}
+    end;
+
 read_web({error,no_scheme})->
     {error,broken_html};
 read_web({error,{failed_connect,_}})->
