@@ -1,64 +1,47 @@
 var isUserAction = new Object();
-var newsBigTemplate = '', newsMediumTemplate = '', newsSmallTemplate = '', newsRightTemplate = '', latestImgTemplate = '', latestTemplate = '';
+var duplicateArray = new Array('hot','latest','top','view');
+var actionArray = new Array('votedown','voteup','report')
+var articleTemplates;
 
 jQuery(document).ready(function() {
-    jQuery('#first_loading').html('<img width="450px" height="200px" src="' + jableDir + '/custom-img/loading1.gif">');
+    jQuery('#first_loading').html('<img src="' + jableDir + '/custom-img/loading.gif">');
     jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
-        var split = str.split('<split_between_templates>');
-        newsRightTemplate = split[0];
-        newsBigTemplate = split[1];
-        newsMediumTemplate = split[2];
-        newsSmallTemplate = split[3];
-        latestImgTemplate = split[4];
-        latestTemplate = split[5];
-        getNewsJSON(function(){
-            jQuery('#first_loading').slideUp('slow');
-            jQuery('#top_news_container').show();
-            /*$(window).scroll(function(){
-                var y = $(window).scrollTop();
-                if((parseInt(jQuery("#top_news").css("height"), 10)+25) > ((y/4.5)))
-                    jQuery('#top_news_container').css('height', (y/4.5));
-
-            });*/
-        });
-        setInterval('getNewsJSON();',300000);
+        articleTemplates = str.split('<split_between_templates>');
+        getNewsJSON();
     });
 
 });
 
 function articleAction(item,action,undo) {
-    var id = jQuery(item).attr('id').substring(0,jQuery(item).attr('id').indexOf('_'));
+    var id = jQuery(item).attr('id').split('_')[1];
     if( isUserAction[id][Math.floor(action/2)] == true )
         return;
     updateCounter(id,action,undo);
     isUserAction[id][Math.floor(action/2)] = true;
-    changeUserButtons(id,item);
-    var interval = setInterval("articleActionBlink('" 
-        + jQuery(item).attr('id') + "');",250);
+    changeUserButtons(item,id);
     jQuery.post(jableDir + '_article_action.php',{id:id,action:action,undo:undo},function() {
         isUserAction[id][Math.floor(action/2)] = false;
-        clearInterval(interval);
-        jQuery('#' + jQuery(item).attr('id') + '_active').css('opacity','1');
-        jQuery('#' + jQuery(item).attr('id')).css('opacity','1');
     });
     function updateCounter(id,action,undo) {
-        if( undo == true && action == 0 )
-            iterateCounter('#' + id + '_down_vote_count',false);
-        else if( undo == true && action == 1 )
-            iterateCounter('#' + id + '_up_vote_count',false);
-        else if( undo == false && action == 0 ) {
-            iterateCounter('#' + id + '_down_vote_count',true);
-            if( jQuery('#' + id + '_vote_up_archive_' + (archiveTable-1) + '_active').is(':visible') ) {
-                iterateCounter('#' + id + '_up_vote_count',false);
-                jQuery('#' + id + '_vote_up_archive_' + (archiveTable-1) + '_active').hide();
-                jQuery('#' + id + '_vote_up_archive_' + (archiveTable-1)).show();
-            }
-        } else if( undo == false && action == 1 ) {
-            iterateCounter('#' + id + '_up_vote_count',true);
-            if( jQuery('#' + id + '_vote_down_archive_' + (archiveTable-1) + '_active').is(':visible') ) {
-                iterateCounter('#' + id + '_down_vote_count',false);
-                jQuery('#' + id + '_vote_down_archive_' + (archiveTable-1) + '_active').hide();
-                jQuery('#' + id + '_vote_down_archive_' + (archiveTable-1)).show();
+        for( var i = 0 ; i < duplicateArray.length ; i++ ) {
+            if( undo == true && action == 0 )
+                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] + '_count',false);
+            else if( undo == true && action == 1 )
+                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1] + '_count',false);
+            else if( undo == false && action == 0 ) {
+                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] + '_count',true);
+                if( jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1] + '_active').is(':visible') ) {
+                    iterateCounter('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1] + '_count',false);
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1] + '_active').hide();
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1]).show();
+                }
+            } else if( undo == false && action == 1 ) {
+                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1] + '_count',true);
+                if( jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] + '_active').is(':visible') ) {
+                    iterateCounter('#' + id + '_' + actionArray[0] + '_count',false);
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] + '_active').hide();
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0]).show();
+                }
             }
         }
     }
@@ -73,146 +56,92 @@ function articleAction(item,action,undo) {
         }
             
     }
-    var articleActionBlinkIndex = 1;
-    function articleActionBlink(id) {
-        var opacity = '0.3';
-        if( articleActionBlinkIndex % 2 == 0 ) {
-            opacity = '0.8';
-            articleActionBlinkIndex = 2;
-        }
-        jQuery('#' + id).css('opacity',opacity);
-        jQuery('#' + id + '_active').css('opacity',opacity);
-        articleActionBlinkIndex++;
-    }
-    function changeUserButtons(id,item) {
-        jQuery(item).hide();
-        if( jQuery(item).attr('id').indexOf('_active') != -1 ) {
-            jQuery( '#' + jQuery(item).attr('id').substring(0, 
-                jQuery(item).attr('id').lastIndexOf('_')) ).show();
-            // Latest
-            if( jQuery( '#' + jQuery(item).attr('id').substring(0, 
-                    jQuery(item).attr('id').lastIndexOf('_')) + '_latest' ).length > 0 )
-                jQuery( '#' + jQuery(item).attr('id').substring(0, 
-                    jQuery(item).attr('id').lastIndexOf('_')) + '_latest' ).show();
-        }
-        else {
-            jQuery( '#' + jQuery(item).attr('id') + '_active' ).show();
-            // Latest
-            if( jQuery( '#' + jQuery(item).attr('id') + '_active_latest' ).length > 0 )
-                jQuery( '#' + jQuery(item).attr('id') + '_active_latest' ).show();
-        }
-        
-        if( jQuery(item).attr('id').indexOf('vote_up') != -1 && 
-                jQuery( '#' + id + '_vote_down_active' ).is(':visible') ) {
-            jQuery( '#' + id + '_vote_down_active' ).hide();
-            jQuery( '#' + id + '_vote_down' ).show();
-            // Latest
-            if( jQuery( '#' + id + '_vote_down_active_latest' ).length > 0
-                    && jQuery( '#' + id + '_vote_down_latest' ).length > 0 ) {
-                jQuery( '#' + id + '_vote_down_active_latest' ).hide();
-                jQuery( '#' + id + '_vote_down_latest' ).show();
+    function changeUserButtons(item,id) {
+        var htmlID = jQuery(item).attr('id');
+        var action = htmlID.split('_')[2];
+        var contrAction = actionArray[0];
+        if( action == actionArray[0] )
+            contrAction = actionArray[1];
+        for( var i = 0 ; i < duplicateArray.length ; i++ ) {
+            if( htmlID.indexOf('_active') != -1 ) {
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' + action + '_active' ).hide();
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' + action).show();
             }
-        }
-        else if( jQuery(item).attr('id').indexOf('vote_down') != -1 && 
-                jQuery( '#' + id + '_vote_up_active' ).is(':visible') ) {
-            jQuery( '#' + id + '_vote_up_active' ).hide();
-            jQuery( '#' + id + '_vote_up' ).show();
-            // Latest
-            if( jQuery( '#' + id + '_vote_up_active_latest' ).length > 0 
-                    & jQuery( '#' + id + '_vote_up_latest' ).length > 0 ) {
-                jQuery( '#' + id + '_vote_up_active_latest' ).hide();
-                jQuery( '#' + id + '_vote_up_latest' ).show();
+            else {
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' + action).hide();
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' + action + '_active' ).show();
+            }
+            if( jQuery('#' + duplicateArray[i] + '_' + id + '_' + contrAction + '_active' ).is(':visible') ) {
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' + contrAction + '_active' ).hide();
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' + contrAction).show();
             }
         }
     }
-
 }
-var archiveTable = 1;
-function getNewsJSON(cbFunc) {
+var updatingArticles = false;
+var offsetArticles = 0;
+var limitArticles = 20;
+function getNewsJSON() {
+    updatingArticles = true;
+    jQuery('#first_loading').show();
     jQuery.get(jableDir + '_get_news.php',{query:'latest'},function(outcome) {
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
-        if(json.length == 0 || archiveTable > 1)
-            return;
         jQuery('#latest_news').html('');
         for( var i = 0 ; i < json.length ; i++ ) {
-            jQuery('#latest_news').append( addNewsLink(json[i], archiveTable, true) );
+            jQuery('#latest_news').append( getArticle(json[i], articleTemplates[5], duplicateArray[1] ) );
         }
     });
-    jQuery.get(jableDir + '_get_news.php',{query:'main'},function(outcome) {
+    jQuery.get(jableDir + '_get_news.php',{query:'main',offset:offsetArticles,limit:limitArticles},function(outcome) {
+        jQuery('#first_loading').hide();
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
         if( json.length == 0 ){
             setTimeout('getNewsJSON()', 10000);
             return;
         }
-        jQuery('#news_article_left').html('');
-        jQuery('#news_article_right').html('');
-        jQuery('#top_news').html('');
+        offsetArticles += limitArticles;
 
         var leftArc = 1;
         var rightArc = 0;
 
-        for( var i = 0 ; i < 20 ; i++ ) {
+        for( var i = 0 ; i < json.length ; i++ ) {
             isUserAction[json[i].newsID] = Array(false,false);
-            if( archiveTable > 1 )
-                jQuery('#archive').find('div[class="right_row"]').css('width', jQuery('#archive').css('width'));
-            else
-                jQuery('#archive').find('div[class="right_row"]').css('width', 'auto');
-
-
+            var template = articleTemplates[3];
+            if( json[i].imgwidth > 350 )
+                template = articleTemplates[1];
+            else if( json[i].imgwidth > 120 )
+                template = articleTemplates[2]
             if( i == 0 )
-                jQuery('#top_news').append( getNewsArticle(json[i], archiveTable) );
-            else if( i < 7 && leftArc < rightArc )
-                jQuery('#news_article_left').append( getNewsArticle(json[i], archiveTable) );
-            else if( i < 7 )
-                jQuery('#news_article_right').append( getNewsArticle(json[i], archiveTable) );
+                jQuery('#top_news').append( getArticle(json[i], template , duplicateArray[0] ) );
+            else if( leftArc < rightArc )
+                jQuery('#news_article_left').append( getArticle(json[i], template, duplicateArray[0] ) );
             else
-                jQuery('#archive').append( addNewsLink(json[i], archiveTable) );
+                jQuery('#news_article_right').append( getArticle(json[i], template, duplicateArray[0] ) );
             
             leftArc = jQuery('#news_article_left').height();
             rightArc = jQuery('#news_article_right').height();
         }
-        setUserClicked(parse.cookies.Up_Vote,'_vote_up_archive_'+archiveTable,true);
-        setUserClicked(parse.cookies.Down_Vote,'_vote_down_archive_'+archiveTable,true);
-        setUserClicked(parse.cookies.Report_Count,'_report',false);
-        
-        if( archiveTable > 1 ){
-            updateRight(archiveTable);
-        }
-        archiveTable++;
-        cbFunc();
+        setUserClicked(parse.cookies.Up_Vote,actionArray[1],true);
+        setUserClicked(parse.cookies.Down_Vote,actionArray[0],true);
+        setUserClicked(parse.cookies.Report_Count,actionArray[2],false);
+        updatingArticles = false;
     });
     function setUserClicked(json,str,isVote) {
         for( var i = 0 ; i < json.length ; i++ ) {
             if( json[i] != '' ) {
-                jQuery('#' + json[i] + str).hide();
-                jQuery('#' + json[i] + str + '_active').show();
-                // Latest
-                if( jQuery('#' + json[i] + str + '_latest').length > 0 
-                        && jQuery('#' + json[i] + str + '_active_latest').length > 0 ) {
-                    jQuery('#' + json[i] + str + '_latest').hide();
-                    jQuery('#' + json[i] + str + '_active_latest').show();
-                }
-                if( isVote ) {
-                    jQuery('#' + json[i] + str + '_extra').hide();
-                    jQuery('#' + json[i] + str + '_extra_active').show();
-                    // Latest
-                    if( jQuery('#' + json[i] + str + '_extra_latest').length > 0 
-                            && jQuery('#' + json[i] + str + '_extra_active_latest').length > 0 ) {
-                        jQuery('#' + json[i] + str + '_extra_latest').hide();
-                        jQuery('#' + json[i] + str + '_extra_active_latest').show();
+                for( var k = 0 ; k < duplicateArray.length ; k++ ) {
+                    jQuery('#' + duplicateArray[k] + '_' + json[i] + '_' + str).hide();
+                    jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' + str + '_active').show();
+                    if( isVote ) {
+                        jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' + str + '_extra').hide();
+                        jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' + str + '_extra_active').show();
                     }
                 }
             }
         }
     }
-    function getNewsArticle(json,datatype) {
-        var template = newsSmallTemplate;
-        if( json.imgwidth > 350 )
-            template = newsBigTemplate;
-        else if( json.imgwidth > 120 )
-            template = newsMediumTemplate
+    function getArticle(json,template,location) {
         var icon_hide = 'visible';
         if( json.Icon == 'undef' )
             icon_hide = 'hidden';
@@ -226,41 +155,17 @@ function getNewsJSON(cbFunc) {
                             .replace(/{icon}/g,json.Icon)
                             .replace(/{URL}/g,json.URL)
                             .replace(/{icon_hide}/g,icon_hide)
-                            .replace(/{datatype}/g,'archive_' + datatype)
                             .replace(/{id}/g,json.newsID)
+                            .replace(/{location}/g,location)
+                            .replace(/{action0}/g,actionArray[0])
+                            .replace(/{action1}/g,actionArray[1])
+                            .replace(/{action2}/g,actionArray[2])
                             .replace(/{pubdate}/g,json.Pubdate.split(' ')[0])
                             .replace(/{imgwidth}/g,(json.imgwidth/2))
                             .replace(/{imgheight}/g,(json.imgheight/2));
     }
-    
-    
-    
-    function addNewsLink(json,datatype,latestBoolean) {
-        var title = '';
-        var template = newsRightTemplate;
-        if (latestBoolean && json.Image != 'undef')
-            template = latestImgTemplate;
-        else if(latestBoolean)
-            template = latestTemplate;
-
-        if( json.Title.length < 60 )
-            title = json.Title;
-        else
-            title = json.Title.substring(0,55) + ' ...';
-
-        return template.replace(/{title}/g,title.replace(/'/g, "´"))
-                                .replace(/{down}/g,json.Down_Vote)
-                                .replace(/{up}/g,json.Up_Vote)
-                                .replace(/{clicks}/g,json.Clicks)
-                                .replace(/{description}/g,json.Description)
-                                .replace(/{URL}/g,json.URL)
-                                .replace(/{host}/g,json.host)
-                                .replace(/{datatype}/g,'archive_' + datatype)
-                                .replace(/{image}/g,json.Image)
-                                .replace(/{pubdate}/g,json.Pubdate.split(' ')[0])
-                                .replace(/{id}/g,json.newsID);
-    }
 }
-function countClicks(id) {
-    jQuery.get(jableDir + '_count_clicks.php',{id:id});
-}
+$(window).scroll(function() {
+    if($(window).scrollTop()+100 >= ($(document).height() - ($(window).height())) && updatingArticles == false )
+        getNewsJSON();
+});
