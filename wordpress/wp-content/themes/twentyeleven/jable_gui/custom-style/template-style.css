@@ -510,6 +510,13 @@ Thumbs up and down.
     border-right:12px solid rgba(0,0,0,0.5); 
 }
 
+.right-column{
+    width:20%;
+    height:100px;
+    background-color:#eeeeee;
+    box-shadow:inset 10px 0px 10px -10px rgba(0,0,0,0.5);
+}
+
 .main-title a{color: black;text-decoration: none;}
 .main-title a:visited {color:black;text-decoration: none;}  /* visited link */
 .main-title a:hover {color:#aacc77;text-decoration: none;}  /* mouse over link */
