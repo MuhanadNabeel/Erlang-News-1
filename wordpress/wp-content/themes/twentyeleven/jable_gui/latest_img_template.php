@@ -1,8 +1,8 @@
 <li>
     <div>
 
-    <div class="right_row" style="background-color:transparent" onclick="$('#{id}_expand').slideToggle();">
-        <table><tr><td style="vertical-align:middle;"><img src="{image}" style="border:solid 1px gray;margin-left:5px;margin-right:0px;max-width:40px;"></td>
+    <div class="right_row" style="background-color:transparent" onclick="openUpStuff('{id}');">
+        <table><tr>
             <td style="vertical-align:top;">
                 <div style="padding:0.5em;line-height:80%;">
                         <a class="right_title">{title}</a></br>
@@ -30,7 +30,8 @@
                     </td>
                     <td>
                     <div style="width:100%;">
-                        <div class="blue-desc" style="line-height:130%;">{description}</div><span class="blue-readMore" ><a style="cursor:pointer;"  target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
+                        <div class="blue-desc" style="line-height:130%;">
+            <img src="{image}" style="border:solid 1px gray;max-width:40px;float:left;margin:5px;">{description}</div><span class="blue-readMore" ><a style="cursor:pointer;"  target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
                             return true;" onmouseout="window.status=''" onclick="openBox(<?php echo '{id}'?>)">Read more..</a></span>
                         <div class="seperator" style="margin-top:20px"></div>
                         

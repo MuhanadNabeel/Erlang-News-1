@@ -1,7 +1,7 @@
 <li>
     <div>
 
-    <div class="right_row" style="background-color:transparent" onclick="$('#{id}_expand').slideToggle();">
+    <div class="right_row" style="background-color:transparent" onclick="openUpStuff('{id}');">
                 <div style="padding:0.5em;line-height:80%;">
                         <a class="right_title">{title}</a></br>
                         <span class="right_source" style="margin-left:12px;"> 

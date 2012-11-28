@@ -5,15 +5,19 @@ var $data;
 var $id;
 function openUpStuff(id){
     if($id!=id)
-        closeLastOne(function(){
-            jQuery('#'+$id+'_expand').css('width', 'auto');
-        });
+        closeLastOne();
 
-    jQuery('#'+id+'_expand').css('width', jQuery('#archive').find('div[class="right_row"]').css('width'));
-    jQuery('#'+id+'_expand').slideToggle('400');
+    jQuery('#'+id+'_expand').slideToggle();
 
 
     $id = id;
+ }
+ function closeLastOne(cbFunc){
+    t = jQuery('.right-column').find('div[class="right_content"]');
+    a = t.filter(function(){
+        return jQuery(this).is(':visible');
+    });
+    a.slideUp();
  }
 
 jQuery(document).ready(function() {
@@ -97,13 +101,7 @@ function closeAllStuff(cbFunc){
         a.slideUp('slow', function(){setTimeout(cbFunc(),2000,lang)});
  }
 
- function closeLastOne(cbFunc){
-    t = jQuery('#left-side').find('div[class="right_content"]');
-    a = t.filter(function(){
-        return jQuery(this).is(':visible');
-    });
-    a.slideUp('slow', cbFunc);
- }
+ 
   function openBox(id){
     var index = -1;
     for( var i = 0 ; i < articleJSON.length ; i++ ) {
