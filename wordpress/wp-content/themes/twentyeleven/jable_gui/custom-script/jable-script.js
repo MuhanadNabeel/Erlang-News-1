@@ -133,7 +133,7 @@ var articleJSON;
 function getNewsJSON() {
     updatingArticles = true;
     jQuery('#first_loading').show();
-    jQuery.get(jableDir + '_get_news.php',{query:'latest'},function(outcome) {
+    jQuery.get(jableDir + '_get_news.php',{query:'latest',limit:5},function(outcome) {
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
         jQuery('#latest_news').html('');
