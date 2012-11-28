@@ -7,7 +7,9 @@ function openUpStuff(id){
     if($id!=id)
         closeLastOne();
 
+    jQuery('#'+id+'_expand').css('width', jQuery('#rightside').css('height'));
     jQuery('#'+id+'_expand').slideToggle();
+    jQuery('#'+id+'_expand').css('width', 'auto');
 
 
     $id = id;

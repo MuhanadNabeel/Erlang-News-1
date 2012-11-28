@@ -89,7 +89,7 @@ function articleAction(item,action,undo) {
         if( up ){
             jQuery(id).text( ( org + 1 ) );
             jQuery(id + '_active').text( ( org + 1 ) );
-        }else{            
+        }else{       
             jQuery(id).text( ( org - 1 ) );
             jQuery(id + '_active').text( ( org - 1 ) );
         }

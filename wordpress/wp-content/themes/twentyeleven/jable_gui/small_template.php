@@ -1,5 +1,5 @@
-<li style="margin-bottom:10px;">
-	<table style="border:solid 1px rgba(0,0,0,0.2);width:100%;padding-top:0px;padding:5px;">
+<li style="border:solid 1px rgba(0,0,0,0.2);margin-bottom:10px;">
+	<table style="width:100%;padding:5px;padding-top:0px;">
 		<tr>
 			<td>
 				<table style="width:100%;">
@@ -36,8 +36,6 @@
 				<div style="line-height:120%;font-family:'MyriadPro regular';font-size:10pt;margin-bottom:20px;">{description}</div>
 			</td>
 		</tr>
-
-
 		<tr>
 			<td>
 				<table style="width:100%;">

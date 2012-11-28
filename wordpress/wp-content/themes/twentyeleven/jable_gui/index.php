@@ -72,31 +72,33 @@ Div fonts
                 
         </div>
         <table style="width:100%;"><tr><td>
-                    <table style="float:right;position:absolute;margin-left:15px;margin-top:15px;" id="wholepage">
+                    <table style="position:relative;margin-left:10px;margin-top:15px;width:150px" id="wholepage">
                         <tr>
                             <td>
-                                <div style="padding-left:30px;padding-right:10px;background-color:#79a8be;white-space:nowrap;height:25px;float:left;color:black;">HOT NEWS</div>
-                            </td>
-                            <td>
-                                <div class="arrow-right"></div>
-                            </td>
-                            <td>
-                                <div class="arrow-left" style="margin-left:-15px;"></div>
-                            </td>
-                            <td>
-                                <div style="background-color:#3f758b;width:20px;height:25px;"></div>
+                                <div style="white-space:nowrap">
+                                    <table>
+                                        <div style="width:67%;height:25px;background-color:#79a8be;float:left;" align="right">
+                                            <div style="float:right;color:white;margin-right:20px;">Hot News</div>
+                                            <div class="arrow-right" style="margin-right:-25px;">
+                                            </div>
+                                        </div>
+                                    </table>
+                                    <div style="width:30%;height:25px;background-color:#3f758b;float:right;margin-right:-30px;">
+                                        <div class="arrow-left" style="margin-left:-25px;"></div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     </table>
             <table id="main_div" style="width:100%;">
                 <tr><td>
-                    <div align="left" id="top_hot_news" style="list-style-type:none;max-width:100%;background-color:white;padding:10px;"></div>
+                    <div align="left" id="top_hot_news" style="list-style-type:none;max-width:100%;background-color:white;padding:10px;margin-bottom:0;"></div>
                 </td></tr>
                 <tr><td>
                     <table style="width:100%;">
                         <tr>
-                            <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
-                            <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_right"></ul></td>
+                            <td style="width:50%;"><ul style="list-style-type:none;margin-bottom:5px;margin-right:5px;margin-left:10px;" id="news_article_left"></ul></td>
+                            <td style="width:50%;"><ul style="list-style-type:none;margin-bottom:5px;margin-left:5px;margin-right:10px;" id="news_article_right"></ul></td>
                         </tr>
                     </table>
                 </td></tr>
@@ -105,23 +107,39 @@ Div fonts
                 </td></tr>
             </table>
 
-        </td><td class="right-column" id="rightside">
+        </td>
+        <td class="right-column" id="rightside">
+            <div style="background-color:#eeeeee;white-space:nowrap">
+                <table>
+                    <div style="width:67%;height:25px;background-color:#79a8be;float:left;" align="right">
+                        <div style="float:right;color:white;margin-right:20px;">Latest News</div>
+                        <div class="arrow-right" style="margin-right:-25px;">
+                        </div>
+                    </div>
+                </table>
+                <div style="width:30%;height:25px;background-color:#3f758b;float:right;margin-right:-30px;">
+                    <div class="arrow-left" style="margin-left:-25px;"></div>
+                </div>
+            </div>
 
-            <table>
-                <tr><td>
-                    <div class="news-headlines" style="box-shadow:inset 0px -3px 10px -3px rgba(0,0,0,0.5);">Latest news</div>
-                </td></tr>
-                <tr><td>
-                    <ul id="latest_news" style="list-style-type:none;margin:0;"></ul>
-                </td></tr>
-                <tr><td>
-                    <div class="news-headlines" style="box-shadow:inset 0px -3px 10px -3px rgba(0,0,0,0.5);">Alltime top</div>
-                </td></tr>
-                <tr><td>
-                    <ul id="top_news" style="list-style-type:none;margin:0;"></ul>
-                </td></tr>
-            </table>
+            <ul id="latest_news" style="list-style-type:none;margin:0;margin-top:25px;"></ul>
 
-        </td></tr></table>
+            <div style="white-space:nowrap">
+                <table>
+                    <div style="width:67%;height:25px;background-color:#79a8be;float:left;" align="right">
+                        <div style="float:right;color:white;margin-right:20px;">Alltime Top</div>
+                        <div class="arrow-right" style="margin-right:-25px;">
+                        </div>
+                    </div>
+                </table>
+                <div style="width:30%;height:25px;background-color:#3f758b;float:right;margin-right:-30px;">
+                    <div class="arrow-left" style="margin-left:-25px;"></div>
+                </div>
+            </div>
+
+            <ul id="top_news" style="list-style-type:none;margin:0;"></ul>
+
+        </td>
+    </tr></table>
 
 </div>

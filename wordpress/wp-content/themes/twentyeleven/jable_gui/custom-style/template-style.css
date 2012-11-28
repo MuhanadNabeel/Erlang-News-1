@@ -436,10 +436,13 @@ Thumbs up and down.
 .likes{
     height: 100%;
     width: 100%;
-    font:bold 0.75em "MyriadPro Cond";
-    text-shadow: 0.067em 0.067em 0.1em black;
-    color:white;
+    font:bold 8pt "MyriadPro Cond";
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.0);
+    color:rgba(0,0,0,0.4);
     vertical-align: top;
+}
+.likes:hover{
+    text-decoration: none;
 }
 
 .triangle-topright {
@@ -510,7 +513,7 @@ Thumbs up and down.
 
 .right-column{
     width:20%;
-    height:100px;
+    vertical-align: top;
     background-color:#eeeeee;
     box-shadow:inset 10px 0px 10px -10px rgba(0,0,0,0.5);
 }
