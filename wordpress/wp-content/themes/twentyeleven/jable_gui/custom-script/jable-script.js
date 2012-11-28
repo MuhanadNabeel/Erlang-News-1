@@ -140,6 +140,7 @@ function getNewsJSON() {
         for( var i = 0 ; i < json.length ; i++ ) {
             jQuery('#latest_news').append( getArticle(json[i], 
                 articleTemplates[5], duplicateArray[1] ) );
+                
         }
     });
     jQuery.get(jableDir + '_get_news.php',{query:'main',
@@ -165,13 +166,13 @@ function getNewsJSON() {
             else if( json[i].imgwidth > 120 )
                 template = articleTemplates[2]
             if( i == 0 )
-                jQuery('#top_hot_news').append( getArticle(i, template, 
+                jQuery('#top_hot_news').html( getArticle(json[i], template, 
                     duplicateArray[0] ) );
             else if( leftArc < rightArc )
-                jQuery('#news_article_left').append( getArticle(i, 
+                jQuery('#news_article_left').append( getArticle(json[i], 
                     template, duplicateArray[0] ) );
             else
-                jQuery('#news_article_right').append( getArticle(i, 
+                jQuery('#news_article_right').append( getArticle(json[i], 
                     template, duplicateArray[0] ) );
             
             leftArc = jQuery('#news_article_left').height();
@@ -200,8 +201,7 @@ function getNewsJSON() {
             }
         }
     }
-    function getArticle(index,template,location) {
-        var json = articleJSON[index];
+    function getArticle(json,template,location) {
         var icon_hide = 'visible';
         if( json.Icon == 'undef' )
             icon_hide = 'hidden';
@@ -217,7 +217,6 @@ function getNewsJSON() {
                             .replace(/{icon_hide}/g,icon_hide)
                             .replace(/{id}/g,json.newsID)
                             .replace(/{location}/g,location)
-                            .replace(/{index}/g,index)
                             .replace(/{action0}/g,actionArray[0])
                             .replace(/{action1}/g,actionArray[1])
                             .replace(/{action2}/g,actionArray[2])
