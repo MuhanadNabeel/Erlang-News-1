@@ -104,7 +104,14 @@ function closeAllStuff(cbFunc){
     });
     a.slideUp('slow', cbFunc);
  }
-  function openBox(index){
+  function openBox(id){
+    var index = -1;
+    for( var i = 0 ; i < articleJSON.length ; i++ ) {
+        if( id == articleJSON[i].newsID ) {
+            index = i;
+            i = articleJSON.length-1;
+        }
+    }
     var json = articleJSON[index];
     jQuery.get(jableDir + '_count_clicks.php',{id:json.newsID});
 
