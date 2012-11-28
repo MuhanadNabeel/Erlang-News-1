@@ -71,86 +71,26 @@ Div fonts
                     </div>
                 
         </div>
-        <table id="main_div" style="width:100%;">
-            <tr>
-                <td>
-                    <table cellpadding="0" cellspacing="0" style="background-color:white;width:100%;">
+        <table><tr><td>
+            <table id="main_div" style="width:80%;">
+                <tr><td>
+                    <div align="left" id="top_hot_news" style="list-style-type:none;max-width:100%;background-color:white;padding:10px;"></div>
+                </td></tr>
+                <tr><td>
+                    <table style="width:100%;">
                         <tr>
-                            <td style="vertical-align:top;">
-                                <div style="z-index:1000">
-                                    <table>
-
-                                        <tr><td>
-                                            <table>
-                                                <tr>
-                                                    <td>
-
-
-                                            <div style="poistion:relative;" id="over_top_news">
-                                            <div id="top_news_container" style="poistion:relative;height:auto;overflow:hidden;display:none;">
-                                                <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
-                                                    
-                                                    <div align="left" id="top_hot_news" style="max-width:100%;background-color:white;padding:10px;box-shadow:0 0px 20px black"></div>
-                                                </div>
-                                            </div>
-                                            </div>
-                                            </td>
-                                            <td>
-
-
-
-                                                <!--
-                                            <table>
-                                                <tr><td class="news-headlines">Latest News</td></tr>
-                                                <tr>
-                                                    <td>
-                                                        <ul id="latest_news" style="list-style-type:none;margin:0;"></ul>
-                                                    </td>
-                                                </tr>
-                                                
-                                            </table>
-                                                -->
-                                            </td>
-                                                </tr>
-                                            </table>
-                                        </td></tr>
-                                        <tr><td>
-                                            <table style="width:100%;">
-
-                                                <tr>
-                                                    <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
-                                                    <td style="width:1px;height:90%;background-color:#c6c6c6;"><div></div></td>
-                                                    <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_right"></ul></td>
-                                                </tr>
-                                            </table>
-                                        </td></tr>
-                                    </table>
-                                </div>
-                            </td>
+                            <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_left"></ul></td>
+                            <td style="width:1px;height:90%;background-color:#c6c6c6;"><div></div></td>
+                            <td style="width:50%;"><ul style="list-style-type:none;margin:10px;" id="news_article_right"></ul></td>
                         </tr>
                     </table>
-                </td>
-                <td align="center" style="width:20%;background-color:#f7f7f7;height:20px;box-shadow:inset 3px 0 8px -5px black;vertical-align:top;">
-                    <table>
-                        <tr><td class="news-headlines">Latest News</td></tr>
-                        <tr>
-                            <td>
-                                <ul id="latest_news" style="list-style-type:none;margin:0;"></ul>
-                            </td>
-                        </tr>
+                </td></tr>
+                <tr><td>
+                    <div id="first_loading" style="text-align:center;display:none;"></div>
+                </td></tr>
+            </table>
 
-                    </table>
-                    <div id="hottest_news_ever"></div>
-                    <!--<div style="font-family:'MyriadPro Cond';color:#252b38;font-size:15pt;text-shadow:1px 1px 1px white;width:100%;text-align:center;">
-                        Search in the archive
-                        <input class="jabel-search-bar" onfocusout="jQuery('#search_tips').fadeOut('fast');" onclick="jQuery('#search_tips').fadeIn('fast');" name="q" type="text" size="35%" placeholder="Search...">
-                        <div id="search_tips" style="display:none;font-family:'MyriadPro Regular';text-align:left;padding:5px;font-size:10pt;line-height:120%;color:white;text-shadow:1px 1px 1px black;border-radius:5px;position:absolute;margin-top:-50px;margin-left:18%;max-width:150px;background-color:rgba(0,0,0,0.5);">
-                            <div class="arrow-left" style="position:absolute;"></div>Search all of our archives using keywords like months, the title of the article and so forth.
-                        </div>
-                    </div>
-                    -->
-                </td>
-            </tr>
-        </table>
-<div id="first_loading" style="text-align:center;display:none;"></div>   
+        </td><td style="width:20%;height:100px;background-color:#f8f8f8;">
+        </td></tr></table>
+
 </div>
