@@ -84,7 +84,7 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast({parse, Source, Url, Ts}, State) ->
-    io:format("Geetting Source ~p~n" , [Url]),
+    %io:format("Geetting Source ~p~n" , [Url]),
     ernews_html:start_link(Url, Source, Ts,State),
     {noreply, State};
 handle_cast({submit, Source, Url, Title, Description, 
