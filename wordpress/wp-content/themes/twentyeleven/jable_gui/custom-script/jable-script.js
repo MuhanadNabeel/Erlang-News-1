@@ -47,35 +47,38 @@ function articleAction(item,action,undo) {
     });
     function updateCounter(id,action,undo) {
         for( var i = 0 ; i < duplicateArray.length ; i++ ) {
-            if( undo == true && action == 0 )
-                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
-                    + actionArray[0] + '_count',false);
-            else if( undo == true && action == 1 )
-                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
-                    + actionArray[1] + '_count',false);
-            else if( undo == false && action == 0 ) {
-                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
-                    + actionArray[0] + '_count',true);
-                if( jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                            + actionArray[1] + '_active').is(':visible') ) {
+            if( jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] 
+                    + '_count').length != 0 ) {
+                if( undo == true && action == 0 )
+                    iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
+                        + actionArray[0] + '_count',false);
+                else if( undo == true && action == 1 )
                     iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
                         + actionArray[1] + '_count',false);
-                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                        + actionArray[1] + '_active').hide();
-                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                        + actionArray[1]).show();
-                }
-            } else if( undo == false && action == 1 ) {
-                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
-                    + actionArray[1] + '_count',true);
-                if( jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                        + actionArray[0] + '_active').is(':visible') ) {
-                    iterateCounter('#' + id + '_' + actionArray[0] 
-                        + '_count',false);
-                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                        + actionArray[0] + '_active').hide();
-                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                        + actionArray[0]).show();
+                else if( undo == false && action == 0 ) {
+                    iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
+                        + actionArray[0] + '_count',true);
+                    if( jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                                + actionArray[1] + '_active').is(':visible') ) {
+                        iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
+                            + actionArray[1] + '_count',false);
+                        jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                            + actionArray[1] + '_active').hide();
+                        jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                            + actionArray[1]).show();
+                    }
+                } else if( undo == false && action == 1 ) {
+                    iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
+                        + actionArray[1] + '_count',true);
+                    if( jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                            + actionArray[0] + '_active').is(':visible') ) {
+                        iterateCounter('#' + id + '_' + actionArray[0] 
+                            + '_count',false);
+                        jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                            + actionArray[0] + '_active').hide();
+                        jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                            + actionArray[0]).show();
+                    }
                 }
             }
         }
@@ -98,24 +101,27 @@ function articleAction(item,action,undo) {
         if( action == actionArray[0] )
             contrAction = actionArray[1];
         for( var i = 0 ; i < duplicateArray.length ; i++ ) {
-            if( htmlID.indexOf('_active') != -1 ) {
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                    + action + '_active' ).hide();
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                    + action).show();
-            }
-            else {
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                    + action).hide();
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                    + action + '_active' ).show();
-            }
             if( jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                        + contrAction + '_active' ).is(':visible') ) {
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                    + contrAction + '_active' ).hide();
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                    + contrAction).show();
+                    + action).length != 0 ) {
+                if( htmlID.indexOf('_active') != -1 ) {
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + action + '_active' ).hide();
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + action).show();
+                }
+                else {
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + action).hide();
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + action + '_active' ).show();
+                }
+                if( jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                            + contrAction + '_active' ).is(':visible') ) {
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + contrAction + '_active' ).hide();
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + contrAction).show();
+                }
             }
         }
     }
@@ -160,7 +166,7 @@ function getNewsJSON() {
                 template = articleTemplates[1];
             else if( json[i].imgwidth > 120 )
                 template = articleTemplates[2]
-            if( i == 0 )
+            if( i == 0 && offsetArticles == 0 )
                 jQuery('#top_hot_news').html( getArticle(json[i], 
                     template, 0 ) );
             else if( leftArc < rightArc )
@@ -185,6 +191,7 @@ function getNewsJSON() {
             articleJSON[index] = json;
             jQuery('#' + location + '_news').html('');
             for( var i = 0 ; i < json.length ; i++ ) {
+                isUserAction[json[i].newsID] = Array(false,false);
                 var template = articleTemplates[4];
                 if( json[i].Image == 'undef' )
                     template = articleTemplates[5];
