@@ -154,7 +154,6 @@ function getNewsJSON() {
             setTimeout('getNewsJSON()', 10000);
             return;
         }
-        offsetArticles += limitArticles;
 
         var leftArc = 1;
         var rightArc = 0;
@@ -182,12 +181,13 @@ function getNewsJSON() {
         setUserClicked(parse.cookies.Up_Vote,actionArray[1],true);
         setUserClicked(parse.cookies.Down_Vote,actionArray[0],true);
         setUserClicked(parse.cookies.Report_Count,actionArray[2],false);
+        offsetArticles += limitArticles;
         updatingArticles = false;
     });
     /**
      * @author Ingimar Samuelsson
      * @doc
-     *  Get information
+     *  Get info for right side of webpage
      * @end
      */
     function fillRightSide(location,index) {
