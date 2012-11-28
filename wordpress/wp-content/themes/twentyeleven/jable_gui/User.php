@@ -1,14 +1,10 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of User
- *
- * @author Ingimar
+ * @author Ingimar Samuelsson
+ * @doc
+ *  User interaction with database and cookies.
+ * @end
  */
 class User {
     

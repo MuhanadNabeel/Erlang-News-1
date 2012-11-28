@@ -7,7 +7,7 @@
 		<table cellspacing="0" cellpadding="0"><tr><td style="vertical-align:top;padding-right:5px;">
 			<img src="{icon}" align="left" style="height:18px;width:18px;margin-top:6px;margin-right:0px;visibility:<?php echo '{icon_hide}'; ?>;"></td>
 			<td><span class="main-title"><a style="cursor:pointer;" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
-           return true;" onmouseout="window.status=''" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');">{title}</a></span></td></tr></table>
+           return true;" onmouseout="window.status=''" onclick="openBox(<?php echo '{index}' ?>);">{title}</a></span></td></tr></table>
 		
 		
 	</div>
@@ -28,7 +28,7 @@
 			
 			<td style="vertical-align:top;"><div class="content">
 
-			<div style="line-height:100%;vertical-align:top;"><img onclick="openBox('{URL}', '{title}', '{id}', '{datatype}');" src="{image}" style="margin-right:10px;background-size:100%;max-width:180px;cursor:pointer;float:left">{description}</div> <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
+			<div style="line-height:100%;vertical-align:top;"><img onclick="openBox(<?php echo '{index}' ?>);" src="{image}" style="margin-right:10px;background-size:100%;max-width:180px;cursor:pointer;float:left">{description}</div> <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
 				
 				
                         	<table id="{id}_all_vote_buttons" style="display:none;">
@@ -59,7 +59,7 @@
 		<div class="window" id="{id}_reported_window"><div id="{id}_reported_window_text"></div></div>
 		<div style="position:absolute;right:0;margin-top:10px;">
 			<span class="right_source" style="font-size:8pt;">Source: 
-		        <a onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')" style="font-size:8pt;cursor:pointer;">{host}</a>
+		        <a onclick="openBox(<?php echo '{index}' ?>)" style="font-size:8pt;cursor:pointer;">{host}</a>
 		    </span>
 	    </div>
 	

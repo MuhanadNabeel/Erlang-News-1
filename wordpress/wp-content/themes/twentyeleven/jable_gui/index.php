@@ -56,7 +56,8 @@ Div fonts
                 <div class="close-button" onclick="closeBox()"></div>
                 <div style="position:absolute;z-index:20;width:100%;height:auto;background-color:rgba(0,0,0,.5);top:0px;">
                     <table><tr>
-                        <td id="box-vote-buttons" style="padding:5px;"></td>
+                        <td id="box-vote-buttons" style="padding:5px;">
+                        </td>
                         <td style="vertical-align:top;"><div id="box_title" class="box_title"></div></td>
                         </tr>
                     </table>
@@ -89,7 +90,7 @@ Div fonts
                                             <div id="top_news_container" style="poistion:relative;height:auto;overflow:hidden;display:none;">
                                                 <div align="center" style="list-style-type:none;width:100%;height:auto;background-color:#555555;overflow:hidden">
                                                     
-                                                    <div align="left" id="top_news" style="max-width:100%;background-color:white;padding:10px;box-shadow:0 0px 20px black"></div>
+                                                    <div align="left" id="top_hot_news" style="max-width:100%;background-color:white;padding:10px;box-shadow:0 0px 20px black"></div>
                                                 </div>
                                             </div>
                                             </div>

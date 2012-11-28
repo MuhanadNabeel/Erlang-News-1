@@ -1,8 +1,21 @@
+/**
+ * @author Ingimar Samuelsson
+ * @doc
+ *  Content-display and User-interaction
+ * @end
+ */
 var isUserAction = new Object();
 var duplicateArray = new Array('hot','latest','top','view');
 var actionArray = new Array('votedown','voteup','report')
 var articleTemplates;
 
+/**
+ * @author Ingimar Samuelsson
+ * @doc
+ *  When the page loads; get article templates
+ *  and call article information fetcher
+ * @end
+ */
 jQuery(document).ready(function() {
     jQuery('#first_loading').html('<img src="' + jableDir 
         + '/custom-img/loading.gif">');
@@ -13,6 +26,13 @@ jQuery(document).ready(function() {
 
 });
 
+/**
+ * @author Ingimar Samuelsson
+ * @doc
+ *  User-interaction. User clicks buttons, images are swapped
+ *  and information is changed in the database and users cookies
+ * @end
+ */
 function articleAction(item,action,undo) {
     var id = jQuery(item).attr('id').split('_')[1];
     if( isUserAction[id][Math.floor(action/2)] == true )
@@ -102,6 +122,14 @@ function articleAction(item,action,undo) {
 var updatingArticles = false;
 var offsetArticles = 0;
 var limitArticles = 20;
+var articleJSON;
+/**
+ * @author Ingimar Samuelsson
+ * @doc
+ *  Fetches informations related to articles in JSON format
+ *  and adds to HTML DOM
+ * @end
+ */
 function getNewsJSON() {
     updatingArticles = true;
     jQuery('#first_loading').show();
@@ -119,6 +147,7 @@ function getNewsJSON() {
         jQuery('#first_loading').hide();
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
+        articleJSON = json;
         if( json.length == 0 ){
             setTimeout('getNewsJSON()', 10000);
             return;
@@ -136,13 +165,13 @@ function getNewsJSON() {
             else if( json[i].imgwidth > 120 )
                 template = articleTemplates[2]
             if( i == 0 )
-                jQuery('#top_news').append( getArticle(json[i], template, 
+                jQuery('#top_hot_news').append( getArticle(i, template, 
                     duplicateArray[0] ) );
             else if( leftArc < rightArc )
-                jQuery('#news_article_left').append( getArticle(json[i], 
+                jQuery('#news_article_left').append( getArticle(i, 
                     template, duplicateArray[0] ) );
             else
-                jQuery('#news_article_right').append( getArticle(json[i], 
+                jQuery('#news_article_right').append( getArticle(i, 
                     template, duplicateArray[0] ) );
             
             leftArc = jQuery('#news_article_left').height();
@@ -171,7 +200,8 @@ function getNewsJSON() {
             }
         }
     }
-    function getArticle(json,template,location) {
+    function getArticle(index,template,location) {
+        var json = articleJSON[index];
         var icon_hide = 'visible';
         if( json.Icon == 'undef' )
             icon_hide = 'hidden';
@@ -187,6 +217,7 @@ function getNewsJSON() {
                             .replace(/{icon_hide}/g,icon_hide)
                             .replace(/{id}/g,json.newsID)
                             .replace(/{location}/g,location)
+                            .replace(/{index}/g,index)
                             .replace(/{action0}/g,actionArray[0])
                             .replace(/{action1}/g,actionArray[1])
                             .replace(/{action2}/g,actionArray[2])
@@ -195,6 +226,12 @@ function getNewsJSON() {
                             .replace(/{imgheight}/g,(json.imgheight/2));
     }
 }
+/**
+ * @author Ingimar Samuelsson
+ * @doc
+ *  Get more articles when user gets to the bottom of page
+ * @end
+ */
 $(window).scroll(function() {
     if($(window).scrollTop()+100 >= ($(document).height() - 
             ($(window).height())) && updatingArticles == false )

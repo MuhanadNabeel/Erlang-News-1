@@ -104,19 +104,91 @@ function closeAllStuff(cbFunc){
     });
     a.slideUp('slow', cbFunc);
  }
+  function openBox(index){
+    var json = articleJSON[index];
+    jQuery.get(jableDir + '_count_clicks.php',{id:json.newsID});
 
+    var buttons =  '                            <table>'
+                 + '              <tr>'
+                 + '                  <td>'
+                 + '                      <div id="' + duplicateArray[3] + '_' 
+                 + json.newsID + '_' + actionArray[1] 
+                 + '" class="thumb-up-shadowed" '
+                 + 'onclick="articleAction(this,1,false);"></div>'
+                 + '                      <div id="' + duplicateArray[3] 
+                 + '_' + json.newsID + '_' + actionArray[1] 
+                 + '_active" class="thumb-up-active-shadowed" '
+                 + 'onclick="articleAction(this,1,true);"></div>'
+                 + '                  </td>'
+                 + '                  <td>'
+                 + '                      <div id="' + duplicateArray[3] 
+                 + '_' + json.newsID + '_' + actionArray[0] 
+                 + '" class="thumb-down-shadowed" '
+                 + 'onclick="articleAction(this,0,false);"></div>'
+                 + '                      <div id="' + duplicateArray[3] 
+                 + '_' + json.newsID + '_' + actionArray[0] 
+                 + '_active" class="thumb-down-active-shadowed" '
+                 + 'onclick="articleAction(this,0,true);"></div>'
+                 + '                  </td>'
+                 + '              </tr>'
+                 + '          </table>';
+    jQuery('#box-vote-buttons').append(buttons);
+    jQuery('#box_title').html("<a class='box_title' target='_blank' "
+        + "style='text-decoration:none;' href='" + json.URL + "'>" 
+        + json.Title + "</a>");
+    jQuery('#frame_content').attr('src', json.URL);
+    jQuery('#bigframe').fadeIn();
+    if( jQuery('#' + duplicateArray[0] + '_' + json.newsID + '_' 
+                + actionArray[1] + '_active').is(':visible') ) {
+        jQuery('#' + duplicateArray[3] + '_' + json.newsID + '_' 
+            + actionArray[1]).hide();
+        jQuery('#' + duplicateArray[3] + '_' + json.newsID + '_' 
+            + actionArray[1] + '_active').show();
+    }
+    else if( jQuery('#' + duplicateArray[0] + '_' + json.newsID + '_' 
+                + actionArray[0] + '_active').is(':visible') ) {
+        jQuery('#' + duplicateArray[3] + '_' + json.newsID + '_' 
+            + actionArray[0]).hide();
+        jQuery('#' + duplicateArray[3] + '_' + json.newsID + '_' 
+            + actionArray[0] + '_active').show();
+    }
+ }
+
+/*
  function openBox(URL, title, id, datatype){
+     alert(URL);
+     return;
     jQuery.get(jableDir + '_count_clicks.php',{id:id});
-    jQuery.get("<?php echo bloginfo('template_directory') ?>/jable_gui/redirect.php", {id:id});
 
-    buttons = jQuery("#"+id+"_all_vote_buttons").clone();
-    buttons.css('display', 'block');
+    var buttons =  '                            <table>'
+                 + '              <tr>'
+                 + '                  <td>'
+                 + '                      <div id="' + duplicateArray[3] + '_' + id + '_' + actionArray[1] + '" class="thumb-up-shadowed" onclick="articleAction(this,1,false);"></div>'
+                 + '                      <div id="' + duplicateArray[3] + '_' + id + '_' + actionArray[1] + '_active" class="thumb-up-active-shadowed" onclick="articleAction(this,1,true);"></div>'
+                 + '                  </td>'
+                 + '                  <td>'
+                 + '                      <div id="' + duplicateArray[3] + '_' + id + '_' + actionArray[0] + '" class="thumb-down-shadowed" onclick="articleAction(this,0,false);"></div>'
+                 + '                      <div id="' + duplicateArray[3] + '_' + id + '_' + actionArray[0] + '_active" class="thumb-down-active-shadowed" onclick="articleAction(this,0,true);"></div>'
+                 + '                  </td>'
+                 + '              </tr>'
+                 + '          </table>';
+
+    //buttons = jQuery("#"+id+"_all_vote_buttons").clone();
+    //buttons.css('display', 'block');
     jQuery('#box-vote-buttons').append(buttons);
     jQuery('#box_title').html("<a class='box_title' target='_blank' style='text-decoration:none;' href='"+URL+"'>"+title+"</a>");
     jQuery('#frame_content').attr('src', URL);
-    jQuery('#bigframe').css('display', 'block');
+    jQuery('#bigframe').fadeIn();
+    if( jQuery('#' + duplicateArray[0] + '_' + id + '_' + actionArray[1] + '_active').is(':visible') ) {
+        jQuery('#' + duplicateArray[3] + '_' + id + '_' + actionArray[1]).hide();
+        jQuery('#' + duplicateArray[3] + '_' + id + '_' + actionArray[1] + '_active').show();
+    }
+    else if( jQuery('#' + duplicateArray[0] + '_' + id + '_' + actionArray[0] + '_active').is(':visible') ) {
+        jQuery('#' + duplicateArray[3] + '_' + id + '_' + actionArray[0]).hide();
+        jQuery('#' + duplicateArray[3] + '_' + id + '_' + actionArray[0] + '_active').show();
+    }
  }
-
+*/
  function closeBox(){
     jQuery('#box-vote-buttons').empty();
     jQuery('#bigframe').css('display', 'none');

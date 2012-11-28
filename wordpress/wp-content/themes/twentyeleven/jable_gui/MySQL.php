@@ -1,14 +1,9 @@
 <?php
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
- * Description of MySQL
- *
- * @author Lars
+ * @author Ingimar Samuelsson
+ * @doc
+ *  Connects to MySQL database
+ * @end
  */
 class MySQL {
     private $db = "db.student.chalmers.se:3306";
