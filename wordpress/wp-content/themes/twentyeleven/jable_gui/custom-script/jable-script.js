@@ -138,8 +138,11 @@ function getNewsJSON() {
         var json = parse.news;
         jQuery('#latest_news').html('');
         for( var i = 0 ; i < json.length ; i++ ) {
+            var template = articleTemplates[4];
+            if( json[i].Image == 'undef' )
+                template = articleTemplates[5];
             jQuery('#latest_news').append( getArticle(json[i], 
-                articleTemplates[5], duplicateArray[1] ) );
+                template, duplicateArray[1] ) );
                 
         }
     });
