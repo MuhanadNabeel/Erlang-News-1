@@ -18,6 +18,7 @@ var articleTemplates;
  */
 jQuery(document).ready(function() {
     jQuery('#rightside').hide();
+    jQuery('#wholepage').hide();
     jQuery('#first_loading').html('<img src="' + jableDir 
         + '/custom-img/loading.gif">');
     jQuery.get(jableDir +'_get_templates.php',{jableurl:jableDir},function(str){
@@ -145,8 +146,10 @@ function getNewsJSON() {
     jQuery.get(jableDir + '_get_news.php',{query:'main',
             offset:offsetArticles,limit:limitArticles},function(outcome) {
         jQuery('#first_loading').hide();
-        if( offsetArticles == 0 )
+        if( offsetArticles == 0 ) {
             jQuery('#rightside').show();
+            jQuery('#wholepage').show();
+        }
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
         articleJSON[0] = json;
@@ -178,9 +181,9 @@ function getNewsJSON() {
             leftArc = jQuery('#news_article_left').height();
             rightArc = jQuery('#news_article_right').height();
         }
-        setUserClicked(parse.cookies.Up_Vote,actionArray[1],true);
-        setUserClicked(parse.cookies.Down_Vote,actionArray[0],true);
-        setUserClicked(parse.cookies.Report_Count,actionArray[2],false);
+        setUserClicked(parse.cookies.Up_Vote,actionArray[1]);
+        setUserClicked(parse.cookies.Down_Vote,actionArray[0]);
+        setUserClicked(parse.cookies.Report_Count,actionArray[2]);
         offsetArticles += limitArticles;
         updatingArticles = false;
     });
@@ -213,7 +216,7 @@ function getNewsJSON() {
      *  Set's user pre-clicked votes and reports
      * @end
      */
-    function setUserClicked(json,str,isVote) {
+    function setUserClicked(json,str) {
         for( var i = 0 ; i < json.length ; i++ ) {
             if( json[i] != '' ) {
                 for( var k = 0 ; k < duplicateArray.length ; k++ ) {
@@ -232,15 +235,21 @@ function getNewsJSON() {
      * @end
      */
     function getArticle(json,template,arrayIndex) {
+        var length = 500;
+        if( arrayIndex > 0 )
+            length = 200;
         var icon_hide = 'visible';
         if( json.Icon == 'undef' )
             icon_hide = 'hidden';
+        var descr = json.Description;
+        if( descr.length > length )
+            descr = descr.substring(0,length) + ' ...';
         return template.replace(/{title}/g,json.Title.replace(/'/g, "´"))
                             .replace(/{down}/g,json.Down_Vote)
                             .replace(/{up}/g,json.Up_Vote)
                             .replace(/{clicks}/g,json.Clicks)
                             .replace(/{host}/g,json.host)
-                            .replace(/{description}/g,json.Description)
+                            .replace(/{description}/g,descr)
                             .replace(/{image}/g,json.Image)
                             .replace(/{icon}/g,json.Icon)
                             .replace(/{URL}/g,json.URL)
