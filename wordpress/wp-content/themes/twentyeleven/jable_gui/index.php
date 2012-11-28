@@ -71,8 +71,8 @@ Div fonts
                     </div>
                 
         </div>
-        <table><tr><td>
-                    <table style="float:right;position:absolute;margin-left:15px;margin-top:15px;">
+        <table style="width:100%;"><tr><td>
+                    <table style="float:right;position:absolute;margin-left:15px;margin-top:15px;" id="wholepage">
                         <tr>
                             <td>
                                 <div style="padding-left:30px;padding-right:10px;background-color:#79a8be;white-space:nowrap;height:25px;float:left;color:black;">HOT NEWS</div>
@@ -88,7 +88,7 @@ Div fonts
                             </td>
                         </tr>
                     </table>
-            <table id="main_div">
+            <table id="main_div" style="width:100%;">
                 <tr><td>
                     <div align="left" id="top_hot_news" style="list-style-type:none;max-width:100%;background-color:white;padding:10px;"></div>
                 </td></tr>
@@ -105,7 +105,7 @@ Div fonts
                 </td></tr>
             </table>
 
-        </td><td class="right-column">
+        </td><td class="right-column" id="rightside">
 
             <table>
                 <tr><td>
