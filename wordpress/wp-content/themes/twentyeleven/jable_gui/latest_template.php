@@ -5,7 +5,7 @@
                 <div style="padding:0.5em;line-height:80%;">
                         <a class="right_title">{title}</a></br>
                         <span class="right_source" style="margin-left:12px;"> 
-                        <a onclick="openBox(<?php echo '{index}' ?>)">{host}</a></span>  
+                        <a onclick="openBox(<?php echo '{id}' ?>)">{host}</a></span>  
                 </div>  
     </div>
     </div>
