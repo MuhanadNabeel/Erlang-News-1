@@ -71,8 +71,8 @@ Div fonts
                     </div>
                 
         </div>
-        <table><tr><td>
-            <table id="main_div">
+        <table style="width:100%;"><tr><td>
+            <table id="main_div" style="width:100%;">
                 <tr><td>
                     <div align="left" id="top_hot_news" style="list-style-type:none;max-width:100%;background-color:white;padding:10px;"></div>
                 </td></tr>
@@ -90,7 +90,7 @@ Div fonts
                 </td></tr>
             </table>
 
-        </td><td class="right-column">
+        </td><td class="right-column" id="rightside">
 
             <table>
                 <tr><td>
