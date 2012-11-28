@@ -1,4 +1,4 @@
-<li style="margin-bottom:20px;">
+<li style="margin-bottom:10px;">
 	<table style="border:solid 1px rgba(0,0,0,0.2);width:100%;padding-top:0px;padding:5px;">
 		<tr>
 			<td>
