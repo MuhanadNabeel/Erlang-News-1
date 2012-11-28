@@ -4,8 +4,9 @@ var actionArray = new Array('votedown','voteup','report')
 var articleTemplates;
 
 jQuery(document).ready(function() {
-    jQuery('#first_loading').html('<img src="' + jableDir + '/custom-img/loading.gif">');
-    jQuery.get(jableDir + '_get_templates.php',{jableurl:jableDir},function(str){
+    jQuery('#first_loading').html('<img src="' + jableDir 
+        + '/custom-img/loading.gif">');
+    jQuery.get(jableDir +'_get_templates.php',{jableurl:jableDir},function(str){
         articleTemplates = str.split('<split_between_templates>');
         getNewsJSON();
     });
@@ -19,28 +20,41 @@ function articleAction(item,action,undo) {
     updateCounter(id,action,undo);
     isUserAction[id][Math.floor(action/2)] = true;
     changeUserButtons(item,id);
-    jQuery.post(jableDir + '_article_action.php',{id:id,action:action,undo:undo},function() {
+    jQuery.post(jableDir + '_article_action.php',
+            {id:id,action:action,undo:undo},function() {
         isUserAction[id][Math.floor(action/2)] = false;
     });
     function updateCounter(id,action,undo) {
         for( var i = 0 ; i < duplicateArray.length ; i++ ) {
             if( undo == true && action == 0 )
-                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] + '_count',false);
+                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
+                    + actionArray[0] + '_count',false);
             else if( undo == true && action == 1 )
-                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1] + '_count',false);
+                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
+                    + actionArray[1] + '_count',false);
             else if( undo == false && action == 0 ) {
-                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] + '_count',true);
-                if( jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1] + '_active').is(':visible') ) {
-                    iterateCounter('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1] + '_count',false);
-                    jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1] + '_active').hide();
-                    jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1]).show();
+                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
+                    + actionArray[0] + '_count',true);
+                if( jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                            + actionArray[1] + '_active').is(':visible') ) {
+                    iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
+                        + actionArray[1] + '_count',false);
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + actionArray[1] + '_active').hide();
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + actionArray[1]).show();
                 }
             } else if( undo == false && action == 1 ) {
-                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' + actionArray[1] + '_count',true);
-                if( jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] + '_active').is(':visible') ) {
-                    iterateCounter('#' + id + '_' + actionArray[0] + '_count',false);
-                    jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] + '_active').hide();
-                    jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0]).show();
+                iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
+                    + actionArray[1] + '_count',true);
+                if( jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + actionArray[0] + '_active').is(':visible') ) {
+                    iterateCounter('#' + id + '_' + actionArray[0] 
+                        + '_count',false);
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + actionArray[0] + '_active').hide();
+                    jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + actionArray[0]).show();
                 }
             }
         }
@@ -64,16 +78,23 @@ function articleAction(item,action,undo) {
             contrAction = actionArray[1];
         for( var i = 0 ; i < duplicateArray.length ; i++ ) {
             if( htmlID.indexOf('_active') != -1 ) {
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' + action + '_active' ).hide();
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' + action).show();
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                    + action + '_active' ).hide();
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                    + action).show();
             }
             else {
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' + action).hide();
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' + action + '_active' ).show();
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                    + action).hide();
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                    + action + '_active' ).show();
             }
-            if( jQuery('#' + duplicateArray[i] + '_' + id + '_' + contrAction + '_active' ).is(':visible') ) {
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' + contrAction + '_active' ).hide();
-                jQuery('#' + duplicateArray[i] + '_' + id + '_' + contrAction).show();
+            if( jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                        + contrAction + '_active' ).is(':visible') ) {
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                    + contrAction + '_active' ).hide();
+                jQuery('#' + duplicateArray[i] + '_' + id + '_' 
+                    + contrAction).show();
             }
         }
     }
@@ -89,10 +110,12 @@ function getNewsJSON() {
         var json = parse.news;
         jQuery('#latest_news').html('');
         for( var i = 0 ; i < json.length ; i++ ) {
-            jQuery('#latest_news').append( getArticle(json[i], articleTemplates[5], duplicateArray[1] ) );
+            jQuery('#latest_news').append( getArticle(json[i], 
+                articleTemplates[5], duplicateArray[1] ) );
         }
     });
-    jQuery.get(jableDir + '_get_news.php',{query:'main',offset:offsetArticles,limit:limitArticles},function(outcome) {
+    jQuery.get(jableDir + '_get_news.php',{query:'main',
+            offset:offsetArticles,limit:limitArticles},function(outcome) {
         jQuery('#first_loading').hide();
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
@@ -113,11 +136,14 @@ function getNewsJSON() {
             else if( json[i].imgwidth > 120 )
                 template = articleTemplates[2]
             if( i == 0 )
-                jQuery('#top_news').append( getArticle(json[i], template , duplicateArray[0] ) );
+                jQuery('#top_news').append( getArticle(json[i], template, 
+                    duplicateArray[0] ) );
             else if( leftArc < rightArc )
-                jQuery('#news_article_left').append( getArticle(json[i], template, duplicateArray[0] ) );
+                jQuery('#news_article_left').append( getArticle(json[i], 
+                    template, duplicateArray[0] ) );
             else
-                jQuery('#news_article_right').append( getArticle(json[i], template, duplicateArray[0] ) );
+                jQuery('#news_article_right').append( getArticle(json[i], 
+                    template, duplicateArray[0] ) );
             
             leftArc = jQuery('#news_article_left').height();
             rightArc = jQuery('#news_article_right').height();
@@ -131,11 +157,15 @@ function getNewsJSON() {
         for( var i = 0 ; i < json.length ; i++ ) {
             if( json[i] != '' ) {
                 for( var k = 0 ; k < duplicateArray.length ; k++ ) {
-                    jQuery('#' + duplicateArray[k] + '_' + json[i] + '_' + str).hide();
-                    jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' + str + '_active').show();
+                    jQuery('#' + duplicateArray[k] + '_' + json[i] + '_' 
+                        + str).hide();
+                    jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' 
+                        + str + '_active').show();
                     if( isVote ) {
-                        jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' + str + '_extra').hide();
-                        jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' + str + '_extra_active').show();
+                        jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' 
+                            + str + '_extra').hide();
+                        jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' 
+                            + str + '_extra_active').show();
                     }
                 }
             }
@@ -166,6 +196,7 @@ function getNewsJSON() {
     }
 }
 $(window).scroll(function() {
-    if($(window).scrollTop()+100 >= ($(document).height() - ($(window).height())) && updatingArticles == false )
+    if($(window).scrollTop()+100 >= ($(document).height() - 
+            ($(window).height())) && updatingArticles == false )
         getNewsJSON();
 });
