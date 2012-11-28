@@ -96,6 +96,9 @@ Div fonts
                 <tr><td>
                     <div class="news-headlines" style="width:100%;">Latest news</div>
                 </td></tr>
+                <tr><td>
+                    <ul id="latest_news" style="list-style-type:none;margin:0;"></ul>
+                </td></tr>
             </table>
 
         </td></tr></table>
