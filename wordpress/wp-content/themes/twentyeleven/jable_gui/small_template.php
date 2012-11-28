@@ -26,7 +26,7 @@
 		<tr>
 			<td>
 
-				<div style="line-height:120%;font-face:'arial';font-weight:bold;margin-bottom:10px;cursor:pointer;">{title}</div>
+				<div style="line-height:120%;font-face:'arial';font-weight:bold;margin-bottom:10px;cursor:pointer;" onclick="openBox(<?php echo '{id},{index}' ?>);">{title}</div>
 			</td>
 		</tr>
 

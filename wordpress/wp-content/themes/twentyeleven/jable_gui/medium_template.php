@@ -26,7 +26,7 @@
 		<tr>
 			<td>
 
-				<div style="line-height:120%;font-face:'arial';font-weight:bold;margin-bottom:10px;cursor:pointer;">{title}</div>
+				<div style="line-height:120%;font-face:'arial';font-weight:bold;margin-bottom:10px;cursor:pointer;" onclick="openBox(<?php echo '{id},{index}' ?>);">{title}</div>
 			</td>
 		</tr>
 
@@ -34,7 +34,7 @@
 		<tr>
 			<td>
 				<div style="line-height:120%;font-family:'MyriadPro regular';font-size:10pt;margin-bottom:20px;">
-					<img onclick="openBox(<?php echo '{id}' ?>);" src="{image}" style="margin-right:10px;margin-bottom:10px;background-size:100%;max-width:150px;cursor:pointer;float:left">
+					<img onclick="openBox(<?php echo '{id},{index}' ?>);" src="{image}" style="margin-right:10px;margin-bottom:10px;background-size:100%;max-width:150px;cursor:pointer;float:left">
 					{description}
 				</div>
 			</td>
