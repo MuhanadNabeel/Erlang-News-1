@@ -28,11 +28,15 @@ get_info(Url)->
 	{success,{_,[]}}->
 	    {error, empty_body};
 
-	{success, {_, Body}}->
-	    Html = mochiweb_html:parse(Body),
-	    [get_title(Html),get_descriptions(desc,Html),get_icon(Html,Url),
-	     get_image(Html,Url)];    
-          
+	{success, {Headers, Body}}->
+	    case is_html(Headers) of
+		true ->
+		    Html = mochiweb_html:parse(Body),
+		    [get_title(Html), get_descriptions(desc,Html),
+		     get_icon(Html,Url), get_image(Html,Url)];
+		false ->
+		    {error, page_not_text}
+	    end;
 	{error, Reason} ->
 	    {error,Reason}
 	        
@@ -97,8 +101,8 @@ end_url(reddit,Url)->
 end_url(google,Url)->   
     end_url(iocoder,Url);
       
-end_url(trap_exit, Url)->
-    Url;
+end_url(twitter, Url)->
+    end_url(iocoder,Url);
 
 end_url(dzone, Url)->
   Result  = ernews_defuns:read_web(dzone, Url),
@@ -331,6 +335,19 @@ relevancy_check(Url,{Good,Bad,Tags})->
 
 %-------------------------------------------------------------------------------%
 %% @author Khashayar Abdoli 
+is_html(Headers) ->
+    case proplists:get_value("content-type",Headers) of
+	undefined ->
+	    true;
+	R ->
+	    case string:str(R, "html") of
+		0 ->
+		    false;
+		_ ->
+		    true
+	    end
+    end.
+
 get_content_from_list(List,Filter,Value) ->
     get_content_from_list(List,Filter,Value,[]).
 

@@ -84,6 +84,7 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast({parse, Source, Url, Ts}, State) ->
+    io:format("Geetting Source ~p~n" , [Url]),
     ernews_html:start_link(Url, Source, Ts,State),
     {noreply, State};
 handle_cast({submit, Source, Url, Title, Description, 
@@ -92,17 +93,16 @@ handle_cast({submit, Source, Url, Title, Description,
     Result = ernews_db:write(news, 
 		    {Source, Url, Title, Description, 
 		     Icon, Image ,PubDate , Tags}),
-%    error_logger:info_report(["Submitting",{url,Url},{source,Source},
-%			      {result,Result}]),
-%    io:format("Submitted With~p~n",[Result]),
+    error_logger:info_report(["New Article",{url,Url},{source,Source},
+			      {result,Result}]),
     {noreply, State};
 handle_cast({error, Reason, Url, Source}, State) ->
-    %io:format("ERRORRR HERE :  ~p~n",[Reason]),
-%   error_logger:info_report(["Not Submitting",{url,Url},{source,Source},
+    %error_logger:info_report(["Broken",{url,Url},{source,Source},
 %			      {reason,Reason}]),
     ernews_db:write(broken, {Url, Reason, Source}),
     {noreply, State};
-handle_cast(_ ,State) ->
+handle_cast(Msg ,State) ->
+    error_logger:info_report(["WTF",{message,Msg}]),
     {noreply, State}.
 
 
