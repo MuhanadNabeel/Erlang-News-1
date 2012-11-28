@@ -243,8 +243,10 @@ get_image(Html,Url)->
 	    case find_image(Img,[],Url) of
 		[] ->
 		    {ok, "undef"};
-		All_Images ->
+	All_Images ->
+		   
 		   {ok, element(2,lists:max(All_Images))}
+
 	    end;
 
 	_ ->
@@ -287,7 +289,7 @@ get_icon(Html,Url)->
 	    
 	    case Icon of
 		[]->
-		    {ok, "undef"};
+		    {ok, "https://www.erlang-solutions.com/misc/favicon.ico"};
 		_ ->
 		    
 		    case lists:sublist(hd(Icon),1) =:="/" of
@@ -475,9 +477,9 @@ get_image_property([],{Size,Source},_)->
     {Size,Source};
 %The bitlist from mochiweb contains Key,Value structure of the images tag
 get_image_property([{Key, Value}|T],{Size,Source},Url) ->
-    case bitstring_to_list(Key) of
-
-	"src" ->
+    case {bitstring_to_list(Key),string:str(bitstring_to_list(Value), "avatar")} of
+       
+	{"src",0} ->
 	     % Source URL found, add it to the buffer
 	    % Check if the src url does not contain the proper structure
 	     case lists:sublist(bitstring_to_list(Value), 1) =:= "/" of 
@@ -519,7 +521,7 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 	     end;
   
 	
-	"class" ->
+	{"class",_} ->
 	    % Ingnore all images that are avatars (Mainly from blogs)
 	    case bitstring_to_list(Value) of
 		[$a,$v,$a,$t,$a,$r|_] ->
