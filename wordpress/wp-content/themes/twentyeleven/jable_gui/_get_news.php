@@ -1,4 +1,10 @@
 <?php
+/**
+ * @author Ingimar Samuelsson
+ * @doc
+ *  Get's jsons with information about articles and user-interaction
+ * @end
+ */
 if(class_exists('MySQL') === FALSE)
     include 'MySQL.php';
 $sql = new MySQL();
@@ -15,8 +21,6 @@ $queries = Array('latest'
                         =>'SELECT *, (Up_Vote+Clicks-Down_Vote) AS Ratio FROM 
                         ernews_news  WHERE Report_Count < 5 
                         ORDER BY Ratio DESC LIMIT ' . $_GET['limit']);
-// SELECT *, ((clicks+up_vote-down_vote) * 100000/ pow((TIME_TO_SEC(TIMEDIFF(NOW(),pubdate))/3600 + 2),1.5)) score from ernews_news order by score DESC
-// SELECT * FROM ernews_news ORDER BY Pubdate DESC LIMIT 3;
 $result = $sql->sqlQuery($queries[ $_GET['query'] ]);
 $outcome = Array();
 while( ($row = mysql_fetch_array($result)) !== FALSE ) {

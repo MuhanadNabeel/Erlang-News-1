@@ -184,6 +184,12 @@ function getNewsJSON() {
         setUserClicked(parse.cookies.Report_Count,actionArray[2],false);
         updatingArticles = false;
     });
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Get information
+     * @end
+     */
     function fillRightSide(location,index) {
         jQuery.get(jableDir + '_get_news.php',{query:location,limit:5},function(outcome) {
             var parse = jQuery.parseJSON(outcome);
@@ -201,6 +207,12 @@ function getNewsJSON() {
             }
         });        
     }
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Set's user pre-clicked votes and reports
+     * @end
+     */
     function setUserClicked(json,str,isVote) {
         for( var i = 0 ; i < json.length ; i++ ) {
             if( json[i] != '' ) {
@@ -209,16 +221,16 @@ function getNewsJSON() {
                         + str).hide();
                     jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' 
                         + str + '_active').show();
-                    if( isVote ) {
-                        jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' 
-                            + str + '_extra').hide();
-                        jQuery('#' + duplicateArray[k] + '_'  + json[i] + '_' 
-                            + str + '_extra_active').show();
-                    }
                 }
             }
         }
     }
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Replace template with information related to article
+     * @end
+     */
     function getArticle(json,template,arrayIndex) {
         var icon_hide = 'visible';
         if( json.Icon == 'undef' )
