@@ -10,7 +10,7 @@ $queries = Array('latest'
                         100000/ pow((TIME_TO_SEC(TIMEDIFF(NOW(),pubdate))/3600 
                         + 2),1.5)) score from ernews_news order by score DESC 
                         LIMIT ' . $_GET['limit'] . ' OFFSET ' . $_GET['offset'],
-                'hottest'
+                'top'
                         =>'SELECT *, (Up_Vote+Clicks-Down_Vote) AS Ratio FROM 
                         ernews_news ORDER BY Ratio DESC LIMIT ' . $_GET['limit']);
 // SELECT *, ((clicks+up_vote-down_vote) * 100000/ pow((TIME_TO_SEC(TIMEDIFF(NOW(),pubdate))/3600 + 2),1.5)) score from ernews_news order by score DESC
