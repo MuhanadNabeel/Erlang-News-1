@@ -55,8 +55,6 @@ write(tag, [H|T], ID) ->
     write(tag, T, ID).
 	
 	
-qFix(A) when is_tuple(A) ->
-    qFix(lists:concat(tuple_to_list(A)), []);
 qFix(A) when is_atom(A) ->
     qFix(atom_to_list(A),[]);
 	
@@ -67,6 +65,8 @@ qFix({{YY,MM,DD},{HH,Mm,SS}}) ->
 	integer_to_list(HH) ++ ":" ++
 	integer_to_list(Mm) ++ ":" ++
 	integer_to_list(SS);
+qFix(A) when is_tuple(A) ->
+    qFix(lists:concat(tuple_to_list(A)), []);
 qFix(Str) ->
     qFix(Str, []).	
 

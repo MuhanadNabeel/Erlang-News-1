@@ -151,6 +151,7 @@ read_url(read_url, Record=#state{}) ->
 check_relevancy(check_relevancy, Record=#state{}) ->
     case ernews_htmlfuns:relevancy_check(Record#state.url, Record#state.words) of
 	{ok, Tags} ->
+	    io:format("subit sending",[]),
 	    {stop, {shutdown,submit}, Record#state{tags= Tags}};
 	{error, Reason} ->
 	    {stop, {shutdown, Reason} , Record}
@@ -226,17 +227,18 @@ handle_info(_Info, StateName, State) ->
 
 terminate({shutdown, already_exists} , _StateName, _State) ->
     normal;
-terminate({shutdown, Reason} , _StateName, Record = #state{}) ->
-    gen_server:cast(ernews_linkserv, 
-		    {error, Reason, Record#state.url, Record#state.source}),
-    normal;
 terminate({shutdown, submit}, _StateName,Record = #state{}) -> 
+    io:format("subit sent",[]),
     gen_server:cast(ernews_linkserv,
 		    {submit, Record#state.source , Record#state.url,
 		     Record#state.title, Record#state.description, 
 		     Record#state.ts, Record#state.icon, 
 		     Record#state.image, Record#state.tags
 		    }),
+    normal;
+terminate({shutdown, Reason} , _StateName, Record = #state{}) ->
+    gen_server:cast(ernews_linkserv, 
+		    {error, Reason, Record#state.url, Record#state.source}),
     normal;
 terminate(Reason , StateName , Record = #state{}) -> 
     error_logger:error_report(["Error in HtmlFuns",{state,StateName},
