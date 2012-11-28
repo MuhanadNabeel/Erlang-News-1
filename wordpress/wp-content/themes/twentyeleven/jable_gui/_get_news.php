@@ -2,14 +2,17 @@
 if(class_exists('MySQL') === FALSE)
     include 'MySQL.php';
 $sql = new MySQL();
-$queries = Array('latest'=>'SELECT * FROM ernews_news 
+$queries = Array('latest'
+                        =>'SELECT * FROM ernews_news 
                             ORDER BY Pubdate DESC LIMIT ' . $_GET['limit'],
-                'main'=>'SELECT *, ((clicks+up_vote-down_vote) * 
+                'main'
+                        =>'SELECT *, ((clicks+up_vote-down_vote) * 
                         100000/ pow((TIME_TO_SEC(TIMEDIFF(NOW(),pubdate))/3600 
                         + 2),1.5)) score from ernews_news order by score DESC 
                         LIMIT ' . $_GET['limit'] . ' OFFSET ' . $_GET['offset'],
-                'hottest'=>'SELECT *, (Up_Vote+Clicks-Down_Vote) AS Ratio FROM 
-                    ernews_news ORDER BY Ratio DESC LIMIT ' . $_GET['limit']);
+                'hottest'
+                        =>'SELECT *, (Up_Vote+Clicks-Down_Vote) AS Ratio FROM 
+                        ernews_news ORDER BY Ratio DESC LIMIT ' . $_GET['limit']);
 // SELECT *, ((clicks+up_vote-down_vote) * 100000/ pow((TIME_TO_SEC(TIMEDIFF(NOW(),pubdate))/3600 + 2),1.5)) score from ernews_news order by score DESC
 // SELECT * FROM ernews_news ORDER BY Pubdate DESC LIMIT 3;
 $result = $sql->sqlQuery($queries[ $_GET['query'] ]);

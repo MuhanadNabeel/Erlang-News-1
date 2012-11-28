@@ -5,7 +5,7 @@
                 <div style="padding:0.5em;line-height:80%;">
                         <a class="right_title">{title}</a></br>
                         <span class="right_source" style="margin-left:12px;"> 
-                        <a onclick="openBox(<?php echo '{id}' ?>)">{host}</a></span>  
+                        <a onclick="openBox(<?php echo '{id},1' ?>)">{host}</a></span>  
                 </div>  
     </div>
     </div>
@@ -26,7 +26,7 @@
                     <td>
                     <div style="width:100%;">
                         <div class="blue-desc" style="line-height:130%;">{description}</div><span class="blue-readMore" ><a style="cursor:pointer;"  target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
-                            return true;" onmouseout="window.status=''" onclick="openBox(<?php echo '{id}'?>)">Read more..</a></span>
+                            return true;" onmouseout="window.status=''" onclick="openBox(<?php echo '{id},1'?>)">Read more..</a></span>
                         <div class="seperator" style="margin-top:20px"></div>
                         
                         <div class="right_source" style="width:100%;float:right;margin-right:5px;">Published: {pubdate}</div>

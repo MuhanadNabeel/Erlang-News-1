@@ -102,15 +102,20 @@ function closeAllStuff(cbFunc){
  }
 
  
-  function openBox(id){
-    var index = -1;
-    for( var i = 0 ; i < articleJSON.length ; i++ ) {
-        if( id == articleJSON[i].newsID ) {
+  function openBox(id,index){
+    var json = articleJSON[index];  
+    index = -1;
+    for( var i = 0 ; i < json.length ; i++ ) {
+        if( id == json[i].newsID ) {
             index = i;
-            i = articleJSON.length-1;
+            i = json.length-1;
         }
     }
-    var json = articleJSON[index];
+    if( index == -1 ) {
+        alert('Page not found');
+        return;
+    }
+    json = json[index];
     jQuery.get(jableDir + '_count_clicks.php',{id:json.newsID});
 
     var buttons =  '                            <table>'
@@ -142,7 +147,7 @@ function closeAllStuff(cbFunc){
         + "style='text-decoration:none;' href='" + json.URL + "'>" 
         + json.Title + "</a>");
     jQuery('#frame_content').attr('src', json.URL);
-    jQuery('#bigframe').fadeIn();
+    jQuery('#bigframe').show();
     if( jQuery('#' + duplicateArray[0] + '_' + json.newsID + '_' 
                 + actionArray[1] + '_active').is(':visible') ) {
         jQuery('#' + duplicateArray[3] + '_' + json.newsID + '_' 

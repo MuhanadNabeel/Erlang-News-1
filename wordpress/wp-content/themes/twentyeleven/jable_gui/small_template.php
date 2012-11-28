@@ -7,7 +7,7 @@
 		<table cellspacing="0" cellpadding="0"><tr><td style="vertical-align:top;padding-right:5px;">
 			<img src="{icon}" align="left" style="height:18px;width:18px;margin-top:6px;margin-right:0px;visibility:<?php echo '{icon_hide}'; ?>;"></td>
 			<td><span class="main-title"><a style="cursor:pointer;" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
-           return true;" onmouseout="window.status=''" onclick="openBox(<?php echo '{id}' ?>)">{title}</a></span></td></tr></table>
+           return true;" onmouseout="window.status=''" onclick="openBox(<?php echo '{id},0' ?>)">{title}</a></span></td></tr></table>
 		
 		
 	</div>
@@ -56,7 +56,7 @@
 		</div>
 		<div style="position:absolute;right:0;margin-top:10px;">
 			<span class="right_source" style="font-size:8pt;">Source: 
-		        <a onclick="openBox(<?php echo '{id}' ?>)" style="font-size:8pt;cursor:pointer;">{host}</a>
+		        <a onclick="openBox(<?php echo '{id},0' ?>)" style="font-size:8pt;cursor:pointer;">{host}</a>
 		    </span>
 	    </div>
 	

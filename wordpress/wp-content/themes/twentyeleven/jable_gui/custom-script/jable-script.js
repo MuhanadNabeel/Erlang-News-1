@@ -122,7 +122,7 @@ function articleAction(item,action,undo) {
 var updatingArticles = false;
 var offsetArticles = 0;
 var limitArticles = 20;
-var articleJSON;
+var articleJSON = new Array();
 /**
  * @author Ingimar Samuelsson
  * @doc
@@ -136,7 +136,22 @@ function getNewsJSON() {
     jQuery.get(jableDir + '_get_news.php',{query:'latest',limit:5},function(outcome) {
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
+        articleJSON[1] = json;
         jQuery('#latest_news').html('');
+        for( var i = 0 ; i < json.length ; i++ ) {
+            var template = articleTemplates[4];
+            if( json[i].Image == 'undef' )
+                template = articleTemplates[5];
+            jQuery('#latest_news').append( getArticle(json[i], 
+                template, duplicateArray[1] ) );
+                
+        }
+    });
+    jQuery.get(jableDir + '_get_news.php',{query:'hottest',limit:5},function(outcome) {
+        var parse = jQuery.parseJSON(outcome);
+        var json = parse.news;
+        articleJSON[2] = json;
+        jQuery('#top_news').html('');
         for( var i = 0 ; i < json.length ; i++ ) {
             var template = articleTemplates[4];
             if( json[i].Image == 'undef' )
@@ -151,7 +166,7 @@ function getNewsJSON() {
         jQuery('#first_loading').hide();
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
-        articleJSON = json;
+        articleJSON[0] = json;
         if( json.length == 0 ){
             setTimeout('getNewsJSON()', 10000);
             return;
