@@ -289,7 +289,7 @@ get_icon(Html,Url)->
 	    
 	    case Icon of
 		[]->
-		    {ok, "undef"};
+		    {ok, "https://www.erlang-solutions.com/misc/favicon.ico"};
 		_ ->
 		    
 		    case lists:sublist(hd(Icon),1) =:="/" of
