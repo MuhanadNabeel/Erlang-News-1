@@ -1,4 +1,4 @@
-<li style="margin-bottom:20px;">
+<li style="margin-bottom:10px;">
 	<table style="border:solid 1px rgba(0,0,0,0.2);width:100%;padding-top:0px;padding:5px;">
 		<tr>
 			<td>
@@ -33,8 +33,8 @@
 
 		<tr>
 			<td>
-				<div style="line-height:120%;font-family:'MyriadPro regular';font-size:10pt;margin-bottom:20px;vertical-align:top;">
-					<img src="{image}" style="width:60%;cursor:pointer;float:right;" onclick="openBox(<?php echo '{id},{index}' ?>);">
+				<div style="line-height:120%;font-family:'MyriadPro regular';font-size:10pt;vertical-align:top;">
+					<img src="{image}" style="width:60%;cursor:pointer;float:right;margin-left:5px;" onclick="openBox(<?php echo '{id},{index}' ?>);">
 					{description}
 					
 				</div>
