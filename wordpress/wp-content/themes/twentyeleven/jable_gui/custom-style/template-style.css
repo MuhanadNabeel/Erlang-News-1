@@ -497,18 +497,16 @@ Thumbs up and down.
 .arrow-right {
     width: 0;
     height: 0;
-    border-right: 25px solid rgba(61,104,136,0.5);
-    border-bottom: 25px solid transparent;
+    border-left: 25px solid #79a8be;
+    border-top: 25px solid transparent;
 }
 .arrow-left {
-    width: 0; 
-    height: 0; 
-    margin-left: -17px;
-    margin-top: 15px;
-    border-top: 12px solid transparent;
-    border-bottom: 12px solid transparent; 
-    border-right:12px solid rgba(0,0,0,0.5); 
+    width: 0;
+    height: 0;
+    border-right: 25px solid #3f758b;
+    border-bottom: 25px solid transparent;
 }
+
 
 .right-column{
     width:20%;

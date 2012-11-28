@@ -61,6 +61,11 @@ function animate(id){
         easing: 'swing'});*/
  }
 
+function fadeStuffIn(id){
+    jQuery('#'+id+'_test_top').animate({opacity : '1.0'}, 'slow');
+    jQuery('#'+id+'_test_bottom').animate({opacity : '1.0'}, 'slow');
+}
+
 function updateRight(id){
     $data = $holder.clone();
     var $filteredData1 = $data.find('li[data-type=right_archive_'+(id-1)+']');

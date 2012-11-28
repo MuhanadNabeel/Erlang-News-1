@@ -1,75 +1,88 @@
-
-<li data-id="{id}_left_item" id="left_{datatype}">
-<div>
-
-<div class="newsTemp" id="{datatype}" style="background-color:rgba(255,255,255, 0.7)">
-	<div class="title">
-		<table cellspacing="0" cellpadding="0"><tr><td style="vertical-align:top;padding-right:5px;">
-			<img src="{icon}" align="left" style="height:18px;width:18px;margin-top:6px;margin-right:0px;visibility:<?php echo '{icon_hide}'; ?>;"></td>
-			<td><span class="main-title" style=""><a style="cursor:pointer;" target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
-           return true;" onmouseout="window.status=''" onclick="openBox(<?php echo '{id},0' ?>);">{title}</a></span></td></tr></table>
-		
-		
-	</div>
-	<div align="right" style="height:.5em;background-color:#aacc77;"><div class="triangle-topright"></div></div>
-	<div id="pub">Published: {pubdate}</div>
-	<table style="width:100%;margin-bottom:5px;" cellspacing="0" cellpadding="0">
-
-		<tr><td class="voteButtons">
-			<div >
-				<table>
-					<tr><div class="vote-up" id="{location}_{id}_{action1}" onclick="articleAction(this,1,false)" align="center"><a id="{location}_{id}_{action1}_count" class="likes">{up}</a></div>
-						<div class="vote-up-active" id="{location}_{id}_{action1}_active" onclick="articleAction(this,1,true)" align="center"><a id="{location}_{id}_{action1}_count_active" class="likes">{up}</a></div></tr>
-					<tr><div class="vote-down" id="{location}_{id}_{action0}" onclick="articleAction(this,0,false)" align="center"><a id="{location}_{id}_{action0}_count" class="likes">{down}</a></div>
-						<div class="vote-down-active" id="{location}_{id}_{action0}_active" onclick="articleAction(this,0,true)" align="center"><a id="{location}_{id}_{action0}_count_active" class="likes">{down}</a></div></tr>
+<li style="margin-bottom:20px;">
+	<table style="border:solid 1px rgba(0,0,0,0.2);width:100%;padding-top:0px;padding:5px;">
+		<tr>
+			<td>
+				<table style="width:100%;">
+					<td style="white-space:nowrap;float:left;">
+						<div style="vertical-align:middle;">
+							<img src="{icon}" style="height:14px;width:14px;margin-top:6px;margin-right:0px;visibility:<?php echo '{icon_hide}'; ?>;">
+							<div style="font-family:'Times New Roman';font-style:italic;font-size:6pt;color:rgba(0,0,0,0.4)">Published: {pubdate}</div>
+						</div>
+					</td>
+					<td style="white-space:nowrap;float:right">
+						<div>
+							<span class="readMore" style="font-size:8pt;">
+								<a style="cursor:pointer;color:#b9b9b9" id="{location}_{id}_{action2}" onclick="articleAction(this,2,false);fadeWindow('{id}_reported_window', 'reported!');">report article</a>
+								<a style="cursor:pointer;display:none;color:#b20000" id="{location}_{id}_{action2}_active" onclick="articleAction(this,2,true);fadeWindow('{id}_reported_window', 'unreported!');">unreport article</a>
+								<div class="window" id="{id}_reported_window" style="margin-top:-40px;"><div id="{id}_reported_window_text"></div>
+							</span>
+						</div>
+					</td>
 				</table>
+			</td>
+		</tr>
+		
+
+		<tr>
+			<td>
+
+				<div style="line-height:120%;font-face:'arial';font-weight:bold;margin-bottom:10px;cursor:pointer;">{title}</div>
+			</td>
+		</tr>
+
+
+		<tr>
+			<td>
+				<div style="line-height:120%;font-family:'MyriadPro regular';font-size:10pt;margin-bottom:20px;vertical-align:top;">
+					<img src="{image}" style="width:60%;cursor:pointer;float:right;" onclick="openBox(<?php echo '{id}' ?>);">
+					{description}
+					
 				</div>
 			</td>
-			<td><div id="content" class="content">
-				<img src="{image}" style="width:100%;cursor:pointer;" onclick="openBox(<?php echo '{id}' ?>);">
-			<div style="line-height:100%;">{description}</div> <span class="readMore" style="cursor:pointer;" onclick="openBox('{URL}', '{title}', '{id}', '{datatype}')">Read more..</span></div></td>
-				
-				
-                        	<table id="{id}_all_vote_buttons" style="display:none;">
-	                        	<tr>
-		                    		<td>
-			                            <div id="{location}_{id}_{action1}_extra" class="thumb-up-shadowed" onclick="articleAction(this,1,false);getNewsJSON(false, true)"></div>
-			                            <div id="{location}_{id}_{action1}_extra_active" class="thumb-up-active-shadowed" onclick="articleAction(this,1,true);getNewsJSON(false, true)"></div>
-			                        </td>
-			                        <td>
-			                            <div id="{location}_{id}_{action0}_extra" class="thumb-down-shadowed" onclick="articleAction(this,0,false);getNewsJSON(false, true)"></div>
-			                            <div id="{location}_{id}_{action0}_extra_active" class="thumb-down-active-shadowed" onclick="articleAction(this,0,true);getNewsJSON(false, true)"></div>
-		                            </td>
-	                        	</tr>
-                        	</table>
-                
+		</tr>
 
 
-			</tr>
+		<tr>
+			<td>
+				<table style="width:100%;">
+					<tr>
+						<td style="float:left;">
+							<span class="right_source" style="font-size:8pt;"> 
+						        <a onclick="openBox(<?php echo '{id},{index}' ?>)" style="font-size:8pt;cursor:pointer;">{host}</a>
+						    </span>
+						</td>
+						<td style="float:right;">
+							<table>
+								<td>
+									<div >
+									<table style="margin-right:13px;">
+										<tr>
+											<td>
+												<div class="thumb-up" id="{location}_{id}_{action1}" onclick="articleAction(this,1,false)" align="center" style="">
+													<a id="{location}_{id}_{action1}_count" class="likes" style="float:left;margin-left:-13px;margin-top:3px">{up}</a>
+												</div>
+												<div class="thumb-up-active" id="{location}_{id}_{action1}_active" onclick="articleAction(this,1,true)" align="center">
+													<a id="{location}_{id}_{action1}_count_active" class="likes" style="float:left;margin-left:-13px;margin-top:3px">{up}</a>
+												</div>
+											</td>
+											<td>
+												<div class="thumb-down" id="{location}_{id}_{action0}" onclick="articleAction(this,0,false)" align="center">
+													<a id="{location}_{id}_{action0}_count" class="likes" style="float:right;margin-right:-13px;margin-top:3px">{down}</a>
+												</div>
+												<div class="thumb-down-active" id="{location}_{id}_{action0}_active" onclick="articleAction(this,0,true)" align="center">
+													<a id="{location}_{id}_{action0}_count_active" class="likes" style="float:right;margin-right:-13px;margin-top:3px">{down}</a>
+												</div>
+											</td>
+										</tr>
+									</table>
+									</div>
+								</td>
+							</table>
 
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
 	</table>
-	<div style="vertical-align:top;width:100%;position:relative;height:10pt;">
-		<div style="position:absolute;left:0;margin-top:10px;">
-			<span class="readMore" style="font-size:8pt;">
-				<a style="cursor:pointer;color:#b9b9b9" id="{location}_{id}_{action2}" onclick="articleAction(this,2,false);fadeWindow('{id}_reported_window', 'reported!');">report article</a>
-				<a style="cursor:pointer;display:none;color:#b20000" id="{location}_{id}_{action2}_active" onclick="articleAction(this,2,true);fadeWindow('{id}_reported_window', 'unreported!');">unreport article</a>
-			</span>
-		</div>
-		<div style="position:absolute;right:0;margin-top:10px;">
-			<span class="right_source" style="font-size:8pt;">Source: 
-		        <a onclick="openBox(<?php echo '{id},0' ?>)" style="font-size:8pt;cursor:pointer;">{host}</a>
-		    </span>
-	    </div>
-	
-	<div class="window" id="{id}_reported_window"><div id="{id}_reported_window_text"></div></div>
-	</div>
-
-
-
-		<div style="height:1px;width:100%;background-color:#c6c6c6;"></div>
-	
-
-	</br>
-</div>
-</div>
 </li>
