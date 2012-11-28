@@ -94,10 +94,16 @@ Div fonts
 
             <table>
                 <tr><td>
-                    <div class="news-headlines" style="width:100%;">Latest news</div>
+                    <div class="news-headlines" style="box-shadow:inset 0px -3px 10px -3px rgba(0,0,0,0.5);">Latest news</div>
                 </td></tr>
                 <tr><td>
                     <ul id="latest_news" style="list-style-type:none;margin:0;"></ul>
+                </td></tr>
+                <tr><td>
+                    <div class="news-headlines" style="box-shadow:inset 0px -3px 10px -3px rgba(0,0,0,0.5);">Alltime top</div>
+                </td></tr>
+                <tr><td>
+                    <ul id="top_news" style="list-style-type:none;margin:0;"></ul>
                 </td></tr>
             </table>
 
