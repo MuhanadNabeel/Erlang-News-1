@@ -19,7 +19,7 @@ var articleTemplates;
 jQuery(document).ready(function() {
     jQuery('#rightside').hide();
     jQuery('#wholepage').hide();
-    jQuery('#first_loading').html('<img src="' + jableDir 
+    jQuery('#first_loading').html('<img style="width:50%;" src="' + jableDir 
         + '/custom-img/loading.gif">');
     jQuery.get(jableDir +'_get_templates.php',{jableurl:jableDir},function(str){
         articleTemplates = str.split('<split_between_templates>');
@@ -89,7 +89,7 @@ function articleAction(item,action,undo) {
         if( up ){
             jQuery(id).text( ( org + 1 ) );
             jQuery(id + '_active').text( ( org + 1 ) );
-        }else{            
+        }else{       
             jQuery(id).text( ( org - 1 ) );
             jQuery(id + '_active').text( ( org - 1 ) );
         }

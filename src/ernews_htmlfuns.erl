@@ -102,7 +102,17 @@ end_url(google,Url)->
     end_url(iocoder,Url);
       
 end_url(twitter, Url)->
-    end_url(iocoder,Url);
+  case end_url(iocoder,Url) of
+      {error, Reason} ->
+	  {error, Reason};
+      NewUrl ->
+	  case end_url(iocoder,NewUrl) of
+	      {error, R}->
+		  NewUrl;
+	      EndUrl ->
+		  EndUrl
+	  end
+  end;        
 
 end_url(dzone, Url)->
   Result  = ernews_defuns:read_web(dzone, Url),
