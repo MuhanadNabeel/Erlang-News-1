@@ -19,6 +19,8 @@ var articleTemplates;
 jQuery(document).ready(function() {
     jQuery('#rightside').hide();
     jQuery('#wholepage').hide();
+    jQuery('#first_loading').css('height','150px');
+    jQuery('#first_loading').css('padding-top','65px');
     jQuery('#first_loading').html('<img src="' + jableDir 
         + '/custom-img/loading.gif">');
     jQuery.get(jableDir +'_get_templates.php',{jableurl:jableDir},function(str){
@@ -154,7 +156,6 @@ function getNewsJSON() {
         var json = parse.news;
         articleJSON[0] = json;
         if( json.length == 0 ){
-            setTimeout('getNewsJSON()', 10000);
             return;
         }
 
