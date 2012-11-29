@@ -24,6 +24,7 @@ jQuery(document).ready(function() {
     jQuery.get(jableDir +'_get_templates.php',{jableurl:jableDir},function(str){
         articleTemplates = str.split('<split_between_templates>');
         getNewsJSON();
+        getTweets();
     });
 
 });
@@ -265,6 +266,39 @@ function getNewsJSON() {
                             .replace(/{imgheight}/g,(json.imgheight/2));
     }
 }
+/**
+ * @author Philip Masek
+ *
+ *
+ *
+**/
+var twitter_type = 1;
+function getTweets() {
+    var template = articleTemplates[6];
+    var url='http://search.twitter.com/search.json?callback=?&q=%23twitter&rpp=5';
+        jQuery.getJSON(url,function(json){
+
+            alert(jQuery('#twitter_feed').size());
+            jQuery('#twitter_feed').empty;
+
+            //a for loop will perform faster when setup like this
+            for (var i = 0, len = json.results.length; i < len; i++) {
+
+               //instead of appending each result, add each to the buffer array
+               jQuery('#twitter_feed').html(twitterTemplate(json.results[i], template, twitter_type));
+               delete locations.results[i];
+            }
+        });
+
+
+    setInterval(getTweets, 3000);
+}
+
+function twitterTemplate(json, template, id){
+    return template.replace(/{profile_img}/g,json.profile_image_url).
+                    replace(/{twitter_type}/g,'twitter_type_'+id);
+}
+
 /**
  * @author Ingimar Samuelsson
  * @doc
