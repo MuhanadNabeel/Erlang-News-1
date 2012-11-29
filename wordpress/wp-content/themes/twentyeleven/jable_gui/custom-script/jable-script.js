@@ -172,7 +172,7 @@ function getNewsJSON() {
             var template = articleTemplates[3];
             if( json[i].imgwidth > 350 )
                 template = articleTemplates[1];
-            else if( json[i].imgwidth > 120 )
+            else if( json[i].imgwidth > 1 )
                 template = articleTemplates[2]
             if( i == 0 && offsetArticles == 0 )
                 jQuery('#top_hot_news').html( getArticle(json[i], 
@@ -203,9 +203,7 @@ function getNewsJSON() {
         jQuery.get(jableDir + '_get_news.php',{query:location,limit:5},function(outcome) {
             var parse = jQuery.parseJSON(outcome);
             var json = parse.news;
-            if( articleJSON[index] != null )
-                articleJSON[index] = articleJSON[index].concat(json);
-            else
+            articleJSON[index] = json;
             jQuery('#' + location + '_news').html('');
             for( var i = 0 ; i < json.length ; i++ ) {
                 isUserAction[json[i].newsID] = Array(false,false);
