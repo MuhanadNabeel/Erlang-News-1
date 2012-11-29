@@ -136,7 +136,24 @@ Div fonts
                 </div>
             </div>
             <ul id="top_news" style="list-style-type:none;margin:0;margin-top:25px;"></ul>
-            
+
+            <div style="white-space:nowrap">
+                <table>
+                    <div style="width:67%;height:25px;background-color:#79a8be;float:left;" align="right">
+                        <div style="float:right;color:white;margin-right:20px;">
+                            <img src="<?php echo bloginfo('template_directory') ?>/jable_gui/custom-img/twitter-logo.png" style="float:left;height:20px;margin-right:5px;">
+                            Twitter
+                        </div>
+                        <div class="arrow-right" style="margin-right:-25px;">
+                        </div>
+                    </div>
+                </table>
+                <div style="width:30%;height:25px;background-color:#3f758b;float:right;margin-right:-30px;">
+                    <div class="arrow-left" style="margin-left:-25px;"></div>
+                </div>
+            </div>
+            <ul id="twitter_feed" style="list-style-type:none;margin:0;margin-top:25px;"></ul>
+
         </td>
     </tr></table>
 

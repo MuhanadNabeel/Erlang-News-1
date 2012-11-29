@@ -325,13 +325,19 @@ google_tag_remover([H|T], Buff, true) ->
 google_tag_remover([_H|T] , Buff, false) ->
     google_tag_remover(T, Buff, false).
 
-is_domain(Str) ->
-        is_domain(Str, 0).
-is_domain(_, 4) ->
+%%% @author Jóel Hjaltason
+%%% @doc
+%%%	Returns true if a given string is a domain
+%%% @end
+isDomain(Str) ->
+	isDomain(Str, 0).
+isDomain(Str, 3) when length(Str)>0 ->
 	false;
-is_domain([47|T], C) ->
-        is_domain(T, C+1);
-is_domain([_|T], C) ->
-	        is_domain(T, C);
-is_domain([], _) ->
+isDomain(Str, 3) ->
+	true;
+isDomain([47|T], C) ->
+	isDomain(T, C+1);
+isDomain([_|T], C) ->
+	isDomain(T, C);
+isDomain([], C) ->
 	true.	

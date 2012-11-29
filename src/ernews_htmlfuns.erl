@@ -23,7 +23,12 @@
 %%% @end
 
 get_info(Url)->
-
+    case ernews_defuns:isDomain(Url) of
+	true ->
+	    {error, domain};
+	
+	false ->
+	    
 	    Result = ernews_defuns:read_web(default,Url),
 	    case Result of
 		{success,{_,[]}}->
@@ -40,8 +45,8 @@ get_info(Url)->
 		    end;
 		{error, Reason} ->
 		    {error,Reason}
-	           
-		
+			
+	    end
     end.
 
 %------------------------------------------------------------------------------%
@@ -241,6 +246,16 @@ get_title(Html)->
 % Only allow images are larger than 80x80 
 % Diminishes possibility of non-related image
 %%% @end
+image_ratio(0,0)->
+    false;
+image_ratio(Height,Width) when Height/Width > 4 ->
+    false;
+image_ratio(Height,Width) when Height/Width < 0.25 ->
+    false;
+image_ratio(_,_) ->
+    true.
+
+
 
 
 get_image(Html,Url)->
@@ -251,12 +266,13 @@ get_image(Html,Url)->
     case Meta_OGImage of
 	[] ->
 	    Img = get_value([Html],"img" ,[]),
-
+	    
 	    case find_image(Img,[],Url) of
 		[] ->
 		    {ok, "undef"};
-	All_Images ->
-		   
+		
+		All_Images ->
+	%	   io:format("-Images---~p~s",[All_Images]),
 		   {ok, element(2,lists:max(All_Images))}
 
 	    end;
@@ -268,7 +284,8 @@ get_image(Html,Url)->
 					++hd(Meta_OGImage)) of
 	       {success, {_, Body}} ->
 		   {Height,Width}=seperate(Body,[]),
-		   case Height*Width >  5625 of
+	%	   case Height*Width >  5625 of
+		   case image_ratio(Height,Width) of  
 		       true -> {ok, hd(Meta_OGImage)++"|"
 				++integer_to_list(Width) ++ "*" 
 				++integer_to_list(Height)};
@@ -473,21 +490,23 @@ seperate(_,_) ->
 
 find_image([],Buffer,_)->
     % Filters the list to only allow images with the size of 45x45
-    lists:filter(fun({Size,_}) ->  Size > 5625 end, Buffer);
+    lists:filter(fun({Size,_,Ratio}) ->  Ratio =:= true andalso Size > 5625 end, Buffer);
 
 find_image([{Key,List,_}|T], Buffer,Url)  ->
     case Key == list_to_bitstring("img") of
 	true ->
 	    % Size default set to 1 
-	    find_image(T,[get_image_property(List,{1,""},Url)|Buffer],Url);
+	    find_image(T,[get_image_property(List,{1,"",false},Url)|Buffer],Url);
 	false ->
 	    find_image(T,Buffer,Url)
     end.
 
-get_image_property([],{Size,Source},_)->
-    {Size,Source};
+get_image_property([],{Size,Source,Ratio},_)->
+  
+  {Size,Source,Ratio};
+
 %The bitlist from mochiweb contains Key,Value structure of the images tag
-get_image_property([{Key, Value}|T],{Size,Source},Url) ->
+get_image_property([{Key, Value}|T],{Size,Source,Case},Url) ->
     case {bitstring_to_list(Key),string:str(bitstring_to_list(Value), "avatar")} of
        
 	{"src",0} ->
@@ -510,9 +529,10 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 			      get_main_url(Url)++ bitstring_to_list(
 						    Value) ++ "|"
 						  ++integer_to_list(Width) ++ "*" 
-						  ++integer_to_list(Height)},Url);
+						  ++integer_to_list(Height),
+						  image_ratio(Height,Width)},Url);
 			 _ ->
-			     {0,""}
+			     {0,"",false}
 		     end;
 		 false ->
 
@@ -525,9 +545,10 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 						   bitstring_to_list(
 						     Value) ++ "|"
 						   ++integer_to_list(Width) ++ "*" 
-						   ++integer_to_list(Height)},Url);						     			 
+						   ++integer_to_list(Height),
+						   image_ratio(Height,Width)},Url);						     			 
 			 _ ->
-			     {0,""}
+			     {0,"",false}
 		     end
 	     end;
   
@@ -537,12 +558,12 @@ get_image_property([{Key, Value}|T],{Size,Source},Url) ->
 	    case bitstring_to_list(Value) of
 		[$a,$v,$a,$t,$a,$r|_] ->
 		    % If an avatar is found, set the size to 0 so it is ignored
-		    get_image_property(T,{0,Source},Url);
+		    get_image_property(T,{0,Source,Case},Url);
 		_ ->
-		    get_image_property(T,{Size,Source},Url)
+		    get_image_property(T,{Size,Source,Case},Url)
 	    end;
 	_ ->		
-	    get_image_property(T,{Size,Source},Url)
+	    get_image_property(T,{Size,Source,Case},Url)
     end.
 
 
@@ -567,7 +588,7 @@ test(Url)->
     
     %PTags= get_value([Html],"image" ,[]).
 
-    {success, {_, Body}} = ernews_defuns:read_web(default,Url).
+    {success, {_, _}} = ernews_defuns:read_web(default,Url).
     %Html = mochiweb_html:parse(Body).
    % get_description(readlines("/Users/magnus/Desktop/html.txt")).
 

@@ -19,5 +19,5 @@ echo '<split_between_templates>';
 include 'latest_template.php';
 echo '<split_between_templates>';
 // 6
-include 'archive_button.php';
+include 'twitter_template.php';
 ?>
