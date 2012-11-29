@@ -17,19 +17,21 @@ write(news, {Source, Url, Title, Description , Icon ,
 	"(Source, Url, Title, Description, Icon, "++
 	"Image, PubDate, TimeStamp, LastClicked) Values('"
 	++ qFix(Source) ++ "', '" ++ qFix(Url) ++ "', '" 
-	++ remove_html_tags(qFix(Title)) ++ "', '" 
-	++  remove_html_tags(qFix(Description)) ++ "', '" 
+	++ remove_tags(qFix(Title)) ++ "', '" 
+	++  remove_tags(qFix(Description)) ++ "', '" 
 	++ qFix(Icon) ++ "', '" ++ qFix(Image) ++ "', '"
 	++ qFix(PubDate) ++ "', '" ++ qFix(Now) ++ "', '"
-	++ qFix(Now) ++ "')", 
-    case qFunc(write,Query) of
-	{error,Reason} ->
-	    {error,Reason};
-	{ok, updated} ->
-	    ID=qFunc(get, "Select newsID FROM ernews_news WHERE URL='" ++ 
-						qFix(Url) ++ "'"),
-	    write(tag, Tags, integer_to_list(ID))
-    end;
+	++ qFix(Now) ++ "') on duplicate key update PubDate = '" 
+	++ qFix(PubDate) ++ "'",
+    qFunc(write,Query);
+%   case qFunc(write,Query) of
+%	{error,Reason} ->
+%	    {error,Reason};
+%	{ok, updated} ->
+%	    ID=qFunc(get, "Select newsID FROM ernews_news WHERE URL='" ++ 
+%						qFix(Url) ++ "'"),
+%	    write(tag, Tags, integer_to_list(ID))
+%   end;
 			
 	
 %% Broken-news-table should also have default date

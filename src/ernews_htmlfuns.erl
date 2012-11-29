@@ -23,30 +23,30 @@
 %%% @end
 
 get_info(Url)->
-    case ernews_defuns:isDomain(Url) of
-	true ->
-	    {error, domain};
-	
-	false ->
+    %case ernews_defuns:isDomain(Url) of
+%	true ->
+%	    {error, domain};
+%	
+%	false ->
 	    
-	    Result = ernews_defuns:read_web(default,Url),
-	    case Result of
-		{success,{_,[]}}->
-		    {error, empty_body};
+    Result = ernews_defuns:read_web(default,Url),
+    case Result of
+	{success,{_,[]}}->
+	    {error, empty_body};
+	
+	{success, {Headers, Body}}->
+	    case is_html(Headers) of
+		true ->
+		    Html = mochiweb_html:parse(Body),
+		    [get_title(Html), get_descriptions(desc,Html),
+		     get_icon(Html,Url), get_image(Html,Url)];
+		false ->
+		    {error, page_not_text}
+	    end;
+	{error, Reason} ->
+	    {error,Reason}
 		
-		{success, {Headers, Body}}->
-		    case is_html(Headers) of
-			true ->
-			    Html = mochiweb_html:parse(Body),
-			    [get_title(Html), get_descriptions(desc,Html),
-			     get_icon(Html,Url), get_image(Html,Url)];
-			false ->
-			    {error, page_not_text}
-		    end;
-		{error, Reason} ->
-		    {error,Reason}
-			
-	    end
+%	    end
     end.
 
 %------------------------------------------------------------------------------%
@@ -459,6 +459,8 @@ counter([] , Acc) ->
 
 get_main_url(Url) ->		
     get_main_url(Url,0,"").
+get_main_url([],2,Buff) ->
+    Buff;
 get_main_url([$/|_],2,Buff) ->	
     Buff;
 get_main_url([$/|T],C,Buff) ->	
