@@ -26,7 +26,7 @@ jQuery(document).ready(function() {
     jQuery.get(jableDir +'_get_templates.php',{jableurl:jableDir},function(str){
         articleTemplates = str.split('<split_between_templates>');
         getNewsJSON();
-        getTweets();
+        //getTweets();
     });
 
 });
@@ -155,7 +155,11 @@ function getNewsJSON() {
         }
         var parse = jQuery.parseJSON(outcome);
         var json = parse.news;
-        articleJSON[0] = json;
+        if( articleJSON[0] != null )
+            articleJSON[0] = articleJSON[0].concat(json);
+        else
+            articleJSON[0] = json;
+        
         if( json.length == 0 ){
             return;
         }
@@ -199,7 +203,9 @@ function getNewsJSON() {
         jQuery.get(jableDir + '_get_news.php',{query:location,limit:5},function(outcome) {
             var parse = jQuery.parseJSON(outcome);
             var json = parse.news;
-            articleJSON[index] = json;
+            if( articleJSON[index] != null )
+                articleJSON[index] = articleJSON[index].concat(json);
+            else
             jQuery('#' + location + '_news').html('');
             for( var i = 0 ; i < json.length ; i++ ) {
                 isUserAction[json[i].newsID] = Array(false,false);
@@ -279,7 +285,6 @@ function getTweets() {
     var url='http://search.twitter.com/search.json?callback=?&q=%23twitter&rpp=5';
         jQuery.getJSON(url,function(json){
 
-            alert(jQuery('#twitter_feed').size());
             jQuery('#twitter_feed').empty;
 
             //a for loop will perform faster when setup like this
