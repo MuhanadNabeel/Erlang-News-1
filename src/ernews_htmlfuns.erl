@@ -23,23 +23,25 @@
 %%% @end
 
 get_info(Url)->
-    Result = ernews_defuns:read_web(default,Url),
-    case Result of
-	{success,{_,[]}}->
-	    {error, empty_body};
 
-	{success, {Headers, Body}}->
-	    case is_html(Headers) of
-		true ->
-		    Html = mochiweb_html:parse(Body),
-		    [get_title(Html), get_descriptions(desc,Html),
-		     get_icon(Html,Url), get_image(Html,Url)];
-		false ->
-		    {error, page_not_text}
-	    end;
-	{error, Reason} ->
-	    {error,Reason}
-	        
+	    Result = ernews_defuns:read_web(default,Url),
+	    case Result of
+		{success,{_,[]}}->
+		    {error, empty_body};
+		
+		{success, {Headers, Body}}->
+		    case is_html(Headers) of
+			true ->
+			    Html = mochiweb_html:parse(Body),
+			    [get_title(Html), get_descriptions(desc,Html),
+			     get_icon(Html,Url), get_image(Html,Url)];
+			false ->
+			    {error, page_not_text}
+		    end;
+		{error, Reason} ->
+		    {error,Reason}
+	           
+		
     end.
 
 %------------------------------------------------------------------------------%
@@ -107,7 +109,7 @@ end_url(twitter, Url)->
 	  {error, Reason};
       NewUrl ->
 	  case end_url(iocoder,NewUrl) of
-	      {error, R}->
+	      {error, _}->
 		  NewUrl;
 	      EndUrl ->
 		  EndUrl
@@ -288,6 +290,15 @@ get_image(Html,Url)->
 % and compiles a complete link.
 %%% @end
 
+get_icon_link(Icon,Url)->
+    case lists:sublist(hd(Icon),1) =:="/" of
+	true ->
+	    {ok,get_main_url(Url)++hd(Icon)};
+	false ->
+	    {ok, Icon}
+    end.
+
+
 get_icon(Html,Url)->
     Meta_Data = get_value([Html],"link" ,[]),
     Shortcut_Icon = 
@@ -302,23 +313,13 @@ get_icon(Html,Url)->
 		    {ok, "https://www.erlang-solutions.com/misc/favicon.ico"};
 		_ ->
 		    
-		    case lists:sublist(hd(Icon),1) =:="/" of
-			true ->
-			    {ok,get_main_url(Url)++hd(Icon)};
-			 false ->
-			    {ok, Icon}
-		    end
+		   get_icon_link(Icon,Url)
 			
 	    end;
 	
 	_ ->
 	    
-	    case lists:sublist(hd(Shortcut_Icon),1) =:="/" of
-		true ->
-		    {ok,get_main_url(Url)++hd(Shortcut_Icon)};
-		false ->
-		    {ok,  Shortcut_Icon}
-	    end
+	    get_icon_link(Shortcut_Icon,Url)
 		
     end.
 
@@ -566,8 +567,8 @@ test(Url)->
     
     %PTags= get_value([Html],"image" ,[]).
 
-    {success, {_, Body}} = ernews_defuns:read_web(default,Url),
-    Html = mochiweb_html:parse(Body).
+    {success, {_, Body}} = ernews_defuns:read_web(default,Url).
+    %Html = mochiweb_html:parse(Body).
    % get_description(readlines("/Users/magnus/Desktop/html.txt")).
 
 %  Html = mochiweb_html:pars(readlines("/Users/magnus/Desktop/html.txt")),

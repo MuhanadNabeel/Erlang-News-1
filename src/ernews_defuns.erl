@@ -324,3 +324,14 @@ google_tag_remover([H|T], Buff, true) ->
     google_tag_remover(T, Buff ++ [H], true);
 google_tag_remover([_H|T] , Buff, false) ->
     google_tag_remover(T, Buff, false).
+
+is_domain(Str) ->
+        is_domain(Str, 0).
+is_domain(_, 4) ->
+	false;
+is_domain([47|T], C) ->
+        is_domain(T, C+1);
+is_domain([_|T], C) ->
+	        is_domain(T, C);
+is_domain([], _) ->
+	true.	
