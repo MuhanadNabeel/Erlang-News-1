@@ -1,21 +1,21 @@
 <li>
     <div>
 
-        <div class="right_row" style="background-color:transparent;width:100%;" onclick="openUpStuff('{id}');">
+        <div class="right_row" style="background-color:transparent;width:100%;" onclick="openUpStuff(<?php echo '{id},{index}' ?>);">
             <table>
                 <tr>
                     <td style="vertical-align:top;">
                         <div style="padding:0.5em;line-height:80%;">
                                 <a class="right_title">{title}</a></br>
                                 <span class="right_source" style="margin-left:12px;"> 
-                                <a onclick="openBox(<?php echo '{id},1'?>)">{host}</a></span>
+                                <a onclick="openBox(<?php echo '{id},{index}' ?>)">{host}</a></span>
                                 <div style="clear:both"></div>
                         </div>
                     </td>
                 </tr>
             </table>
 
-            <div id="{id}_expand" class="right_content">
+            <div id="{location}_{id}_expand" class="right_content">
                 <div id="{id}_content">
                     <div class="blue-seperator"></div>
                     <table>
@@ -33,7 +33,7 @@
                             <div style="width:100%;">
                                 <div class="blue-desc" style="line-height:130%;">
                     <img src="{image}" style="border:solid 1px gray;max-width:40px;float:left;margin:5px;">{description}</div><span class="blue-readMore"><a style="cursor:pointer;"  target="_blank" onmouseover="JavaScript:windows.status='this link blaber';
-                                    return true;" onmouseout="window.status=''" onclick="openBox(<?php echo '{id},1'?>)">Read more..</a></span>
+                                    return true;" onmouseout="window.status=''" onclick="openBox(<?php echo '{id},{index}' ?>)">Read more..</a></span>
                                 <div class="seperator" style="margin-top:20px"></div>
                                 
                                 <div class="right_source" style="font-family:'Times New Roman';font-style:italic;font-size:6pt;color:rgba(0,0,0,0.4);margin-right:10px;">Published: {pubdate}</div>
