@@ -324,3 +324,14 @@ google_tag_remover([H|T], Buff, true) ->
     google_tag_remover(T, Buff ++ [H], true);
 google_tag_remover([_H|T] , Buff, false) ->
     google_tag_remover(T, Buff, false).
+
+domain_checker(Str) ->
+	domain_checker(Str, 0).
+domain_checker(_, 3) ->
+	true;
+domain_checker([47|T], C) ->
+	domain_checker(T, C+1);
+domain_checker([_|T], C) ->
+		domain_checker(T, C);
+domain_checker([], C) ->
+	false.	
