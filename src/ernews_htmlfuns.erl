@@ -40,7 +40,7 @@ get_info(Url)->
 		    end;
 		{error, Reason} ->
 		    {error,Reason}
-	    end        
+	           
 		
     end.
 
@@ -109,7 +109,7 @@ end_url(twitter, Url)->
 	  {error, Reason};
       NewUrl ->
 	  case end_url(iocoder,NewUrl) of
-	      {error, R}->
+	      {error, _}->
 		  NewUrl;
 	      EndUrl ->
 		  EndUrl
@@ -568,8 +568,8 @@ test(Url)->
     
     %PTags= get_value([Html],"image" ,[]).
 
-    {success, {_, Body}} = ernews_defuns:read_web(default,Url),
-    Html = mochiweb_html:parse(Body).
+    {success, {_, Body}} = ernews_defuns:read_web(default,Url).
+    %Html = mochiweb_html:parse(Body).
    % get_description(readlines("/Users/magnus/Desktop/html.txt")).
 
 %  Html = mochiweb_html:pars(readlines("/Users/magnus/Desktop/html.txt")),
