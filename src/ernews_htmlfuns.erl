@@ -290,6 +290,15 @@ get_image(Html,Url)->
 % and compiles a complete link.
 %%% @end
 
+get_icon_link(Icon,Url)->
+    case lists:sublist(hd(Icon),1) =:="/" of
+	true ->
+	    {ok,get_main_url(Url)++hd(Icon)};
+	false ->
+	    {ok, Icon}
+    end.
+
+
 get_icon(Html,Url)->
     Meta_Data = get_value([Html],"link" ,[]),
     Shortcut_Icon = 
@@ -304,23 +313,13 @@ get_icon(Html,Url)->
 		    {ok, "https://www.erlang-solutions.com/misc/favicon.ico"};
 		_ ->
 		    
-		    case lists:sublist(hd(Icon),1) =:="/" of
-			true ->
-			    {ok,get_main_url(Url)++hd(Icon)};
-			 false ->
-			    {ok, Icon}
-		    end
+		   get_icon_link(Icon,Url)
 			
 	    end;
 	
 	_ ->
 	    
-	    case lists:sublist(hd(Shortcut_Icon),1) =:="/" of
-		true ->
-		    {ok,get_main_url(Url)++hd(Shortcut_Icon)};
-		false ->
-		    {ok,  Shortcut_Icon}
-	    end
+	    get_icon_link(Shortcut_Icon,Url)
 		
     end.
 
