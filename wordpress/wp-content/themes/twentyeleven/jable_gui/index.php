@@ -135,6 +135,7 @@ Div fonts
                     <div class="arrow-left" style="margin-left:-25px;"></div>
                 </div>
             </div>
+            <ul id="top_news" style="list-style-type:none;margin:0;margin-top:25px;"></ul>
             
         </td>
     </tr></table>
