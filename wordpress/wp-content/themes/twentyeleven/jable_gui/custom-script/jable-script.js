@@ -72,9 +72,9 @@ function articleAction(item,action,undo) {
                     iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
                         + actionArray[1] + '_count',true);
                     if( jQuery('#' + duplicateArray[i] + '_' + id + '_' 
-                            + actionArray[0] + '_active').is(':visible') ) {
-                        iterateCounter('#' + id + '_' + actionArray[0] 
-                            + '_count',false);
+                                + actionArray[0] + '_active').is(':visible') ) {
+                        iterateCounter('#' + duplicateArray[i] + '_' + id + '_' 
+                            + actionArray[0] + '_count',false);
                         jQuery('#' + duplicateArray[i] + '_' + id + '_' 
                             + actionArray[0] + '_active').hide();
                         jQuery('#' + duplicateArray[i] + '_' + id + '_' 
@@ -135,7 +135,7 @@ var articleJSON = new Array();
  * @author Ingimar Samuelsson
  * @doc
  *  Fetches informations related to articles in JSON format
- *  and adds to HTML DOM
+ *  and adds to HTML Dom
  * @end
  */
 function getNewsJSON() {
