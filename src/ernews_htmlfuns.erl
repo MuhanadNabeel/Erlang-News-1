@@ -23,23 +23,25 @@
 %%% @end
 
 get_info(Url)->
-    Result = ernews_defuns:read_web(default,Url),
-    case Result of
-	{success,{_,[]}}->
-	    {error, empty_body};
 
-	{success, {Headers, Body}}->
-	    case is_html(Headers) of
-		true ->
-		    Html = mochiweb_html:parse(Body),
-		    [get_title(Html), get_descriptions(desc,Html),
-		     get_icon(Html,Url), get_image(Html,Url)];
-		false ->
-		    {error, page_not_text}
-	    end;
-	{error, Reason} ->
-	    {error,Reason}
-	        
+	    Result = ernews_defuns:read_web(default,Url),
+	    case Result of
+		{success,{_,[]}}->
+		    {error, empty_body};
+		
+		{success, {Headers, Body}}->
+		    case is_html(Headers) of
+			true ->
+			    Html = mochiweb_html:parse(Body),
+			    [get_title(Html), get_descriptions(desc,Html),
+			     get_icon(Html,Url), get_image(Html,Url)];
+			false ->
+			    {error, page_not_text}
+		    end;
+		{error, Reason} ->
+		    {error,Reason}
+	    end        
+		
     end.
 
 %------------------------------------------------------------------------------%

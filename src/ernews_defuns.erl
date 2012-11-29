@@ -325,13 +325,13 @@ google_tag_remover([H|T], Buff, true) ->
 google_tag_remover([_H|T] , Buff, false) ->
     google_tag_remover(T, Buff, false).
 
-domain_checker(Str) ->
-	domain_checker(Str, 0).
-domain_checker(_, 3) ->
-	true;
-domain_checker([47|T], C) ->
-	domain_checker(T, C+1);
-domain_checker([_|T], C) ->
-		domain_checker(T, C);
-domain_checker([], C) ->
-	false.	
+is_domain(Str) ->
+        is_domain(Str, 0).
+is_domain(_, 4) ->
+	false;
+is_domain([47|T], C) ->
+        is_domain(T, C+1);
+is_domain([_|T], C) ->
+	        is_domain(T, C);
+is_domain([], _) ->
+	true.	
