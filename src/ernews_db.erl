@@ -204,27 +204,24 @@ sendList([], NL) ->
 	[].
 	
 
-%% Removes tags from string - except <a></a>
-remove_html_tags(Str) ->
-	remove_html_tags(Str,false).
-remove_html_tags([60|T],_) when length(T) > 0, hd(T) == 97  ->
-	["<"] ++ remove_html_tags(T,false);
-remove_html_tags([60|T],_) when length(T) > 0, hd(T) == 65  ->
-	["<"] ++ remove_html_tags(T,false);
-remove_html_tags([60|T],_) when length(T) > 1, hd(T) == 47, hd(tl(T)) == 97  ->
-	["<"] ++ remove_html_tags(T,false);
-remove_html_tags([60|T],_) when length(T) > 1, hd(T) == 47, hd(tl(T)) == 65  ->
-	["<"] ++ remove_html_tags(T,false);
-remove_html_tags([60|T],_) ->
-	remove_html_tags(T,true);
-remove_html_tags([62|T],true) ->
-	remove_html_tags(T,false);
-remove_html_tags([_|T],true) ->
-	remove_html_tags(T,true);
-remove_html_tags([H|T],false) ->
-	[H] ++ remove_html_tags(T,false);
-remove_html_tags([],_) ->
-	[].	
+%% Removes tags from string - except <a></a>	
+remove_tags(List) ->
+	remove_tags(List,false,[]).
+remove_tags([60,97,32,104,114,101,102,61,34,104,116,116,112,58,47,47|T], _, Buffer) ->
+	remove_tags(T, false, Buffer ++ [60,97,32,104,114,101,102,61,34,104,116,116,112,58,47,47]);	
+remove_tags([60, 47, 97, 62|T],_,List) ->
+	remove_tags(T,false,List ++ [60, 47, 97, 62]);
+remove_tags([60|T],_,List) ->
+	remove_tags(T,true,List);	
+remove_tags([62|T],_,List) ->
+	remove_tags(T,false,List);
+remove_tags([H|T],false,List) ->
+	remove_tags(T,false,List++[H]);
+remove_tags([_|T],true,List) ->
+	remove_tags(T,true,List);
+remove_tags([],_,List) ->
+	List.		
+
 	
 	
 tester() ->
