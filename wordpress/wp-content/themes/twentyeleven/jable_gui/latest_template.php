@@ -29,7 +29,7 @@
                             return true;" onmouseout="window.status=''" onclick="openBox(<?php echo '{id},{index}' ?>)">Read more..</a></span>
                         <div class="seperator" style="margin-top:20px"></div>
                         
-                        <div class="right_source" style="width:100%;float:right;margin-right:5px;">Published: {pubdate}</div>
+                        <div class="right_source" style="font-family:'Times New Roman';font-style:italic;font-size:6pt;color:rgba(0,0,0,0.4);margin-right:10px;">Published: {pubdate}</div>
 
 
                     </div>

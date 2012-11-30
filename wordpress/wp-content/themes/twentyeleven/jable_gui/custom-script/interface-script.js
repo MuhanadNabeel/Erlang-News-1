@@ -7,9 +7,7 @@ function openUpStuff(id,index){
     if($id!=id)
         closeLastOne();
     
-    jQuery('#'+duplicateArray[index]+'_'+id+'_expand').css('width', jQuery('#rightside').css('height'));
-    jQuery('#'+duplicateArray[index]+'_'+id+'_expand').slideToggle();
-    jQuery('#'+duplicateArray[index]+'_'+id+'_expand').css('width', 'auto');
+    jQuery('#'+duplicateArray[index]+'_'+id+'_expand').slideToggle('medium');
 
 
     $id = id;
@@ -19,7 +17,7 @@ function openUpStuff(id,index){
     a = t.filter(function(){
         return jQuery(this).is(':visible');
     });
-    a.slideUp();
+    a.slideUp('medium');
  }
 
 jQuery(document).ready(function() {
@@ -30,7 +28,7 @@ jQuery(document).ready(function() {
 function fadeWindow(id, text){
     jQuery('#'+id+'_text').html(text);
     jQuery('#'+id).fadeIn('slow', function(){
-        setTimeout("jQuery('#"+id+"').fadeOut('slow')", 2000);
+        setTimeout("jQuery('#"+id+"').fadeOut('medium')", 2000);
         
     });
 }
