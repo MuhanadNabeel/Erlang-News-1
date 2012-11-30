@@ -136,8 +136,8 @@ Div fonts
                 </div>
             </div>
             <ul id="top_news" style="list-style-type:none;margin:0;margin-top:25px;"></ul>
-<!--
-            <div style="white-space:nowrap">
+
+<!--            <div style="white-space:nowrap">
                 <table>
                     <div style="width:67%;height:25px;background-color:#79a8be;float:left;" align="right">
                         <div style="float:right;color:white;margin-right:20px;">
@@ -152,8 +152,7 @@ Div fonts
                     <div class="arrow-left" style="margin-left:-25px;"></div>
                 </div>
             </div>
-            <ul id="twitter_feed" style="list-style-type:none;margin:0;margin-top:25px;"></ul>
--->
+            <ul id="twitter_feed" style="list-style-type:none;margin:0;margin-top:25px;"></ul>-->
         </td>
     </tr></table>
 
