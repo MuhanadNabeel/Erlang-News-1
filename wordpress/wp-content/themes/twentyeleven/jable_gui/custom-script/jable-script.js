@@ -26,8 +26,7 @@ jQuery(document).ready(function() {
     jQuery.get(jableDir +'_get_templates.php',{jableurl:jableDir},function(str){
         articleTemplates = str.split('<split_between_templates>');
         getNewsJSON();
-        getTweets();
-        setInterval(getTweets, 20000);
+        //getTweets();
     });
 
 });
@@ -147,7 +146,7 @@ function getNewsJSON() {
     jQuery('#first_loading').show();
     fillRightSide('top',2);
     fillRightSide('latest',1)
-    jQuery.get(jableDir + '_get_news.php',{query:'main',
+    jQuery.get(jableDir + '_get_news.php',{query:'main',ids:getDisplayedIDs(),
             offset:offsetArticles,limit:limitArticles},function(outcome) {
         jQuery('#first_loading').hide();
         if( offsetArticles == 0 ) {
@@ -194,6 +193,14 @@ function getNewsJSON() {
         offsetArticles += limitArticles;
         updatingArticles = false;
     });
+    function getDisplayedIDs() {
+        var list = '';
+        for( var i = 0 ; i < articleJSON[0].length ; i++ ) {
+            if( i != 0 )
+                list += ',';
+            list += articleJSON[0][i].newsID;
+        }
+    }    
     /**
      * @author Ingimar Samuelsson
      * @doc
@@ -278,34 +285,30 @@ function getNewsJSON() {
  *
  *
 **/
+var twitter_type = 1;
 function getTweets() {
     var template = articleTemplates[6];
-    var url='http://search.twitter.com/search.json?callback=?&q=%23erlang&rpp=10';
-    jQuery.getJSON(url,function(json){
+    var url='http://search.twitter.com/search.json?callback=?&q=%23twitter&rpp=5';
+        jQuery.getJSON(url,function(json){
 
-        jQuery('#twitter_feed').empty();
+            jQuery('#twitter_feed').empty;
 
-        //a for loop will perform faster when setup like this
-        for (var i = 0, len = json.results.length; i < len; i++) {
+            //a for loop will perform faster when setup like this
+            for (var i = 0, len = json.results.length; i < len; i++) {
 
-           //instead of appending each result, add each to the buffer array
-           jQuery('#twitter_feed').append(twitterTemplate(json.results[i],template));
-        }
-    });
+               //instead of appending each result, add each to the buffer array
+               jQuery('#twitter_feed').html(twitterTemplate(json.results[i], template, twitter_type));
+               delete locations.results[i];
+            }
+        });
+
+
+    setInterval(getTweets, 3000);
 }
 
 function twitterTemplate(json, template, id){
     return template.replace(/{profile_img}/g,json.profile_image_url).
-                    replace(/{text}/g,urlify(json.text)).
-                    replace(/{from_user}/g,json.from_user).
-                    replace(/{from_user_id}/g,json.from_user_id);
-}
-
-function urlify(text) {
-    var urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(urlRegex, function(url) {
-        return '<a href="' + url + '" target="_blank">' + url + '</a>';
-    })
+                    replace(/{twitter_type}/g,'twitter_type_'+id);
 }
 
 /**
