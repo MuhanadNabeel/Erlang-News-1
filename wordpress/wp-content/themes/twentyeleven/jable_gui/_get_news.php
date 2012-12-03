@@ -8,19 +8,23 @@
 if(class_exists('MySQL') === FALSE)
     include 'MySQL.php';
 $sql = new MySQL();
+$not_id = '';
+if(is_null($_GET['ids']) === FALSE && $_GET['ids'] !== '' )
+    $not_id = 'AND newsID NOT IN (' . $_GET['ids'] . ')';
 $queries = Array('latest'
                         =>'SELECT * FROM ernews_news WHERE Report_Count < 5 
-                            ORDER BY Pubdate DESC LIMIT ' . $_GET['limit'],
+                            ORDER BY Pubdate DESC LIMIT 5',
                 'main'
-                        =>'SELECT *, ((clicks+up_vote-down_vote) * 
+                        =>'SELECT *, ((clicks+(2*(up_vote-down_vote))) * 
                         100000/ pow((TIME_TO_SEC(TIMEDIFF(NOW(),pubdate))/3600 
                         + 2),1.5)) score from ernews_news WHERE Report_Count < 5  
+                        ' . $not_id .  '
                         order by score DESC 
-                        LIMIT ' . $_GET['limit'] . ' OFFSET ' . $_GET['offset'],
+                        LIMIT 20',
                 'top'
                         =>'SELECT *, (Up_Vote+Clicks-Down_Vote) AS Ratio FROM 
                         ernews_news  WHERE Report_Count < 5 
-                        ORDER BY Ratio DESC LIMIT ' . $_GET['limit']);
+                        ORDER BY Ratio DESC LIMIT 5');
 $result = $sql->sqlQuery($queries[ $_GET['query'] ]);
 $outcome = Array();
 while( ($row = mysql_fetch_array($result)) !== FALSE ) {
