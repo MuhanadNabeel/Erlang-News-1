@@ -64,6 +64,56 @@ read_web(dzone,Src) ->
     inets:start(),
     read_web(httpc:request(get, {Src, [{"User-Agent","Jable"}]}, 
 			   [{autoredirect, false}], [])).
+read_web(image,Src,Range) ->
+    ssl:start(),
+    inets:start(),
+    read_web(httpc:request(get, {Src, [{"User-Agent","Jable"}, 
+				       {"Range", Range}]}, 
+			   [], [])).
+    
+%%%-------------------------------------------------------------------
+
+%%%-------------------------------------------------------------------
+%%% @author Philip Masek
+%%% @doc
+%%%	Get size of an image
+%%% @end
+
+get_size(Url) ->
+    get_size(Url,1).
+get_size(_,[]) ->
+    not_found;
+get_size("image/jpeg",[255,192,0,17,8,H1,H2,W1,W2 | _T]) ->
+    {(W1*256)+W2,(H1*256)+H2};
+get_size("image/png", [$I,$H,$D,$R,_,_,W1,W2,_,_,H1,H2 | _T]) ->
+    {(W1*256)+W2,(H1*256)+H2};
+get_size("image/gif", [$G,$I,$F,_,_,_,H2,H1,W2,W1 | _T]) ->
+    {(H1*256)+H2,(W1*256)+W2};
+get_size("image/jpeg" , [_H|T]) ->
+    get_size("image/jpeg", T);
+get_size("image/gif" , [_H|T]) ->
+    get_size("image/gif", T);
+get_size("image/png" , [_H|T]) ->
+    get_size("image/png", T);
+get_size(_URL,4) ->
+    {0,0};
+get_size(URL, Step) ->
+    Min = (Step - 1) * 1000,
+    Max = Min + 1024,
+    Range = "bytes=" ++ integer_to_list(Min) ++ "-" ++ integer_to_list(Max),
+    case read_web(image,URL,Range) of
+	{success,{Headers,Body}} ->
+	    Type = proplists:get_value("content-type",Headers),
+	    case get_size(Type, Body) of
+		not_found ->
+		    get_size(URL,Step+1);
+		Result ->
+		    Result
+	    end;
+	{error,_} ->
+	    {0,0}
+    end.
+
 %%%-------------------------------------------------------------------
 
 %%%-------------------------------------------------------------------
@@ -333,11 +383,11 @@ isDomain(Str) ->
 	isDomain(Str, 0).
 isDomain(Str, 3) when length(Str)>0 ->
 	false;
-isDomain(Str, 3) ->
+isDomain(_Str, 3) ->
 	true;
 isDomain([47|T], C) ->
 	isDomain(T, C+1);
 isDomain([_|T], C) ->
 	isDomain(T, C);
-isDomain([], C) ->
+isDomain([], _C) ->
 	true.	

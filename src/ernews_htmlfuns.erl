@@ -272,31 +272,17 @@ get_image(Html,Url)->
 		    {ok, "undef"};
 		
 		All_Images ->
-	%	   io:format("-Images---~p~s",[All_Images]),
 		   {ok, element(2,lists:max(All_Images))}
-
 	    end;
 
 	_ ->
-	    
-	   case  ernews_defuns:read_web(default,
-					"http://recallin.com/_img_size.php?url="
-					++hd(Meta_OGImage)) of
-	       {success, {_, Body}} ->
-		   {Height,Width}=seperate(Body,[]),
-	%	   case Height*Width >  5625 of
-		   case image_ratio(Height,Width) of  
-		       true -> {ok, hd(Meta_OGImage)++"|"
-				++integer_to_list(Width) ++ "*" 
-				++integer_to_list(Height)};
-		       false -> {ok, "undef"}
-		   end;
-	       _ ->
-		   {0,""}
-	   end
-	    
-		       
-	    
+	    {Height,Width} = ernews_defuns:get_size(hd(Meta_OGImage)),
+	    case image_ratio(Height,Width) of  
+		true -> {ok, hd(Meta_OGImage)++"|"
+			 ++integer_to_list(Height) ++ "*" 
+			 ++integer_to_list(Width)};
+		false -> {ok, "undef"}
+	    end
     end.
 
 %------------------------------------------------------------------------------%
@@ -474,16 +460,6 @@ get_main_url([H|T],C,Buff) ->
 %
 %%% @end
 
-seperate([$||_],[])->
-    {0,0};
-seperate([$||T],Buff)->
-    {list_to_integer(Buff),list_to_integer(T)};
-seperate([H|T],Buff) ->
-    seperate(T,Buff++[H]);
-seperate(_,_) ->
-    {0,0}.
-
-
 %------------------------------------------------------------------------------%
 %%% @author Khashayar Abdoli & Magnus Thulin
 %%% @doc
@@ -504,57 +480,35 @@ find_image([{Key,List,_}|T], Buffer,Url)  ->
     end.
 
 get_image_property([],{Size,Source,Ratio},_)->
-  
-  {Size,Source,Ratio};
+    {Size,Source,Ratio};
 
 %The bitlist from mochiweb contains Key,Value structure of the images tag
 get_image_property([{Key, Value}|T],{Size,Source,Case},Url) ->
-    case {bitstring_to_list(Key),string:str(bitstring_to_list(Value), "avatar")} of
-       
-	{"src",0} ->
+    case {bitstring_to_list(Key),
+	  string:str(bitstring_to_list(Value), "avatar")} of
+       	{"src",0} ->
 	     % Source URL found, add it to the buffer
 	    % Check if the src url does not contain the proper structure
 	     case lists:sublist(bitstring_to_list(Value), 1) =:= "/" of 
 		 true	->   
-		     
-			 % Call PHP function to get  width and height
-			 % Some links don't contain a full URL
-			 % Add the image url + source url together 
-		     case  ernews_defuns:read_web(default,
-					        "http://recallin.com/_img_size.php?url="
-						++get_main_url(Url)
-						++bitstring_to_list(Value)) of
-			 {success, {_, Body}} -> 		
-			
-			     {Height,Width}=seperate(Body,[]),
-			    get_image_property(T,{Height*Width,
-			      get_main_url(Url)++ bitstring_to_list(
-						    Value) ++ "|"
-						  ++integer_to_list(Width) ++ "*" 
-						  ++integer_to_list(Height),
-						  image_ratio(Height,Width)},Url);
-			 _ ->
-			     {0,"",false}
-		     end;
+		     {Height,Width} = ernews_defuns:get_size(get_main_url(Url) 
+					       ++ bitstring_to_list(Value)),
+		     get_image_property(T,{Height*Width,
+					   get_main_url(Url)++ bitstring_to_list(
+								 Value) ++ "|"
+					   ++integer_to_list(Height) ++ "*" 
+					   ++integer_to_list(Width),
+					   image_ratio(Height,Width)},Url);
 		 false ->
-
-		     case ernews_defuns:read_web(default,
-						 "http://recallin.com/_img_size.php?url="
-						 ++bitstring_to_list(Value)) of
-			 {success, {_, Body}} -> 		    
-			     {Height,Width}=seperate(Body,[]),
-			     get_image_property(T,{Height*Width,
-						   bitstring_to_list(
-						     Value) ++ "|"
-						   ++integer_to_list(Width) ++ "*" 
-						   ++integer_to_list(Height),
-						   image_ratio(Height,Width)},Url);						     			 
-			 _ ->
-			     {0,"",false}
-		     end
+		     {Height,Width} = ernews_defuns:get_size(bitstring_to_list(Value)),
+		     get_image_property(T,{Height*Width,
+					   bitstring_to_list(
+					     Value) ++ "|"
+					   ++integer_to_list(Height) ++ "*" 
+					   ++integer_to_list(Width),
+					   image_ratio(Height,Width)},Url)
 	     end;
-  
-	
+  	
 	{"class",_} ->
 	    % Ingnore all images that are avatars (Mainly from blogs)
 	    case bitstring_to_list(Value) of
