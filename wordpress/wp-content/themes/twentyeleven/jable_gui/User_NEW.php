@@ -36,26 +36,31 @@ class User {
     }
     
     public static function undoActionArticle($id,$field_index) {   
-        if( User::isCookie(User::$cookieStart . User::$db_fields[$field_index],$id) === FALSE )
+        if( User::isCookie(User::$cookieStart . 
+                User::$db_fields[$field_index],$id) === FALSE )
             return;
-        $cookie = User::getUsersCookie($field_index);
-        setcookie(User::$cookieStart . User::$db_fields[$field_index], 
+        if( $field_index > 2 ) {
+            $cookie = User::getUsersCookie($field_index);
+            setcookie(User::$cookieStart . User::$db_fields[$field_index], 
                 str_replace(':' . $id, '', $cookie),  time()+60*60*24*365,'/');
+        }
         User::actionArticleTable($id, $field_index, -1);
     }
     
     public static function actionArticle($id,$field_index) {
-        if( User::isCookie(User::$cookieStart . User::$db_fields[$field_index],$id) === TRUE )
+        if( $field_index > 2 &&  User::isCookie( User::$cookieStart . 
+                User::$db_fields[$field_index],$id) === TRUE )
             return;
         else if( $field_index == 0 )
             User::undoActionArticle($id,1);
         else if( $field_index == 1 )
             User::undoActionArticle($id,0);
         
-        $cookie = User::getUsersCookie($field_index);
-      
-        setcookie(User::$cookieStart . User::$db_fields[$field_index], 
-                $cookie . ':' . $id, time()+60*60*24*30,'/');   
+        if( $field_index > 2 ) {
+            $cookie = User::getUsersCookie($field_index);
+            setcookie(User::$cookieStart . User::$db_fields[$field_index], 
+                $cookie . ':' . $id, time()+60*60*24*30,'/'); 
+        }
         User::actionArticleTable($id,$field_index,1);
     }
     

@@ -1,8 +1,8 @@
 <?php
 if( class_exists('User') === FALSE )
     include 'User.php';
-if( $_POST['undo'] === 'true' )
-    User::undoActionArticle($_POST['id'], intval($_POST['action']) );
+if( $_GET['undo'] === 'true' )
+    User::undoActionArticle($_GET['id'], intval($_GET['action']) );
 else
-    User::actionArticle($_POST['id'], intval($_POST['action']) );
+    User::actionArticle($_GET['id'], intval($_GET['action']) );
 ?>

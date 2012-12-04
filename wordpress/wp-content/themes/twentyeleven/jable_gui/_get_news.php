@@ -22,7 +22,7 @@ $queries = Array('latest'
                         ' . $not_id .  '
                         order by score DESC LIMIT 20',
                  'top'
-                        =>'SELECT *, (Up_Vote+Clicks-Down_Vote) AS Ratio FROM 
+                        =>'SELECT *, (Clicks +(2*(Up_Vote-Down_Vote))) AS Ratio FROM 
                         ernews_news  WHERE Report_Count < 5 
                         ORDER BY Ratio DESC LIMIT 5');
 $result = $sql->sqlQuery($queries[ $_POST['query'] ]);

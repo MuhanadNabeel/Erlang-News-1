@@ -6,7 +6,10 @@
  */
 var isUserAction = new Object();
 var duplicateArray = new Array('hot','latest','top','view');
-var actionArray = new Array('votedown','voteup','report')
+var actionArray = new Array('votedown','voteup','report');
+var actionFields = new Array('Down_Vote','Up_Vote','Report_Count',
+                                'Clicks','LastClicked');
+var cookieStart = 'er1new5_';
 var articleTemplates;
 
 /**
@@ -46,10 +49,46 @@ function articleAction(item,action,undo) {
     updateCounter(id,action,undo);
     isUserAction[id][Math.floor(action/2)] = true;
     changeUserButtons(item,id);
-    jQuery.post(jableDir + '_article_action.php',
+    jQuery.get(jableDir + '_article_action.php',
             {id:id,action:action,undo:undo},function() {
         isUserAction[id][Math.floor(action/2)] = false;
     });
+/*
+    function setActionCookies(id,action,undo) {
+        var cookie = getCookie(cookieStart+actionFields[action]);
+        if( undo == false ) {
+            setCookie(cookieStart+actionFields[action],
+                        cookie+':'+id,30);
+            if( action == 0 )
+                setCookie(cookieStart+actionFields[1],
+                        cookie.replace(':'+id,''),30);
+            else if( action == 1 )
+                setCookie(cookieStart+actionFields[0],
+                        cookie.replace(':'+id,''),30);
+        }
+        else
+            setCookie(cookieStart+actionFields[action],
+                        cookie.replace(':'+id,''),30);
+    }
+    function setCookie(name,value,days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        var expires = "; expires="+date.toGMTString();
+        document.cookie = name+"="+value+expires+"; path=/";
+    }
+    function getCookie(c_name) {
+        var i,x,y,ARRcookies=document.cookie.split(";");
+        for (i=0;i<ARRcookies.length;i++) {
+            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+            x=x.replace(/^\s+|\s+$/g,"");
+            if (x==c_name){
+                return unescape(y);
+            }
+        }
+        return null;
+    }
+*/
     function updateCounter(id,action,undo) {
         for( var i = 0 ; i < duplicateArray.length ; i++ ) {
             if( jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] 
@@ -290,6 +329,7 @@ $(window).scroll(function() {
             ($(window).height())) && updatingArticles == false )
         getNewsJSON();
 });
+
 
 /**
  * @author Philip Masek
