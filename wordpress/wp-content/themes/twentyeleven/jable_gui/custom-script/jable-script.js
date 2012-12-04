@@ -134,6 +134,7 @@ function articleAction(item,action,undo) {
 var updatingArticles = false;
 var articleJSON = new Array();
 var isFirstLoad = true;
+var idList = '';
 /**
  * @author Ingimar Samuelsson
  * @doc
@@ -144,9 +145,11 @@ var isFirstLoad = true;
 function getNewsJSON() {
     updatingArticles = true;
     jQuery('#first_loading').show();
-    fillRightSide('top',2);
-    fillRightSide('latest',1)
-    jQuery.get(jableDir + '_get_news.php',{query:'main',ids:getDisplayedIDs()},
+    if( isFirstLoad ) {
+        fillRightSide('top',2);
+        fillRightSide('latest',1)
+    }
+    jQuery.post(jableDir + '_get_news.php',{query:'main',ids:idList},
             function(outcome) {
         jQuery('#first_loading').hide();
         if( isFirstLoad ) {
@@ -159,7 +162,6 @@ function getNewsJSON() {
             articleJSON[0] = articleJSON[0].concat(json);
         else
             articleJSON[0] = json;
-        
         if( json.length == 0 ){
             return;
         }
@@ -168,6 +170,11 @@ function getNewsJSON() {
         var rightArc = 0;
 
         for( var i = 0 ; i < json.length ; i++ ) {
+            if( idList.indexOf('' + json[i].newsID) == -1 ) {
+                if( idList != '' )
+                    idList += ',';
+                idList += json[i].newsID;
+            }
             isUserAction[json[i].newsID] = Array(false,false);
             var template = articleTemplates[3];
             if( json[i].imgwidth > 350 )
@@ -193,17 +200,6 @@ function getNewsJSON() {
         isFirstLoad = false;
         updatingArticles = false;
     });
-    function getDisplayedIDs() {
-        var list = '';
-        if( articleJSON[0] == null )
-            return '';
-        for( var i = 0 ; i < articleJSON[0].length ; i++ ) {
-            if( i != 0 )
-                list += ',';
-            list += articleJSON[0][i].newsID;
-        }
-        return list;
-    }    
     /**
      * @author Ingimar Samuelsson
      * @doc
@@ -211,7 +207,7 @@ function getNewsJSON() {
      * @end
      */
     function fillRightSide(location,index) {
-        jQuery.get(jableDir + '_get_news.php',{query:location},function(outcome) {
+        jQuery.post(jableDir + '_get_news.php',{query:location},function(outcome) {
             var parse = jQuery.parseJSON(outcome);
             var json = parse.news;
             articleJSON[index] = json;

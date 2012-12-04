@@ -9,6 +9,7 @@
 class User {
     
     private static $db_fields = Array('Down_Vote','Up_Vote','Report_Count','Clicks','LastClicked');
+    private static $cookieStart = 'er1new5_';
     
     public static function getUserClickList() {
         $array = Array();
@@ -29,22 +30,22 @@ class User {
     }
     
     private static function getUsersCookie($field_index) {
-        if( is_null(@$_COOKIE['er1new5->' . User::$db_fields[$field_index]]) )
+        if( is_null(@$_COOKIE[User::$cookieStart . User::$db_fields[$field_index]]) )
             return '';
-        return @$_COOKIE['er1new5->' . User::$db_fields[$field_index]];
+        return @$_COOKIE[User::$cookieStart . User::$db_fields[$field_index]];
     }
     
     public static function undoActionArticle($id,$field_index) {   
-        if( User::isCookie('er1new5->' . User::$db_fields[$field_index],$id) === FALSE )
+        if( User::isCookie(User::$cookieStart . User::$db_fields[$field_index],$id) === FALSE )
             return;
         $cookie = User::getUsersCookie($field_index);
-        setcookie('er1new5->' . User::$db_fields[$field_index], 
+        setcookie(User::$cookieStart . User::$db_fields[$field_index], 
                 str_replace(':' . $id, '', $cookie),  time()+60*60*24*365);
         User::actionArticleTable($id, $field_index, -1);
     }
     
     public static function actionArticle($id,$field_index) {
-        if( User::isCookie('er1new5->' . User::$db_fields[$field_index],$id) === TRUE )
+        if( User::isCookie(User::$cookieStart . User::$db_fields[$field_index],$id) === TRUE )
             return;
         else if( $field_index == 0 )
             User::undoActionArticle($id,1);
@@ -53,8 +54,8 @@ class User {
         
         $cookie = User::getUsersCookie($field_index);
         
-        setcookie('er1new5->' . User::$db_fields[$field_index], 
-                $cookie . ':' . $id, time()+60*60*24*365);        
+        setcookie(User::$cookieStart . User::$db_fields[$field_index], 
+                $cookie . ':' . $id, time()+60*60*24*30);        
         User::actionArticleTable($id,$field_index,1);
     }
     
