@@ -1,8 +1,10 @@
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson <ingimar@student.gu.se>
+%%% @author Joel Hjaltason <joel@localhost.localdomain>
 %%% @author Khashayar Abdoli <khashayar@localhost.localdomain>
 %%% @author Magnus Tulin <magnus@localhost.localdomain>
 %%% @author Muhanad Nabeel <muhanad@localhost.localdomain>
+%%% @author Philip Masek <philip@localhost.localdomain>
 %%% @copyright (C) 2012, Jablé
 %%% @doc
 %%%	Various functions
@@ -22,7 +24,8 @@ test1(A,B) ->
 
 
 %%%-------------------------------------------------------------------
-%%% @author Ingimar Samuelsson & Magnus Tulin
+%%% @author Ingimar Samuelsson
+%%% @author Magnus Tulin
 %%% @doc
 %%%	Attempts to fetch and read a document from URL
 %%% @end
@@ -70,7 +73,6 @@ read_web(image,Src,Range) ->
     read_web(httpc:request(get, {Src, [{"User-Agent","Jable"}, 
 				       {"Range", Range}]}, 
 			   [], [])).
-    
 %%%-------------------------------------------------------------------
 
 %%%-------------------------------------------------------------------
@@ -78,7 +80,6 @@ read_web(image,Src,Range) ->
 %%% @doc
 %%%	Get size of an image
 %%% @end
-
 get_size(Url) ->
     get_size(Url,1).
 get_size(_,[]) ->
@@ -113,7 +114,6 @@ get_size(URL, Step) ->
 	{error,_} ->
 	    {0,0}
     end.
-
 %%%-------------------------------------------------------------------
 
 %%%-------------------------------------------------------------------
@@ -168,8 +168,10 @@ read_words() ->
 	
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
+%%% @deprecated
 %%% @doc
-%%%	Generate tags for articles
+%%%	Generate tags for articles based on words
+%%% Not used in this version
 %%% @end
 get_tags([],_) ->
 	[];	
@@ -203,7 +205,7 @@ count_words([H|T],List,Counter) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
-%%%	Removes duplicates from a list
+%%%	Removes duplicates from a list - case-sensetive
 %%% @end
 remove_duplist(List) ->
 	remove_duplist(List,[]).
@@ -262,7 +264,8 @@ list_words_occur_insens(WordConcat,List,Length) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson	
 %%% @doc
-%%%	Compare two strings
+%%%	Compare two strings. Returns true if Str2 is part of Str1.
+%%% In retrospect, it would be better to use string:str/2
 %%% @end
 compare_concat_str(Str1,Str2) ->
 	Left = string:to_lower(string:left(Str2,string:len(Str1))),
@@ -298,23 +301,27 @@ split_text([X | Str], Word, Words) ->
 %%%-------------------------------------------------------------------
 
 	
-	
-	
-	
-%%
-%% Remaining code is note in current version
-%%
-	
-	
-
-%% Author: Muhanad Nabeel & Ingimar Samuelsson
+%%%-------------------------------------------------------------------
+%%% @author Ingimar Samuelsson
+%%% @author Muhanad Nabeel
+%%% @deprecated
+%%% @doc
+%%%	Read from text file
+%%% @end
 readlines(Src) ->
     {ok, Device} = file:open(Src, [read]),
     try get_all_lines(Device)
       after file:close(Device)
     end.
+%%%-------------------------------------------------------------------
 
-%% Author: Muhanad Nabeel & Ingimar Samuelsson
+%%%-------------------------------------------------------------------
+%%% @author Ingimar Samuelsson
+%%% @author Muhanad Nabeel
+%%% @deprecated
+%%% @doc
+%%%	Get all lines from text file
+%%% @end
 get_all_lines(Device) ->
     case io:get_line(Device, "") of
         eof  -> [];
@@ -327,17 +334,20 @@ get_all_lines(Device) ->
 					[Line | get_all_lines(Device)]
 			end
 	end.
+%%%-------------------------------------------------------------------
 	
-%% Author: Khashayar Abdoli
-%% Gets description
+%%%-------------------------------------------------------------------
+%%% @author Khashayar Abdoli
+%%% @deprecated
+%%% @doc
+%%%	Get description from RSS feed
+%%% @end
 get_description(List, iocoder) ->
     coder_description(List,[] , false);
 get_description(List, google) ->
     Desc = google_description(List,[] , 0),
-    %io:format("DESC : ~s~n", [Desc]),
     google_tag_remover(Desc, [] , true).
 
-%% Author: Khashayar Abdoli
 coder_description([] , Buff , _) ->
     Buff;
 coder_description([$<,$/,$b,$l,$o,$c,$k,$q,$u,$o,$t,$e,$>|_T] , Buff , _) ->
@@ -349,7 +359,6 @@ coder_description([H|T], Buff, true) ->
 coder_description([_|T], Buff, false) ->
     coder_description(T, Buff, false).
 
-%% Author: Khashayar Abdoli
 google_description([], Buff, _) ->
     Buff;
 google_description([$&,$l,$t,$;,$f,$o,$n,$t,$ ,
@@ -362,8 +371,6 @@ google_description([H|T], Buff, 2) ->
 google_description([_H|T], Buff, Counter) ->
     google_description(T, Buff, Counter).
 				     
-
-%% Author: Khashayar Abdoli
 google_tag_remover([], Buff, _) ->
     Buff;
 google_tag_remover([$&,$l,$t,$;|T], Buff , _) ->
@@ -374,10 +381,12 @@ google_tag_remover([H|T], Buff, true) ->
     google_tag_remover(T, Buff ++ [H], true);
 google_tag_remover([_H|T] , Buff, false) ->
     google_tag_remover(T, Buff, false).
+%%%-------------------------------------------------------------------
 
-%%% @author Jóel Hjaltason
+%%%-------------------------------------------------------------------
+%%% @author Joel Hjaltason
 %%% @doc
-%%%	Returns true if a given string is a domain
+%%%	Returns true if a given URL string is a domain
 %%% @end
 isDomain(Str) ->
 	isDomain(Str, 0).
@@ -391,3 +400,4 @@ isDomain([_|T], C) ->
 	isDomain(T, C);
 isDomain([], _C) ->
 	true.	
+%%%-------------------------------------------------------------------

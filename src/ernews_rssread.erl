@@ -7,26 +7,15 @@
 %%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
 %%%-------------------------------------------------------------------
 
-
 -module(ernews_rssread).
-
--compile(export_all).
-%-export([start_link/2,start/2]).
-%-export([init/2]).
+-export([start_link/2,start/2]).
+-export([init/2]).
 -include("records.hrl").
-
-
-% http://search.twitter.com/search.atom?q=%23erlang
-bla() ->
-	{_,{_,B}} = ernews_defuns:read_web(default,"http://search.twitter.com/search.atom?q=%23erlang"),
-	twitter(B).
-	
-
 
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
-%%%	Starts the process. Called from rssagent
+%%%	Starts the process. Called from RSS Agent
 %%% @end
 start_link(Atom,Source) ->
     spawn_link(?MODULE, init,[Atom,Source]).
@@ -44,7 +33,6 @@ init(dzone,Source) ->
 init(Atom,Source) ->
     read(start,ernews_defuns:read_web(default,Source),Atom).
 %%%-------------------------------------------------------------------
-	
 
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
@@ -115,7 +103,6 @@ twitter(List) ->
 twitter(T,Result,Buffer) ->
 	case {string:str(Buffer,"twitter"),string:str(Buffer,"twimg")} of
 		{0,0} ->
-			%io:format("http://t.co~p~n",[Buffer]),
 			twitter(T,false,["http://t.co" ++ Buffer|Result],[]);
 		_ ->
 			twitter(T,false,Result,[])
@@ -142,7 +129,6 @@ twitter([],_,Result,Buffer) ->
 	ernews_defuns:remove_duplist([Buffer|Result]).
 %%%-------------------------------------------------------------------
 	
-
 %%%-------------------------------------------------------------------
 %%% @author Benjamin Nortier
 %%% @doc
