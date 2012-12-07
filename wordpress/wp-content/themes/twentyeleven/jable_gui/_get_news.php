@@ -2,7 +2,7 @@
 /**
  * @author Ingimar Samuelsson
  * @doc
- *  Get's jsons with information about articles and user-interaction
+ *  Get's JSON with information about articles and user-interaction
  * @end
  */
 if(class_exists('MySQL') === FALSE)
@@ -10,7 +10,7 @@ if(class_exists('MySQL') === FALSE)
 $sql = new MySQL();
 $not_id = '';
 if(is_null($_POST['ids']) === FALSE && strlen($_POST['ids']) > 0 )
-    $not_id = 'AND newsID NOT IN (' . $_POST['ids'] . ')';
+    $not_id = ' AND newsID NOT IN (' . $_POST['ids'] . ') ';
 $queries = Array('latest'
                         =>'SELECT * FROM ernews_news WHERE Report_Count < 5 
                             ORDER BY Pubdate DESC LIMIT 5',
