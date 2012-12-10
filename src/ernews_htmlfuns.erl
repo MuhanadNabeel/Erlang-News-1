@@ -242,10 +242,11 @@ get_title(Html)->
 %%% @doc
 % From the parsed HTML the function, extract the image from the meta tag. If
 % it doesnt exist, return the largest image from the body of the HTML. The
-% size of the image is determined by calling a PHP function. 
+% size of the image is determined by calling defuns:get_size
 % Only allow images are larger than 80x80 
 % Diminishes possibility of non-related image
 %%% @end
+
 image_ratio(0,0)->
     false;
 image_ratio(Height,Width) when Height/Width > 4 ->
@@ -290,7 +291,7 @@ get_image(Html,Url)->
 %%% @doc
 % Returns the icon from the meta data in the HTML. Some icon links do not
 % contain the entire URL (eg. /favicon.icon) therefore the function checks
-% and compiles a complete link.
+% and compiles a complete link. Needs check if icon url is broken. 
 %%% @end
 
 get_icon_link(Icon,Url)->
@@ -329,7 +330,7 @@ get_icon(Html,Url)->
 %------------------------------------------------------------------------------%
 %%% @author Magnus Thulin
 %%% @doc
-% Calls the relevency function. 
+% Parsers HTML to check if the article is relevant to Erlang.  
 %%% @end
 
 relevancy_check(Url,{Good,Bad,Tags})->
@@ -351,6 +352,8 @@ relevancy_check(Url,{Good,Bad,Tags})->
 
 %-------------------------------------------------------------------------------%
 %% @author Khashayar Abdoli 
+
+
 is_html(Headers) ->
     case proplists:get_value("content-type",Headers) of
 	undefined ->
@@ -454,11 +457,6 @@ get_main_url([$/|T],C,Buff) ->
 get_main_url([H|T],C,Buff) ->	
     get_main_url(T,C,Buff ++ [H]).
 
-%------------------------------------------------------------------------------%
-%%% @author Khashayar Abdoli
-%%% @doc
-%
-%%% @end
 
 %------------------------------------------------------------------------------%
 %%% @author Khashayar Abdoli & Magnus Thulin
@@ -467,8 +465,9 @@ get_main_url([H|T],C,Buff) ->
 %%% @end
 
 find_image([],Buffer,_)->
-    % Filters the list to only allow images with the size of 45x45
-    lists:filter(fun({Size,_,Ratio}) ->  Ratio =:= true andalso Size > 5625 end, Buffer);
+    % Filters the list to only allow images with the size of 75x75
+    lists:filter(fun({Size,_,Ratio}) ->  Ratio =:= true andalso Size > 5625 
+		 end, Buffer);
 
 find_image([{Key,List,_}|T], Buffer,Url)  ->
     case Key == list_to_bitstring("img") of
@@ -500,7 +499,8 @@ get_image_property([{Key, Value}|T],{Size,Source,Case},Url) ->
 					   ++integer_to_list(Width),
 					   image_ratio(Height,Width)},Url);
 		 false ->
-		     {Height,Width} = ernews_defuns:get_size(bitstring_to_list(Value)),
+		     {Height,Width} = ernews_defuns:get_size(
+					bitstring_to_list(Value)),
 		     get_image_property(T,{Height*Width,
 					   bitstring_to_list(
 					     Value) ++ "|"
@@ -513,7 +513,7 @@ get_image_property([{Key, Value}|T],{Size,Source,Case},Url) ->
 	    % Ingnore all images that are avatars (Mainly from blogs)
 	    case bitstring_to_list(Value) of
 		[$a,$v,$a,$t,$a,$r|_] ->
-		    % If an avatar is found, set the size to 0 so it is ignored
+		   
 		    get_image_property(T,{0,Source,Case},Url);
 		_ ->
 		    get_image_property(T,{Size,Source,Case},Url)
@@ -523,85 +523,5 @@ get_image_property([{Key, Value}|T],{Size,Source,Case},Url) ->
     end.
 
 
-
-
 %------------------------------------------------------------------------------%
-%%% @author Magnus Thulin
-%%% @doc
-% Returns the icon from the meta data in the HTML. Some icon links do not
-% contain the entire URL (eg. /favicon.icon) therefore the function checks
-% and compiles a complete link.
-%%% @end
-
-
-test(Url)->
-    
-   % 	{success, {_, Body}} = ernews_defuns:read_web(default,"http://localhost:8888/_img_size.php?url=http://basho.com/images/raspi-boot.jpg"),
-    %Body.
-    %Html = mochiweb_html:parse(H).
-%    file:write_file("/Users/magnus/Desktop/image.txt", io_lib:fwrite("~s", [Body])).
-
-    
-    %PTags= get_value([Html],"image" ,[]).
-
-    {success, {_, _}} = ernews_defuns:read_web(default,Url).
-    %Html = mochiweb_html:parse(Body).
-   % get_description(readlines("/Users/magnus/Desktop/html.txt")).
-
-%  Html = mochiweb_html:pars(readlines("/Users/magnus/Desktop/html.txt")),
-  %  PTags= get_value([Html],"p" ,[]),
- %  % PTagArticle = break_list(lists:reverse(PTags)),
-    
-    
-   % T = mochiweb_html:to_html({"html",[],PTagArticle}),
-    
-   % {ok, bitstring_to_list(iolist_to_binary(T))}.
-		        
-    % io:format("~p~n",[Html]),
-%    [{_,_,[Val|_]}] =  get_value([Html],"title" ,[]),
-%    Val.
-	
-
-	   % {ok,bitstring_to_list(Val)}.
-   % PTags = get_value([Html],"p" ,[]),
-   % PTagArticle = break_list(lists:reverse(PTags)),
-   % case PTagArticle of
-%	[] ->
-%	    {error, not_found};
-%	_ ->
-%	    ParsedArticle = 
-%		mochiweb_html:to_html({"html",[],PTagArticle}),
-%	    io:format("~s~n", [bitstring_to_list(iolist_to_binary(ParsedArticle))])
-%	    
-		
- %   end.
-   %io:format("~s",[Html]).
-    %PTags= get_value([Html],"p" ,[]).
-
-readlines(FileName) ->
-    {ok, Device} = file:open(FileName, [read]),
-    try get_all_lines(Device)
-      after file:close(Device)
-    end.
-
-get_all_lines(Device) ->
-    case io:get_line(Device, "") of
-        eof  -> [];
-        Line -> Line ++ get_all_lines(Device)
-    end.
-
-
-
-test2()->
-hello.
-   % Test = {<<"html">>,[],[{pi, <<"xml:namespace">>,[{<<"prefix">>,<<"o">>},
-%{<<"ns">>,<<"urn:schemas-microsoft-com:office:office">>}]}]},
-
- %   T2 = {"",[],[<<"We have finally released ">>,{<<"a">>,[{<<"href">>,
-%<<"http://elixir-lang.org/">>}],[<<"Elixir">>]},<<" v0.5.0! This marks %
-%the first release since the language was rewritten. In this blog post, we will discu">>]},
-
-%bitstring_to_list(iolist_to_binary(mochiweb_html:to_html(T2))).
-
-%%-------------------------------------------------------------%%
 
