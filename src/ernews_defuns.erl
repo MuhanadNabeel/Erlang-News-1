@@ -7,7 +7,6 @@
 %%% @author Philip Masek <philip@localhost.localdomain>
 %%% @copyright (C) 2012, Jablé
 %%% @doc
-%%% This module meets the following requirements: BE-FREQ#1, BE-FREQ#5
 %%%	Various functions
 %%% @end
 %%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
