@@ -11,6 +11,12 @@ class User {
     private static $db_fields = Array('Down_Vote','Up_Vote','Report_Count','Clicks','LastClicked');
     private static $cookieStart = 'er1new5_';
     
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Retrieves lists of newsID that the users has interacted with
+     * @end
+     */
     public static function getUserClickList() {
         $array = Array();
         for( $i = 0 ; $i < count(User::$db_fields) ; $i++ ) {
@@ -19,6 +25,12 @@ class User {
         return $array;
     }
     
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Checks if newsID is in cookies
+     * @end
+     */
     private static function isCookie($cookie,$id) {
         if( is_null( @$_COOKIE[$cookie] ) === TRUE )
             return FALSE;
@@ -29,12 +41,24 @@ class User {
         return TRUE;
     }
     
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Gets users cookie for specific field
+     * @end
+     */
     private static function getUsersCookie($field_index) {
         if( is_null(@$_COOKIE[User::$cookieStart . User::$db_fields[$field_index]]) )
             return '';
         return @$_COOKIE[User::$cookieStart . User::$db_fields[$field_index]];
     }
     
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Undo user action (vote,report)
+     * @end
+     */
     public static function undoActionArticle($id,$field_index) {   
         if( User::isCookie(User::$cookieStart . User::$db_fields[$field_index],$id) === FALSE )
             return;
@@ -44,6 +68,12 @@ class User {
         User::actionArticleTable($id, $field_index, -1);
     }
     
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Perform user action (vote,report,click)
+     * @end
+     */
     public static function actionArticle($id,$field_index) {
         if( User::isCookie(User::$cookieStart . User::$db_fields[$field_index],$id) === TRUE )
             return;
@@ -59,6 +89,12 @@ class User {
         User::actionArticleTable($id,$field_index,1);
     }
     
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Affects database based on user action
+     * @end
+     */
     private static function actionArticleTable($id,$field_index,$int) {
         if( class_exists('MySQL') === FALSE )
             include 'MySQL.php';

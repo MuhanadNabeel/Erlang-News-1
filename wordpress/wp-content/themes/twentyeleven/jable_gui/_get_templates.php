@@ -1,4 +1,10 @@
 <?php
+/**
+ * @author Ingimar Samuelsson
+ * @doc
+ *  Get templates that display articles
+ * @end
+ */
 $URL = @$_GET["jableurl"];
 // 0
 include 'rightnews_template.php';

@@ -1,5 +1,6 @@
 /**
  * @author Ingimar Samuelsson
+ * @author Philip Masek
  * @doc
  *  Content-display and User-interaction
  * @end
@@ -7,16 +8,14 @@
 var isUserAction = new Object();
 var duplicateArray = new Array('hot','latest','top','view');
 var actionArray = new Array('votedown','voteup','report');
-var actionFields = new Array('Down_Vote','Up_Vote','Report_Count',
-                                'Clicks','LastClicked');
-var cookieStart = 'er1new5_';
 var articleTemplates;
 
 /**
  * @author Ingimar Samuelsson
  * @doc
- *  When the page loads - get article templates
- *  and call article information fetcher and twitter feed
+ *  When the page loads - get article templates,
+ *  then call article information fetcher and 
+ *  start twitter-feed interval
  * @end
  */
 jQuery(document).ready(function() {
@@ -53,42 +52,13 @@ function articleAction(item,action,undo) {
             {id:id,action:action,undo:undo},function() {
         isUserAction[id][Math.floor(action/2)] = false;
     });
-/*
-    function setActionCookies(id,action,undo) {
-        var cookie = getCookie(cookieStart+actionFields[action]);
-        if( undo == false ) {
-            setCookie(cookieStart+actionFields[action],
-                        cookie+':'+id,30);
-            if( action == 0 )
-                setCookie(cookieStart+actionFields[1],
-                        cookie.replace(':'+id,''),30);
-            else if( action == 1 )
-                setCookie(cookieStart+actionFields[0],
-                        cookie.replace(':'+id,''),30);
-        }
-        else
-            setCookie(cookieStart+actionFields[action],
-                        cookie.replace(':'+id,''),30);
-    }
-    function setCookie(name,value,days) {
-        var date = new Date();
-        date.setTime(date.getTime()+(days*24*60*60*1000));
-        var expires = "; expires="+date.toGMTString();
-        document.cookie = name+"="+value+expires+"; path=/";
-    }
-    function getCookie(c_name) {
-        var i,x,y,ARRcookies=document.cookie.split(";");
-        for (i=0;i<ARRcookies.length;i++) {
-            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
-            x=x.replace(/^\s+|\s+$/g,"");
-            if (x==c_name){
-                return unescape(y);
-            }
-        }
-        return null;
-    }
-*/
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Update vote-counter after user has (un)voted
+     *  If user is changing vote, then act accordingly.
+     * @end
+     */
     function updateCounter(id,action,undo) {
         for( var i = 0 ; i < duplicateArray.length ; i++ ) {
             if( jQuery('#' + duplicateArray[i] + '_' + id + '_' + actionArray[0] 
@@ -127,6 +97,12 @@ function articleAction(item,action,undo) {
             }
         }
     }
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Update votes graphical-counter
+     * @end
+     */
     function iterateCounter(id,up) {
         var org = parseInt( jQuery(id).text(), 10 );
         if( up ){
@@ -138,6 +114,13 @@ function articleAction(item,action,undo) {
         }
             
     }
+    /**
+     * @author Ingimar Samuelsson
+     * @doc
+     *  Change buttons that the users clicks to vote.
+     *  If the user changes vote then act accordingly
+     * @end
+     */
     function changeUserButtons(item,id) {
         var htmlID = jQuery(item).attr('id');
         var action = htmlID.split('_')[2];
@@ -177,8 +160,9 @@ var idList = '';
 /**
  * @author Ingimar Samuelsson
  * @doc
- *  Fetches informations related to articles in JSON format
- *  and adds to HTML Dom
+ *  Fetches informations related to articles from database
+ *  in JSON format, add information to related article-template
+ *  and add to DOM
  * @end
  */
 function getNewsJSON() {
@@ -242,7 +226,8 @@ function getNewsJSON() {
     /**
      * @author Ingimar Samuelsson
      * @doc
-     *  Get info for right side of webpage
+     *  Fetch information from database in JSON format 
+     *  and add to DOM
      * @end
      */
     function fillRightSide(location,index) {
@@ -321,7 +306,7 @@ function getNewsJSON() {
 /**
  * @author Ingimar Samuelsson
  * @doc
- *  Get more articles when user gets to the bottom of page
+ *  When user reaches bottom of page, load more content
  * @end
  */
 $(window).scroll(function() {

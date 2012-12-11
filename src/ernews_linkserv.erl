@@ -1,10 +1,10 @@
 %%%-------------------------------------------------------------------
-%%% @author Khashayar <khashayar@localhost.localdomain>
-%%% @copyright (C) 2012, Khashayar
+%%% @author Khashayar Abdoli
+%%% @copyright (C) 2012, Khashayar Abdoli
 %%% @doc
-%%%
+%%% Center of the communication 
 %%% @end
-%%% Created :  8 Oct 2012 by Khashayar <khashayar@localhost.localdomain>
+%%% Created :  8 Oct 2012 by Khashayar Abdoli
 %%%-------------------------------------------------------------------
 -module(ernews_linkserv).
 
@@ -32,7 +32,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start_link() ->
-    io:format("LINK SERVER IS COMING UP ~n",[]),
+    %io:format("LINK SERVER IS COMING UP ~n",[]),
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], []).
 
 %%%===================================================================
@@ -43,7 +43,8 @@ start_link() ->
 %% @private
 %% @doc
 %% Initializes the server
-%%
+%% It reads the important word from database and saves them in the state of the
+%% server for further use
 %% @spec init(Args) -> {ok, State} |
 %%                     {ok, State, Timeout} |
 %%                     ignore |
@@ -56,27 +57,22 @@ init([]) ->
     {ok, Words}.
 
 %%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Handling call messages
-%%
-%% @spec handle_call(Request, From, State) ->
-%%                                   {reply, Reply, State} |
-%%                                   {reply, Reply, State, Timeout} |
-%%                                   {noreply, State} |
-%%                                   {noreply, State, Timeout} |
-%%                                   {stop, Reason, Reply, State} |
-%%                                   {stop, Reason, State}
-%% @end
-%%--------------------------------------------------------------------
-handle_call(_Request, _From, State) ->
-    Reply = ok,
-    {reply, Reply, State}.
-
-%%--------------------------------------------------------------------
-%% @private
 %% @doc
 %% Handling cast messages
+%% 
+%% handles 3 diffrent messages 
+%% 
+%% parse message which is comming from rssread will start a html process 
+%% with the arguments received within the message
+%% 
+%% submit message which is comming from html process, this will end up writing 
+%% to database by calling db functions
+%%
+%% error message which comming from html process, this will end up writing 
+%% to database with the reason of the error by calling db functions
+%% 
+%% there is also one condition that catches everything , so it wont crash and 
+%% result will be return to the error logger
 %%
 %% @spec handle_cast(Msg, State) -> {noreply, State} |
 %%                                  {noreply, State, Timeout} |
@@ -84,7 +80,7 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast({parse, Source, Url, Ts}, State) ->
-    %io:format("Geetting Source ~p~n" , [Url]),
+    %io:format("Parsing Source ~p : ~p~n" , [Source,Url]),
     ernews_html:start_link(Url, Source, Ts,State),
     {noreply, State};
 handle_cast({submit, Source, Url, Title, Description, 
@@ -109,44 +105,23 @@ handle_cast(Msg ,State) ->
 %%--------------------------------------------------------------------
 %% @private
 %% @doc
-%% Handling all non call/cast messages
-%%
-%% @spec handle_info(Info, State) -> {noreply, State} |
-%%                                   {noreply, State, Timeout} |
-%%                                   {stop, Reason, State}
+%% The rest are just in case of anything unusual happens, so it won't end 
+%% in crashing. non of them will act on any kind of message
 %% @end
 %%--------------------------------------------------------------------
+handle_call(_Request, _From, State) ->
+    Reply = ok,
+    {reply, Reply, State}.
+
 handle_info(_Info, State) ->
     {noreply, State}.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% This function is called by a gen_server when it is about to
-%% terminate. It should be the opposite of Module:init/1 and do any
-%% necessary cleaning up. When it returns, the gen_server terminates
-%% with Reason. The return value is ignored.
-%%
-%% @spec terminate(Reason, State) -> void()
-%% @end
-%%--------------------------------------------------------------------
 terminate(Reason, _State) ->
     io:format("Reason ~p~n",[Reason]),
     ok.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Convert process state when code is changed
-%%
-%% @spec code_change(OldVsn, State, Extra) -> {ok, NewState}
-%% @end
-%%--------------------------------------------------------------------
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-%%%===================================================================
-%%% Internal functions
-%%%===================================================================
 
     

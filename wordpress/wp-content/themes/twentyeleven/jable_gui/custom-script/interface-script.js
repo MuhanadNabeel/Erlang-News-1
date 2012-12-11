@@ -121,7 +121,8 @@ function closeAllStuff(cbFunc){
         return;
     }
     json = json[index];
-    jQuery.get(jableDir + '_count_clicks.php',{id:json.newsID});
+    jQuery.get(jableDir + 'article_action.php',{id:json.newsID,
+                undo:false,action:3});
 
     var buttons =  '                            <table>'
                  + '              <tr>'

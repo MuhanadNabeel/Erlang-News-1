@@ -1,10 +1,10 @@
 %%%-------------------------------------------------------------------
-%%% @author Khashayar <khashayar@localhost.localdomain>
-%%% @copyright (C) 2012, Khashayar
+%%% @author Khashayar Abdoli
+%%% @copyright (C) 2012, Khashayar Abdoli
 %%% @doc
-%%%
+%%% Time scheduler for reading different sources
 %%% @end
-%%% Created : 17 Oct 2012 by Khashayar <khashayar@localhost.localdomain>
+%%% Created :  8 Oct 2012 by Khashayar Abdoli
 %%%-------------------------------------------------------------------
 -module(ernews_rssagent).
 
@@ -48,6 +48,10 @@ start_link() ->
 %% gen_fsm:start_link/[3,4], this function is called by the new
 %% process to initialize.
 %%
+%% In the initialize we setup all the sources that we want, we setup the time 
+%% to now as the first run, each source has an atom name, a URL , an interval 
+%% and time that specifies the time to run
+%%
 %% @spec init(Args) -> {ok, StateName, State} |
 %%                     {ok, StateName, State, Timeout} |
 %%                     ignore |
@@ -84,13 +88,14 @@ init([]) ->
     {ok, run, [Twitter,Reddit,Google,Coder,Hacker,DZone]}.
 
 %%--------------------------------------------------------------------
-%% @private
 %% @doc
-%% There should be one instance of this function for each possible
-%% state name. Whenever a gen_fsm receives an event sent using
-%% gen_fsm:send_event/2, the instance of this function with the same
-%% name as the current state name StateName is called to handle
-%% the event. It is also called if a timeout occurs.
+%% 
+%% We have two main states which together they create an infinite loop,
+%% first state (run), runs all the sources if its their time to run
+%% and forwards to waiting state by a Delay figured in the setup function which
+%% indicates the delay till next run
+%% second state (wait) is just a state for delaying and after the delay
+%% it goes back to the run state
 %%
 %% @spec state_name(Event, State) ->
 %%                   {next_state, NextStateName, NextState} |
@@ -111,105 +116,40 @@ wait(Delay, State) ->
 %%--------------------------------------------------------------------
 %% @private
 %% @doc
-%% There should be one instance of this function for each possible
-%% state name. Whenever a gen_fsm receives an event sent using
-%% gen_fsm:sync_send_event/[2,3], the instance of this function with
-%% the same name as the current state name StateName is called to
-%% handle the event.
-%%
-%% @spec state_name(Event, From, State) ->
-%%                   {next_state, NextStateName, NextState} |
-%%                   {next_state, NextStateName, NextState, Timeout} |
-%%                   {reply, Reply, NextStateName, NextState} |
-%%                   {reply, Reply, NextStateName, NextState, Timeout} |
-%%                   {stop, Reason, NewState} |
-%%                   {stop, Reason, Reply, NewState}
+%% The rest are just in case of anything unusual happens, so it won't end 
+%% in crashing. non of them will act on any kind of message
 %% @end
 %%--------------------------------------------------------------------
 
-%% IF WE WANT TO ADD SYNC CALL
-
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Whenever a gen_fsm receives an event sent using
-%% gen_fsm:send_all_state_event/2, this function is called to handle
-%% the event.
-%%
-%% @spec handle_event(Event, StateName, State) ->
-%%                   {next_state, NextStateName, NextState} |
-%%                   {next_state, NextStateName, NextState, Timeout} |
-%%                   {stop, Reason, NewState}
-%% @end
-%%--------------------------------------------------------------------
 handle_event(_Event, StateName, State) ->
     {next_state, StateName, State}.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Whenever a gen_fsm receives an event sent using
-%% gen_fsm:sync_send_all_state_event/[2,3], this function is called
-%% to handle the event.
-%%
-%% @spec handle_sync_event(Event, From, StateName, State) ->
-%%                   {next_state, NextStateName, NextState} |
-%%                   {next_state, NextStateName, NextState, Timeout} |
-%%                   {reply, Reply, NextStateName, NextState} |
-%%                   {reply, Reply, NextStateName, NextState, Timeout} |
-%%                   {stop, Reason, NewState} |
-%%                   {stop, Reason, Reply, NewState}
-%% @end
-%%--------------------------------------------------------------------
 handle_sync_event(_Event, _From, StateName, State) ->
     Reply = ok,
     {reply, Reply, StateName, State}.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% This function is called by a gen_fsm when it receives any
-%% message other than a synchronous or asynchronous event
-%% (or a system message).
-%%
-%% @spec handle_info(Info,StateName,State)->
-%%                   {next_state, NextStateName, NextState} |
-%%                   {next_state, NextStateName, NextState, Timeout} |
-%%                   {stop, Reason, NewState}
-%% @end
-%%--------------------------------------------------------------------
 handle_info(_Info, StateName, State) ->
     {next_state, StateName, State}.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% This function is called by a gen_fsm when it is about to
-%% terminate. It should be the opposite of Module:init/1 and do any
-%% necessary cleaning up. When it returns, the gen_fsm terminates with
-%% Reason. The return value is ignored.
-%%
-%% @spec terminate(Reason, StateName, State) -> void()
-%% @end
-%%--------------------------------------------------------------------
 terminate(_Reason, _StateName, _State) ->
     ok.
 
-%%--------------------------------------------------------------------
-%% @private
-%% @doc
-%% Convert process state when code is changed
-%%
-%% @spec code_change(OldVsn, StateName, State, Extra) ->
-%%                   {ok, StateName, NewState}
-%% @end
-%%--------------------------------------------------------------------
 code_change(_OldVsn, StateName, State, _Extra) ->
     {ok, StateName, State}.
 
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+
+%%--------------------------------------------------------------------
+%% @doc
+%% This function gets the state from run state, It checks the time of each
+%% source and if it's time for them to run it spawns the rssread process
+%% and setup the next run-time with the interval
+%% in the end it calculate the minimum delay needed till the next time to run
+%% a source
+%% @end
+%%--------------------------------------------------------------------
 
 setup(List) ->
     setup(List, 24*3600, []).

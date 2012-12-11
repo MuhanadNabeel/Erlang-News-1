@@ -7,26 +7,15 @@
 %%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
 %%%-------------------------------------------------------------------
 
-
 -module(ernews_rssread).
-
--compile(export_all).
-%-export([start_link/2,start/2]).
-%-export([init/2]).
+-export([start_link/2,start/2]).
+-export([init/2]).
 -include("records.hrl").
-
-
-% http://search.twitter.com/search.atom?q=%23erlang
-bla() ->
-	{_,{_,B}} = ernews_defuns:read_web(default,"http://search.twitter.com/search.atom?q=%23erlang"),
-	twitter(B).
-	
-
 
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
-%%%	Starts the process. Called from rssagent
+%%%	Starts the process. Called from RSS Agent
 %%% @end
 start_link(Atom,Source) ->
     spawn_link(?MODULE, init,[Atom,Source]).
@@ -37,6 +26,7 @@ start(Atom,Source) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
+%%% BE-FREQ#1
 %%%	Reads the source document and starts read/3
 %%% @end
 init(dzone,Source) ->
@@ -44,11 +34,11 @@ init(dzone,Source) ->
 init(Atom,Source) ->
     read(start,ernews_defuns:read_web(default,Source),Atom).
 %%%-------------------------------------------------------------------
-	
 
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
+%%% BE-FREQ#2
 %%%	Reads parsed document and sends messages to Link Server
 %%% @end
 read(start,{error,Reason},_Atom) ->
@@ -65,6 +55,7 @@ read(_Atom,[]) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
+%%% BE-FREQ#2
 %%%	Iterates through the parsed document
 %%% Returns a list of tuples, consisting of date and URL.
 %%% @end
@@ -107,6 +98,7 @@ iterate(_Atom,[],List) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
+%%% BE-FREQ#2
 %%%	Retrieves URL's starting with "http://t.co~p~n" from document
 %%% Returns a list of URL's
 %%% @end
@@ -115,7 +107,6 @@ twitter(List) ->
 twitter(T,Result,Buffer) ->
 	case {string:str(Buffer,"twitter"),string:str(Buffer,"twimg")} of
 		{0,0} ->
-			%io:format("http://t.co~p~n",[Buffer]),
 			twitter(T,false,["http://t.co" ++ Buffer|Result],[]);
 		_ ->
 			twitter(T,false,Result,[])
@@ -142,11 +133,12 @@ twitter([],_,Result,Buffer) ->
 	ernews_defuns:remove_duplist([Buffer|Result]).
 %%%-------------------------------------------------------------------
 	
-
 %%%-------------------------------------------------------------------
 %%% @author Benjamin Nortier
 %%% @doc
+%%% BE-FREQ#2
 %%%	Parses RSS document
+%%% Code has been changed to suitgr needs
 %%% http://www.1011ltd.com/web/blog/post/elegant_xml_parsing
 %%% @end
 parse(File) ->
