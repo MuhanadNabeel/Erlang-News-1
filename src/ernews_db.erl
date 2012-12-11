@@ -1,97 +1,112 @@
-%% Interface written by Jóel "Captain Awesome" Hjaltason, 
+%%%-------------------------------------------------------------------
+%%% @author Jóel Hjaltason <joelhjalta@gmail.com>
+%%% @copyright (C) 2012, Jablé
+%%% @doc
+%%%	This module handles communication with the database.
+%%% @end
+%%% Created : 8 Oct 2012 by author
+%%%-------------------------------------------------------------------
 
 -module(ernews_db).
 -compile(export_all).
 
+%%%-------------------------------------------------------------------
+%%% @author Jóel Hjaltason
+%%% @doc
+%%% BE-FREQ#9
+%%%	Cleans up the data using quote_fixer and remove_tags 
+%%% before sending it to query_function to be written to the database. 
+%%% The first parameter is a tag that determines which table to write to.
+%%% @end
 
-connect() ->
-    mysql:start(p1, "db.student.chalmers.se", 
-				3306, "abdoli", "kgcH8v7c", "abdoli").
-
-
-%% News-table should also have date and default votes, rank and visits
 write(news, {Source, Url, Title, Description , Icon , 
 			Image , PubDate, Tags}) ->
     Now = calendar:local_time(),
     Query =  "insert into abdoli.ernews_news " ++
 	"(Source, Url, Title, Description, Icon, "++
 	"Image, PubDate, TimeStamp, LastClicked) Values('"
-	++ qFix(Source) ++ "', '" ++ qFix(Url) ++ "', '" 
-	++ remove_tags(qFix(Title)) ++ "', '" 
-	++  remove_tags(qFix(Description)) ++ "', '" 
-	++ qFix(Icon) ++ "', '" ++ qFix(Image) ++ "', '"
-	++ qFix(PubDate) ++ "', '" ++ qFix(Now) ++ "', '"
-	++ qFix(Now) ++ "') on duplicate key update PubDate = '" 
-	++ qFix(PubDate) ++ "'",
-    qFunc(write,Query);
-%   case qFunc(write,Query) of
-%	{error,Reason} ->
-%	    {error,Reason};
-%	{ok, updated} ->
-%	    ID=qFunc(get, "Select newsID FROM ernews_news WHERE URL='" ++ 
-%						qFix(Url) ++ "'"),
-%	    write(tag, Tags, integer_to_list(ID))
-%   end;
+	++ quote_fixer(Source) ++ "', '" ++ quote_fixer(Url) ++ "', '" 
+	++ remove_tags(quote_fixer(Title)) ++ "', '" 
+	++  remove_tags(quote_fixer(Description)) ++ "', '" 
+	++ quote_fixer(Icon) ++ "', '" ++ quote_fixer(Image) ++ "', '"
+	++ quote_fixer(PubDate) ++ "', '" ++ quote_fixer(Now) ++ "', '"
+	++ quote_fixer(Now) ++ "') on duplicate key update PubDate = '" 
+	++ quote_fixer(PubDate) ++ "'",
+    query_function(write,Query);
 			
-	
-%% Broken-news-table should also have default date
 write(broken,{URL, Reason, Source}) ->
-    qFunc(write, 
+    query_function(write, 
 	  "INSERT INTO abdoli.ernews_broken(URL, Reason, Source) 
 	  VALUES('" 
-	  ++ qFix(URL) ++ "','" ++ qFix(Reason) ++ "','" 
-	  ++ qFix(Source) ++ "')");
+	  ++ quote_fixer(URL) ++ "','" ++ quote_fixer(Reason) ++ "','" 
+	  ++ quote_fixer(Source) ++ "')");
 	
 write(time,{Source, URL, Time_stamp}) ->
-    qFunc(write, 
+    query_function(write, 
 	  "INSERT INTO abdoli.ernews_time(Source, URL, Time_stamp) VALUES('" 
-	  ++ qFix(Source) ++ "','" ++ qFix(URL) ++ "','" 
-	  ++ qFix(Time_stamp) ++ "')").
+	  ++ quote_fixer(Source) ++ "','" ++ quote_fixer(URL) ++ "','" 
+	  ++ quote_fixer(Time_stamp) ++ "')").
 				
 write(tag, [],_ID) ->
 	{ok, updated};
 	
 write(tag, [H|T], ID) ->
-    qFunc(write, "INSERT INTO abdoli.ernews_articletags(newsID, tagID) VALUES(" 
+    query_function(write, "INSERT INTO abdoli.ernews_articletags(newsID, tagID) VALUES(" 
 	      ++ ID ++ ", (SELECT id FROM ernews_tag WHERE tag = '" ++ H ++ "'))"),
     write(tag, T, ID).
+%%%-------------------------------------------------------------------	
 	
 	
-qFix(A) when is_atom(A) ->
-    qFix(atom_to_list(A),[]);
+%%%-------------------------------------------------------------------
+%%% @author Jóel Hjaltason
+%%% @doc
+%%%	Fixes the quotation marks in a given text so as to not get a sql error
+%%% @end
 	
-qFix({{YY,MM,DD},{HH,Mm,SS}}) ->
+quote_fixer(A) when is_atom(A) ->
+    quote_fixer(atom_to_list(A),[]);
+	
+quote_fixer({{YY,MM,DD},{HH,Mm,SS}}) ->
     integer_to_list(YY) ++ "-" ++
         integer_to_list(MM) ++ "-" ++
 	integer_to_list(DD) ++ " " ++
 	integer_to_list(HH) ++ ":" ++
 	integer_to_list(Mm) ++ ":" ++
 	integer_to_list(SS);
-qFix(A) when is_tuple(A) ->
-    qFix(lists:concat(tuple_to_list(A)), []);
-qFix(Str) ->
-    qFix(Str, []).	
+	
+quote_fixer(A) when is_tuple(A) ->
+    quote_fixer(lists:concat(tuple_to_list(A)), []);
+	
+quote_fixer(Str) ->
+    quote_fixer(Str, []).	
 
-qFix([], Buff) ->
+quote_fixer([], Buff) ->
     Buff;
 	
-qFix([39|T], Buff) ->
-    qFix(T, Buff ++ [92, 39]);
+quote_fixer([39|T], Buff) ->
+    quote_fixer(T, Buff ++ [92, 39]);
 	
-qFix([38,35,51,57,59|T], Buff) ->
-    qFix(T, Buff ++ [92, 39]);
+quote_fixer([38,35,51,57,59|T], Buff) ->
+    quote_fixer(T, Buff ++ [92, 39]);
 	
-qFix([34|T], Buff) ->
-    qFix(T, Buff ++ [92, 34]);
+quote_fixer([34|T], Buff) ->
+    quote_fixer(T, Buff ++ [92, 34]);
 	
-qFix([H|T], Buff) when is_list(H)->
-    qFix(T, Buff ++ qFix(H,[]));
+quote_fixer([H|T], Buff) when is_list(H)->
+    quote_fixer(T, Buff ++ quote_fixer(H,[]));
 	
-qFix([H|T], Buff) ->
-    qFix(T, Buff ++ [H]).
+quote_fixer([H|T], Buff) ->
+    quote_fixer(T, Buff ++ [H]).
+%%%-------------------------------------------------------------------	
 	
 	
-qFunc(write, Q) ->
+%%%-------------------------------------------------------------------
+%%% @author Jóel Hjaltason
+%%% @doc
+%%%	A function that executes the database queries and handles the errors
+%%% @end	
+
+query_function(write, Q) ->
     try mysql:fetch(p1, Q) of 
 	Result ->
 	    {R,{_,_,_,_,_,_,_,_}} = Result,
@@ -99,19 +114,16 @@ qFunc(write, Q) ->
 		updated -> 
 		    {ok, updated};
 		error -> 
-		    io:format("SQL SYNTAX ERROR :~n~s~n-----------~n",[Q]),
 		    {error, sql_syntax};
 		_ -> 
 		    {error, R}
 	    end
     catch 
 	exit:_Exit -> 
-	    %{Res, _} = Exit,
 	    {error, no_connection}
     end;
-	%io:format("~s~n", [Tag]);
 
-qFunc(exists, Q) ->	
+query_function(exists, Q) ->	
 	try mysql:fetch(p1, Q) of 
 		Result ->
 			case mysql:fetch(p1, Q) of 
@@ -131,9 +143,7 @@ qFunc(exists, Q) ->
 		{error, no_database_connection}
 	end;
 	
-qFunc(get, Q) ->
-%    {_,{_,_,[[Result]],_,_,_,_,_}} = mysql:fetch(p1, Q),
-%    Result;
+query_function(get, Q) ->
 	try mysql:fetch(p1, Q) of 
 		Result ->
 			case mysql:fetch(p1, Q) of 
@@ -148,9 +158,7 @@ qFunc(get, Q) ->
 		{error, no_connection}
 	end;
 	
-qFunc(getList, Q) ->
-%    {_,{_,_,Result,_,_,_,_,_}} = mysql:fetch(p1, Q),
-%    Result.
+query_function(getList, Q) ->
 	try mysql:fetch(p1, Q) of 
 		Result ->
 			case mysql:fetch(p1, Q) of 		
@@ -165,15 +173,29 @@ qFunc(getList, Q) ->
 		%{Res, _} = Exit,
 		{error, no_connection}
 	end.
-		
-		
+%%%-------------------------------------------------------------------		
+	
+
+%%%-------------------------------------------------------------------
+%%% @author Jóel Hjaltason
+%%% @doc
+%%% BE-FREQ#8
+%%%	Some detailed sens about the fml function
+%%% @end	
 %% Does URL exist in news table
 exists(Table,{Column, Keyword}) ->
-    Query = "SELECT COUNT(*) FROM abdoli.ernews_" ++ qFix(Table) 
-	++ " WHERE " ++ qFix(Column) ++ "='" ++ qFix(Keyword) ++ "'",
-    L=qFunc(exists, Query),
+    Query = "SELECT COUNT(*) FROM abdoli.ernews_" ++ quote_fixer(Table) 
+	++ " WHERE " ++ quote_fixer(Column) ++ "='" ++ quote_fixer(Keyword) ++ "'",
+    L=query_function(exists, Query),
     L.
+%%%-------------------------------------------------------------------
 	
+
+%%%-------------------------------------------------------------------
+%%% @author Jóel Hjaltason
+%%% @doc
+%%%	Some detailed sens about the fml function
+%%% @end		
 %% Fetch all tags in the DB
 getList(tag) ->
 	getList("SELECT tag FROM ernews_tag");
@@ -187,7 +209,7 @@ getList(irrelevant) ->
 	getList("SELECT word FROM ernews_irrelevant");	
 	
 getList(Q) ->
-	case List = qFunc(getList, Q) of
+	case List = query_function(getList, Q) of
 		[H|T] = List ->
 			sendList(List, []);
 		H = List ->
@@ -196,21 +218,34 @@ getList(Q) ->
 			else
 	end,		
 	sendList(List, []).
+%%%-------------------------------------------------------------------	
 
-%% Return all tags/relevant/irrelevant from DB
+%%%-------------------------------------------------------------------
+%%% @author Jóel Hjaltason
+%%% @doc
+%%% Return all tags/relevant/irrelevant from DB
+%%% @end		
+
 sendList([H|T], NL) ->
 	[P] = H,
 	NL ++ [bitstring_to_list(P)] ++ sendList(T, NL);
 	
 sendList([], NL) ->
 	[].
-	
+%%%-------------------------------------------------------------------	
 
+%%%-------------------------------------------------------------------
+%%% @author Jóel Hjaltason
+%%% @doc
+%%%	Some detailed sens about the fml function
+%%% @end		
 %% Removes tags from string - except <a></a>	
 remove_tags(List) ->
 	remove_tags(List,false,[]).
-remove_tags([60,97,32,104,114,101,102,61,34,104,116,116,112,58,47,47|T], _, Buffer) ->
-	remove_tags(T, false, Buffer ++ [60,97,32,104,114,101,102,61,34,104,116,116,112,58,47,47]);	
+remove_tags(
+	[60,97,32,104,114,101,102,61,34,104,116,116,112,58,47,47|T], _, Buffer) ->
+		remove_tags(T, false, Buffer ++ 
+		[60,97,32,104,114,101,102,61,34,104,116,116,112,58,47,47]);	
 remove_tags([60, 47, 97, 62|T],_,List) ->
 	remove_tags(T,false,List ++ [60, 47, 97, 62]);
 remove_tags([60|T],_,List) ->
@@ -223,12 +258,4 @@ remove_tags([_|T],true,List) ->
 	remove_tags(T,true,List);
 remove_tags([],_,List) ->
 	List.		
-
-	
-	
-tester() ->
-	write(news, {"testSource", "testUrl", "testTitle", "<html>WARNING: This program is
-	rated<a href=\"http://en.wikipedia.org/wiki/Not_safe_for_work\">NSFW</a>. It conta
-	ins stronglanguage and BDSM themes. Very dark. It is intended only for matureaud
-	iences. Viewer discretion advised. Seriously, itâ?Ts fucked up.</html>" , "testIcon" , 
-			"testImage" , "2012-03-31 15:18:44", ["Riak"]}).
+%%%-------------------------------------------------------------------
