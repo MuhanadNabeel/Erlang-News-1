@@ -1,10 +1,10 @@
 %%%-------------------------------------------------------------------
-%%% @author Magnus Thulin <magnus@dhcp-199078.eduroam.chalmers.se>
-%%% @copyright (C) 2012, Magnus Thulin
+%%% @author Magnus Thulin, Khashayar Abdoli
+%%% @copyright (C) 2012, Magnus Thulin , Khashayar Abdoli
 %%% @doc
 %%%
 %%% @end
-%%% Created :  9 Oct 2012 by Magnus Thulin <magnus@dhcp-199078.eduroam.chalmers.se>
+%%% Created :  9 Oct 2012 by Magnus Thulin, Khashayar Abdoli
 %%%-------------------------------------------------------------------
 
 -module(ernews_htmlfuns).
@@ -247,17 +247,6 @@ get_title(Html)->
 % Diminishes possibility of non-related image
 %%% @end
 
-image_ratio(0,0)->
-    false;
-image_ratio(Height,Width) when Height/Width > 4 ->
-    false;
-image_ratio(Height,Width) when Height/Width < 0.25 ->
-    false;
-image_ratio(_,_) ->
-    true.
-
-
-
 
 get_image(Html,Url)->
     Meta_Data = get_value([Html],"meta" ,[]),
@@ -352,7 +341,10 @@ relevancy_check(Url,{Good,Bad,Tags})->
 
 %-------------------------------------------------------------------------------%
 %% @author Khashayar Abdoli 
-
+%%% @doc
+% Check the headers and look for the content-type and check if its a html
+% returns true or false 
+%%% @end
 
 is_html(Headers) ->
     case proplists:get_value("content-type",Headers) of
@@ -366,6 +358,17 @@ is_html(Headers) ->
 		    true
 	    end
     end.
+
+%-------------------------------------------------------------------------------%
+%% @author Khashayar Abdoli 
+%%% @doc
+% Get a list of tags by the mochiweb format,  first it looks for filter type 
+% which we want the tag to be like, the if we find such thing we pull the key 
+% that we want out of it
+% if the list doesn't have any tag that with our mentioned attributes 
+% or the final value that we want it returns an empty list otherwise it returns
+% the values that we are looking for
+%%% @end
 
 get_content_from_list(List,Filter,Value) ->
     get_content_from_list(List,Filter,Value,[]).
@@ -406,7 +409,12 @@ check_content([],_) ->
     false.
 
 %-------------------------------------------------------------------------------%
-%% @author Khashayar Abdoli
+%% @author Khashayar Abdoli 
+%%% @doc
+% It goes into the html formated by mochiweb, look for a certain tag and return 
+% all the appearances of that tag in a list, in case it doesn't exists it
+% returns an empty list
+%%% @end
 
 get_value([{Key,Attr,Val=[{_IK,_IA,_IV}|_IT]}|T] , Filter , Buff) ->
     case bitstring_to_list(Key) == Filter of
@@ -443,7 +451,8 @@ counter([] , Acc) ->
 %-------------------------------------------------------------------------------%
 %%% @author Khashayar Abdoli
 %%% @doc
-%
+% It pull the domain URL out of the URL for images and icons in case they are
+% not complete URLs
 %%% @end
 
 get_main_url(Url) ->		
@@ -461,7 +470,13 @@ get_main_url([H|T],C,Buff) ->
 %------------------------------------------------------------------------------%
 %%% @author Khashayar Abdoli & Magnus Thulin
 %%% @doc
-% 
+% It gets a list of img tag in mochiweb format, and for each tag it goes in 
+% and find the main image, it checks the size of an image, and also images that 
+% are not proper such as avatars and also it adds the image size in the end of
+% each image URL for further ussage in the front end
+% in the end after going through all of the list it filters the generated list 
+% by cheking the size to be at least 5625 and having ratio less than 1 to 4
+% and return the result  
 %%% @end
 
 find_image([],Buffer,_)->
@@ -487,7 +502,7 @@ get_image_property([{Key, Value}|T],{Size,Source,Case},Url) ->
 	  string:str(bitstring_to_list(Value), "avatar")} of
        	{"src",0} ->
 	     % Source URL found, add it to the buffer
-	    % Check if the src url does not contain the proper structure
+	     % Check if the src url does not contain the proper structure
 	     case lists:sublist(bitstring_to_list(Value), 1) =:= "/" of 
 		 true	->   
 		     {Height,Width} = ernews_defuns:get_size(get_main_url(Url) 
@@ -522,6 +537,16 @@ get_image_property([{Key, Value}|T],{Size,Source,Case},Url) ->
 	    get_image_property(T,{Size,Source,Case},Url)
     end.
 
+% check if ratio of an image, if its more that 1 to 4 it will return false 
+% so it will be filtered
+image_ratio(0,0)->
+    false;
+image_ratio(Height,Width) when Height/Width > 4 ->
+    false;
+image_ratio(Height,Width) when Height/Width < 0.25 ->
+    false;
+image_ratio(_,_) ->
+    true.
 
 %------------------------------------------------------------------------------%
 

@@ -1,11 +1,10 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%-------------------------------------------------------------------
-%%% @author Khashayar <khashayar@localhost.localdomain>
-%%% @copyright (C) 2012, Khashayar
+%%% @author Khashayar Abdoli
+%%% @copyright (C) 2012, Khashayar Abdoli
 %%% @doc
-%%%
+%%% Supervise the key processes of the program
 %%% @end
-%%% Created :  8 Oct 2012 by Khashayar <khashayar@localhost.localdomain>
+%%% Created :  8 Oct 2012 by Khashayar Abdoli
 %%%-------------------------------------------------------------------
 -module(ernews_supervisor).
 
@@ -45,6 +44,8 @@ start_link() ->
 %% restart strategy, maximum restart frequency and child
 %% specifications.
 %%
+%% It runs the My Sql server first, then Link server and finally Rss agent
+%% It will keep them alive in case of any crash
 %% @spec init(Args) -> {ok, {SupFlags, [ChildSpec]}} |
 %%                     ignore |
 %%                     {error, Reason}
@@ -73,6 +74,3 @@ init([]) ->
 	       Restart , Shutdown , worker, [mysql]},
     {ok, {SupFlags, [My_Sql, Link_Serv, Rss_Agent]}}.
 
-%%%===================================================================
-%%% Internal functions
-%%%===================================================================
