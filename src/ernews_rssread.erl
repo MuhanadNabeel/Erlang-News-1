@@ -2,6 +2,7 @@
 %%% @author Ingimar Samuelsson <ingimar@student.gu.se>
 %%% @copyright (C) 2012, Jablé
 %%% @doc
+%%% This module meets the following requirements: BE-FREQ#1
 %%%	Parses documents and sends messages to Link Server
 %%% @end
 %%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
@@ -26,7 +27,6 @@ start(Atom,Source) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
-%%% BE-FREQ#1
 %%%	Reads the source document and starts read/3
 %%% @end
 init(dzone,Source) ->
@@ -38,7 +38,6 @@ init(Atom,Source) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
-%%% BE-FREQ#2
 %%%	Reads parsed document and sends messages to Link Server
 %%% @end
 read(start,{error,Reason},_Atom) ->
@@ -55,7 +54,6 @@ read(_Atom,[]) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
-%%% BE-FREQ#2
 %%%	Iterates through the parsed document
 %%% Returns a list of tuples, consisting of date and URL.
 %%% @end
@@ -98,7 +96,6 @@ iterate(_Atom,[],List) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
-%%% BE-FREQ#2
 %%%	Retrieves URL's starting with "http://t.co~p~n" from document
 %%% Returns a list of URL's
 %%% @end
@@ -136,9 +133,8 @@ twitter([],_,Result,Buffer) ->
 %%%-------------------------------------------------------------------
 %%% @author Benjamin Nortier
 %%% @doc
-%%% BE-FREQ#2
 %%%	Parses RSS document
-%%% Code has been changed to suitgr needs
+%%% Code has been changed to suit needs
 %%% http://www.1011ltd.com/web/blog/post/elegant_xml_parsing
 %%% @end
 parse(File) ->

@@ -7,6 +7,7 @@
 %%% @author Philip Masek <philip@localhost.localdomain>
 %%% @copyright (C) 2012, Jablé
 %%% @doc
+%%% This module meets the following requirements: BE-FREQ#1, BE-FREQ#5
 %%%	Various functions
 %%% @end
 %%% Created : 8 Oct 2012 by Ingimar <ingimar@student.gu.se>
@@ -21,8 +22,6 @@
 %%% @author Ingimar Samuelsson
 %%% @author Magnus Tulin
 %%% @doc
-%%% BE-FREQ#1
-%%% BE-FREQ#4
 %%%	Attempts to fetch and read a document from URL
 %%% @end
 read_web({ok, {{_Version, _, _ReasonPhrase}, Headers, Body}}) ->
@@ -74,7 +73,6 @@ read_web(image,Src,Range) ->
 %%%-------------------------------------------------------------------
 %%% @author Philip Masek
 %%% @doc
-%%% BE-FREQ#4
 %%%	Get size of an image
 %%% @end
 get_size(Url) ->
@@ -116,7 +114,6 @@ get_size(URL, Step) ->
 %%%-------------------------------------------------------------------
 %%% @author Khashayar Abdoli
 %%% @doc
-%%% BE-FREQ#2
 %%%	Converts pubDate from RSS document to Erlang date
 %%% @end
 convert_date(DateTime) ->
@@ -185,7 +182,6 @@ get_tags([H|T],List) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
-%%% BE-FREQ#5
 %%%	Counts how many times a word occurs in a list
 %%% @end
 count_words(WordList,CheckList) ->
@@ -223,7 +219,6 @@ remove_duplist([],List) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
-%%% BE-FREQ#5
 %%%	Checks for relevancy of article using a list of words from db
 %%% @end
 is_relevant(List,Good,Bad,Tags) ->
@@ -242,7 +237,6 @@ is_relevant(_,_,_) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
-%%% BE-FREQ#5
 %%%	Checks if word(s) occur in a String - not case sensetive
 %%% @end
 list_words_occur_insens(Words,List) ->
@@ -263,7 +257,6 @@ list_words_occur_insens(WordConcat,List,Length) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson	
 %%% @doc
-%%% BE-FREQ#5
 %%%	Compare two strings. Returns true if Str2 is part of Str1.
 %%% @end
 compare_concat_str(Str1,Str2) ->
@@ -283,7 +276,6 @@ compare_concat_str(Str1,Str2) ->
 %%%-------------------------------------------------------------------
 %%% @author Muhanad Nabeel
 %%% @doc
-%%% BE-FREQ#5
 %%%	Split string into a list, devided with " "
 %%% @end
 split_text(Str) ->
@@ -340,7 +332,6 @@ get_all_lines(Device) ->
 %%% @author Khashayar Abdoli
 %%% @deprecated
 %%% @doc
-%%% BE-FREQ#2
 %%%	Get description from RSS feed
 %%% @end
 get_description(List, iocoder) ->
@@ -388,7 +379,6 @@ google_tag_remover([_H|T] , Buff, false) ->
 %%% @author Joel Hjaltason
 %%% @deprecated
 %%% @doc
-%%% BE-FREQ#5
 %%%	Returns true if a given URL string is a domain
 %%% @end
 isDomain(Str) ->
