@@ -3,6 +3,7 @@
 %%% @copyright (C) 2012, Jablé
 %%% @doc
 %%%	This module handles communication with the database.
+%%% It meets the requirements with id BE-FREQ8 and BE-FREQ9.
 %%% @end
 %%% Created : 8 Oct 2012 by author
 %%%-------------------------------------------------------------------
@@ -13,7 +14,6 @@
 %%%-------------------------------------------------------------------
 %%% @author Jóel Hjaltason
 %%% @doc
-%%% BE-FREQ#9
 %%%	Cleans up the data using quote_fixer and remove_tags 
 %%% before sending it to query_function to be written to the database. 
 %%% The first parameter is a tag that determines which table to write to.
@@ -179,7 +179,6 @@ query_function(getList, Q) ->
 %%%-------------------------------------------------------------------
 %%% @author Jóel Hjaltason
 %%% @doc
-%%% BE-FREQ#8
 %%%	Some detailed sens about the fml function
 %%% @end	
 %% Does URL exist in news table
