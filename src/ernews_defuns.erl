@@ -14,19 +14,15 @@
 
 
 -module(ernews_defuns).
-%%-export([read_web/2,convert_date/1,read_words/0,is_relevant/4,split_text/1]).
--compile(export_all).
-
-test_rel(Src) ->
-	ernews_htmlfuns:relevancy_check(Src,read_words()).
-test1(A,B) ->
-	list_words_occur_insens(A,string:tokens(B," ")).
+-export([read_web/2,convert_date/1,get_size/1,read_words/0,is_relevant/4,split_text/1]).
 
 
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @author Magnus Tulin
 %%% @doc
+%%% BE-FREQ#1
+%%% BE-FREQ#4
 %%%	Attempts to fetch and read a document from URL
 %%% @end
 read_web({ok, {{_Version, _, _ReasonPhrase}, Headers, Body}}) ->
@@ -78,6 +74,7 @@ read_web(image,Src,Range) ->
 %%%-------------------------------------------------------------------
 %%% @author Philip Masek
 %%% @doc
+%%% BE-FREQ#4
 %%%	Get size of an image
 %%% @end
 get_size(Url) ->
@@ -119,6 +116,7 @@ get_size(URL, Step) ->
 %%%-------------------------------------------------------------------
 %%% @author Khashayar Abdoli
 %%% @doc
+%%% BE-FREQ#2
 %%%	Converts pubDate from RSS document to Erlang date
 %%% @end
 convert_date(DateTime) ->
@@ -187,6 +185,7 @@ get_tags([H|T],List) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
+%%% BE-FREQ#5
 %%%	Counts how many times a word occurs in a list
 %%% @end
 count_words(WordList,CheckList) ->
@@ -204,6 +203,7 @@ count_words([H|T],List,Counter) ->
 	
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
+%%% @deprecated
 %%% @doc
 %%%	Removes duplicates from a list - case-sensetive
 %%% @end
@@ -223,6 +223,7 @@ remove_duplist([],List) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
+%%% BE-FREQ#5
 %%%	Checks for relevancy of article using a list of words from db
 %%% @end
 is_relevant(List,Good,Bad,Tags) ->
@@ -241,6 +242,7 @@ is_relevant(_,_,_) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson
 %%% @doc
+%%% BE-FREQ#5
 %%%	Checks if word(s) occur in a String - not case sensetive
 %%% @end
 list_words_occur_insens(Words,List) ->
@@ -250,9 +252,6 @@ list_words_occur_insens(_,List,Length) when length(List) < Length ->
 	false;
 list_words_occur_insens(WordConcat,List,Length) ->
 	ListConcat = lists:concat(lists:sublist(List,1,Length)),
-	%CompareLength = length(ListConcat) == length(WordConcat),
-	%Compare = string:to_lower(ListConcat) == string:to_lower(WordConcat),
-%	io:format("~p = ~p = ~p~n",[ListConcat,WordConcat,Compare]),
 	case compare_concat_str(WordConcat,ListConcat) of
 		true ->
 			true;
@@ -264,8 +263,8 @@ list_words_occur_insens(WordConcat,List,Length) ->
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson	
 %%% @doc
+%%% BE-FREQ#5
 %%%	Compare two strings. Returns true if Str2 is part of Str1.
-%%% In retrospect, it would be better to use string:str/2
 %%% @end
 compare_concat_str(Str1,Str2) ->
 	Left = string:to_lower(string:left(Str2,string:len(Str1))),
@@ -284,6 +283,7 @@ compare_concat_str(Str1,Str2) ->
 %%%-------------------------------------------------------------------
 %%% @author Muhanad Nabeel
 %%% @doc
+%%% BE-FREQ#5
 %%%	Split string into a list, devided with " "
 %%% @end
 split_text(Str) ->
@@ -340,6 +340,7 @@ get_all_lines(Device) ->
 %%% @author Khashayar Abdoli
 %%% @deprecated
 %%% @doc
+%%% BE-FREQ#2
 %%%	Get description from RSS feed
 %%% @end
 get_description(List, iocoder) ->
@@ -385,7 +386,9 @@ google_tag_remover([_H|T] , Buff, false) ->
 
 %%%-------------------------------------------------------------------
 %%% @author Joel Hjaltason
+%%% @deprecated
 %%% @doc
+%%% BE-FREQ#5
 %%%	Returns true if a given URL string is a domain
 %%% @end
 isDomain(Str) ->
