@@ -14,7 +14,7 @@ function openUpStuff(id,index){
  }
  function closeLastOne(cbFunc){
     t = jQuery('.right-column').find('div[class="right_content"]');
-    a = t.filter(function(){
+    a = t.filter(function(){    
         return jQuery(this).is(':visible');
     });
     a.slideUp('medium');
@@ -23,6 +23,11 @@ function openUpStuff(id,index){
 jQuery(document).ready(function() {
     $holder = jQuery('#archive').clone();
 
+    jQuery(window).bind('keyup',function(e){
+        if(e.which==27 && jQuery('#bigframe').css('display') != 'none'){
+            closeBox();
+        }
+    });
 })
 
 function fadeWindow(id, text){
@@ -108,6 +113,10 @@ function closeAllStuff(cbFunc){
 
  
   function openBox(id,index){
+    document.body.scroll = "no";
+    document.body.style.overflow = 'hidden';
+    document.height = window.innerHeight;
+
     var json = articleJSON[index];  
     index = -1;
     for( var i = 0 ; i < json.length ; i++ ) {
@@ -205,7 +214,11 @@ function closeAllStuff(cbFunc){
     }
  }
 */
+
  function closeBox(){
+    document.body.scroll = "yes";
+    document.body.style.overflow = 'visible';
+    document.height = window.innerHeight;
     jQuery('#box-vote-buttons').empty();
     jQuery('#bigframe').css('display', 'none');
     jQuery('#frame_content').attr('src', '');
