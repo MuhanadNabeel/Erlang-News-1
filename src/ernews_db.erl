@@ -11,6 +11,12 @@
 -module(ernews_db).
 -compile(export_all).
 
+
+%% Testing Materials
+connect() ->
+    mysql:start(p1, "db.student.chalmers.se", 
+		3306, "abdoli", "kgcH8v7c", "abdoli").
+
 %%%-------------------------------------------------------------------
 %%% @author Jóel Hjaltason
 %%% @doc

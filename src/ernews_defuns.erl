@@ -17,6 +17,8 @@
 -export([read_web/2,convert_date/1,get_size/1,read_words/0,
 		is_relevant/4,split_text/1,remove_duplist/1]).
 
+%% Testing materials
+-export([count_words/2,isDomain/1]).
 
 %%%-------------------------------------------------------------------
 %%% @author Ingimar Samuelsson

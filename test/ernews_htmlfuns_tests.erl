@@ -8,12 +8,12 @@
 
 -module(ernews_htmlfuns_tests).
 -include_lib("eunit/include/eunit.hrl").
--import(ernews_htmlfuns,[is_html/1,get_main_url/1,get_icon_link/2,image_ratio/2,get_value/3,find_image/3,get_content_from_list/3,get_title/1,get_descriptions/2,get_image/2,get_icon/2,end_url/2]).
 
-%--------------------------------------------------------------------------------%
+
+%------------------------------------------------------------------------------%
 %%% @test Case: TC6
 %%% @requirement: BE-FREQ#3  
-%--------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------%
 end_url_test()->
     R1 = "http://www.reddit.com/r/erlang/comments/13xzmq/erlang_r15b03_has_been_released/",
     R2 = "https://groups.google.com/forum/#!topic/erlang-programming/Djb6TvMbKyo",

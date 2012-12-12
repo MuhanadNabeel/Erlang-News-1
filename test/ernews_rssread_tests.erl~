@@ -1,5 +1,12 @@
--module(jabbar).
+-module(ernews_rssread_tests).
 -compile(export_all).
+-include_lib("eunit/include/eunit.hrl").
+
+
+rss_source_test()->
+?AssertEqual([{ok,_},{ok,_},{ok,_},{ok,_},{ok,_},{ok,_}],get_first()).
+
+
 
 get_first() ->
 	List = [{google,"http://news.google.com/news" ++
@@ -13,7 +20,7 @@ get_first() ->
 get_first([{Atom,Source}|T],New) ->
 	Item = read(ernews_defuns:read_web(default,Source),Atom),
 	URL = element(2,Item),
-	get_first(T,[{Atom,URL}|New]);
+	get_first(T,[{ok,URL}|New]);
 get_first([],New) ->
 	New.
 

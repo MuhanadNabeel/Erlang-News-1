@@ -8,10 +8,13 @@
 %%%-------------------------------------------------------------------
 
 -module(ernews_htmlfuns).
-%-export([get_description/1, get_title/1, end_url/2]).
-%-export([get_content_from_list/4,get_content_from_list/3,
-	 %check_content/2,pull_content/2]).
--compile(export_all).
+-export([get_info/1, relevancy_check/2, end_url/2]).
+
+
+-export([is_html/1,get_main_url/1,get_icon_link/2,
+	 image_ratio/2,get_value/3,find_image/3,get_content_from_list/3,
+	 get_title/1,get_descriptions/2,get_image/2,get_icon/2]).
+
    
 
 %------------------------------------------------------------------------------%
