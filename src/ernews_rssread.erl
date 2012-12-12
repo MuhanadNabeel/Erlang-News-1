@@ -8,8 +8,9 @@
 %%%-------------------------------------------------------------------
 
 -module(ernews_rssread).
--export([start_link/2,start/2]).
--export([init/2]).
+%-export([start_link/2,start/2]).
+%-export([init/2]).
+-compile(export_all).
 -include("records.hrl").
 
 %%%-------------------------------------------------------------------
