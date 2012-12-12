@@ -3,7 +3,6 @@
 %%% @copyright (C) 2012, Jablé
 %%% @doc
 %%%	This module handles communication with the database.
-%%% It meets the requirements with id BE-FREQ8 and BE-FREQ9.
 %%% @end
 %%% Created : 8 Oct 2012 by author
 %%%-------------------------------------------------------------------
