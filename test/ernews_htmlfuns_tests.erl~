@@ -11,7 +11,7 @@
 
 
 %------------------------------------------------------------------------------%
-%%% @test Case: TC3
+%%% @test Case: TC6
 %%% @requirement: BE-FREQ#3  
 %------------------------------------------------------------------------------%
 end_url_test()->
@@ -56,7 +56,7 @@ get_info_test()->
     ?assertEqual(ok,Icon_Status).
 
 %--------------------------------------------------------------------------------%
-%%% @test Case: TC5
+%%% @test Case: TC9
 %%% @requirement: BE-FREQ#5
 %--------------------------------------------------------------------------------%
 relevency_test()->
@@ -74,7 +74,8 @@ relevency_test()->
     
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 get_content_test()->
     Source = "<html><meta name=\"description\" content=\"test\"/><html>",
@@ -87,7 +88,8 @@ get_content_test()->
     
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 get_image_test()->
     Source = "<html><img src=\"http://blog.monitis.com/wp-content/uploads/2012/04/Monitis-Logo-Small-1.png\" alt=\"All-In-One Monitoring\"/><html>",
@@ -99,7 +101,8 @@ get_image_test()->
 
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 avatar_image_test()->
     Source = "<html><img src=\"http://blog.monitis.com/avatar/wp-content/uploads/2012/04/Monitis-Logo-Small-1.png\" alt=\"All-In-One Monitoring\"/><html>",
@@ -111,7 +114,8 @@ avatar_image_test()->
 
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 image_ratio_test()->
     ?assertEqual(true, ernews_htmlfuns:image_ratio(100,200)),
@@ -120,7 +124,8 @@ image_ratio_test()->
 
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 main_url_test()->
     L1 = "http://a.com",
@@ -139,7 +144,8 @@ icon_link_test()->
 
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 is_html_test()->
     
