@@ -2,7 +2,7 @@
 %%% @author Magnus Thulin, Khashayar Abdoli
 %%% @copyright (C) 2012, Magnus Thulin , Khashayar Abdoli
 %%% @doc
-%%%
+%%% This module contains all functions responsible for HTML handling. 
 %%% @end
 %%% Created :  9 Oct 2012 by Magnus Thulin, Khashayar Abdoli
 %%%-------------------------------------------------------------------
@@ -11,10 +11,10 @@
 -export([get_info/1, relevancy_check/2, end_url/2]).
 
 
+%%% Test Material 
 -export([is_html/1,get_main_url/1,get_icon_link/2,
 	 image_ratio/2,get_value/3,find_image/3,get_content_from_list/3,
 	 get_title/1,get_descriptions/2,get_image/2,get_icon/2]).
-
    
 
 %------------------------------------------------------------------------------%
@@ -26,12 +26,6 @@
 %%% @end
 
 get_info(Url)->
-    %case ernews_defuns:isDomain(Url) of
-%	true ->
-%	    {error, domain};
-%	
-%	false ->
-	    
     Result = ernews_defuns:read_web(default,Url),
     case Result of
 	{success,{_,[]}}->
@@ -62,7 +56,7 @@ get_info(Url)->
 %%% returns the end-url from source by parsing XHTML.
 %%% @end
 
-
+%%% Coder.io Source
 end_url(iocoder,Url)->   
     Result  = ernews_defuns:read_web(iocoder, Url),
     case Result of
@@ -79,7 +73,7 @@ end_url(iocoder,Url)->
 
     end;
 
-
+%%% Reddit Source
 end_url(reddit,Url)->
     Tag = ".xml",
     Result = ernews_defuns:read_web(default, Url++Tag),
@@ -107,10 +101,11 @@ end_url(reddit,Url)->
 
     end;
 
-
+%%% Google News Source
 end_url(google,Url)->   
     end_url(iocoder,Url);
       
+%%% Twitter Source
 end_url(twitter, Url)->
   case end_url(iocoder,Url) of
       {error, Reason} ->
@@ -124,6 +119,7 @@ end_url(twitter, Url)->
 	  end
   end;        
 
+%%% DZone Source
 end_url(dzone, Url)->
   Result  = ernews_defuns:read_web(dzone, Url),
     case Result of
@@ -141,6 +137,7 @@ end_url(dzone, Url)->
 
     end;
 
+%% HackerNews Source
 end_url(hacker,Url)->
     Url;
 
@@ -164,7 +161,7 @@ get_descriptions(desc,Html)->
     Meta_Data = get_value([Html],"meta" ,[]),
     Description_Tag = get_content_from_list(Meta_Data ,  
 					    {"name","description"},"content"),
-    case length(lists:concat(Description_Tag)) < 20 of 
+    case length(lists:concat(Description_Tag)) < 120 of 
 	true -> get_descriptions(ogdesc,Html);
 	false -> {ok, Description_Tag}
     end;
@@ -173,7 +170,7 @@ get_descriptions(ogdesc,Html) ->
     Meta_Data = get_value([Html],"meta" ,[]),
     OGDescription_Tag = get_content_from_list(Meta_Data , 
 					      {"name" ,"og:description"},"content"),
-    case length(lists:concat(OGDescription_Tag)) < 20 of 
+    case length(lists:concat(OGDescription_Tag)) < 120 of 
 	true -> get_descriptions(capdesc,Html);
 	false -> {ok, OGDescription_Tag}
     end;   
@@ -183,7 +180,7 @@ get_descriptions(capdesc,Html) ->
     CapDescription_Tag = get_content_from_list(Meta_Data3 , 
 					       {"name" ,"Description"},"content"),
     
-    case length(lists:concat(CapDescription_Tag)) < 20 of 
+    case length(lists:concat(CapDescription_Tag)) < 120 of 
 	true -> get_descriptions(ptag,Html);
 	false -> {ok, CapDescription_Tag}
     end;   
@@ -224,7 +221,6 @@ break_list([{_,_,V}|T])->
 % From the parsed HTML the function, extract the title.
 %%% @end
 
-
 get_title(Html)-> 
     case get_value([Html],"title" ,[]) of
 	[{_,_,[Val|_]}] ->
@@ -246,7 +242,7 @@ get_title(Html)->
 % From the parsed HTML the function, extract the image from the meta tag. If
 % it doesnt exist, return the largest image from the body of the HTML. The
 % size of the image is determined by calling defuns:get_size
-% Only allow images are larger than 80x80 
+% Only allow images are larger than 80x80 which
 % Diminishes possibility of non-related image
 %%% @end
 
@@ -283,7 +279,7 @@ get_image(Html,Url)->
 %%% @doc
 % Returns the icon from the meta data in the HTML. Some icon links do not
 % contain the entire URL (eg. /favicon.icon) therefore the function checks
-% and compiles a complete link. Needs check if icon url is broken. 
+% and compiles a complete link. 
 %%% @end
 
 get_icon_link(Icon,Url)->
@@ -322,7 +318,7 @@ get_icon(Html,Url)->
 %------------------------------------------------------------------------------%
 %%% @author Magnus Thulin
 %%% @doc
-% Parsers HTML to check if the article is relevant to Erlang.  
+% Parses HTML to check if the article is relevant to Erlang.  
 %%% @end
 
 relevancy_check(Url,{Good,Bad,Tags})->
@@ -345,8 +341,8 @@ relevancy_check(Url,{Good,Bad,Tags})->
 %-------------------------------------------------------------------------------%
 %% @author Khashayar Abdoli 
 %%% @doc
-% Check the headers and look for the content-type and check if its a html
-% returns true or false 
+% Checks to see whether the HTML response headers' content-type contains HTML. 
+% Returns true or false. 
 %%% @end
 
 is_html(Headers) ->
