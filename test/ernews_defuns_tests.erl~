@@ -10,7 +10,8 @@
 
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 read_web_test()->
     Coder = "http://coder.io/~9899fad313",
@@ -37,7 +38,8 @@ convert_date_test()->
 
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 count_words_test()->
     Sentence = string:tokens("Erlang is cool because ERLANG is Swedish erlang"," "),
@@ -46,7 +48,8 @@ count_words_test()->
 
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 remove_duplicate_test()->
     Sentence = string:tokens("Fault Fault Fault hello"," "),
@@ -54,7 +57,8 @@ remove_duplicate_test()->
 
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 split_text_test()->
     Sentence = "a b c d e f g",
@@ -63,7 +67,8 @@ split_text_test()->
 
 
 %--------------------------------------------------------------------------------%
-%%% Code Test
+%%% @test Case: TC
+%%% @requirement: BE-FREQ# 
 %--------------------------------------------------------------------------------%
 is_domain_test()->
     ?assertEqual(true, ernews_defuns:isDomain("http://www.google.com")),
