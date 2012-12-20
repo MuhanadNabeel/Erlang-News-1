@@ -319,7 +319,7 @@ $(window).scroll(function() {
 /**
  * @author Philip Masek
  * @doc
- *  
+ *  Gathers tweets using a json and parses it.
  * @end
  *
 **/
@@ -341,7 +341,7 @@ function getTweets() {
 /**
  * @author Philip Masek
  * @doc
- *  
+ *  Inputs the information into a template.
  * @end
  *
 **/
@@ -354,7 +354,7 @@ function twitterTemplate(json, template, id){
 /**
  * @author Philip Masek
  * @doc
- *  
+ *  Creates usable links in the tweets.
  * @end
  *
 **/

@@ -3,7 +3,7 @@
 
     <div class="right_row" style="cursor:default;background-color:transparent">
                 <div style="padding:0.5em;line-height:80%;">
-                        <span style="padding:3px;font-family:'MyriadPro Regular';font-size:8pt;color:#717171;text-shadow:1px 1px 1px white;">{text}</span>
+                        <span style="padding:3px;font-family:'MyriadPro Regular';font-size:8pt;color:#717171;text-shadow:1px 1px 1px white;word-break:break-all;word-wrap: break-word;">{text}</span>
                         <div style="width:1px;height:5px;"></div>
                         <span class="right_source" style="font-family:'MyriadPro Regular';font-style:normal;margin-left:12px;"> 
                         Posted by: <a href="https://twitter.com/account/redirect_by_id?id={from_user_id}" style="color:#19b1d5;text-decoration:none" target="_blank">@{from_user}</a></span>  

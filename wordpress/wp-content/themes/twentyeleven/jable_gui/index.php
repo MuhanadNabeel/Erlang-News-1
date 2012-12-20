@@ -48,7 +48,7 @@ Div fonts
 
 <div style="overflow:hidden;width:100%;">
 
-
+        <!-- Big content popup -->
         <div id="bigframe" style="display:none" class="bigframe">
             <div style="position:fixed;background-color:black;left:0;top:0;opacity:.3;width:100%;height:100%;z-index:20000;" onclick="closeBox();"></div>
             <div style="position:fixed;background-color:white;width:80%;height:92%;z-index:20001;box-shadow:0px 0px 100px black;left:50%; margin-left:-40%;top:4%;">
@@ -71,6 +71,9 @@ Div fonts
                     </div>
                 
         </div>
+        <!-- Main layout is created using tables
+             with the different sections in each
+             column. -->
         <table style="width:100%;"><tr><td>
                     <table style="position:relative;margin-left:10px;margin-top:15px;width:150px" id="wholepage">
                         <tr>

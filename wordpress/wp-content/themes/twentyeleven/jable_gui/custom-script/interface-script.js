@@ -1,8 +1,23 @@
+/**
+ * @author Philip Masek
+ * @doc
+ *  Content-display and User-interaction
+ * @end
+ */
 var $holder;
 var $data;
 
 
 var $id;
+/**
+ * @author Philip Masek
+ * @doc
+ *  Function opens up the
+ *  divs on the right column
+ *  such as: Latest news
+ *  and All time top.
+ * @end
+ */
 function openUpStuff(id,index){
     if($id!=id)
         closeLastOne();
@@ -11,8 +26,16 @@ function openUpStuff(id,index){
 
 
     $id = id;
- }
- function closeLastOne(cbFunc){
+}
+/**
+ * @author Philip Masek
+ * @doc
+ *  Closes the last opened
+ *  div in right column
+ *  when opening another.
+ * @end
+ */
+function closeLastOne(cbFunc){
     t = jQuery('.right-column').find('div[class="right_content"]');
     a = t.filter(function(){    
         return jQuery(this).is(':visible');
@@ -30,6 +53,14 @@ jQuery(document).ready(function() {
     });
 })
 
+/**
+ * @author Philip Masek
+ * @doc
+ *  Used for the reportbutton
+ *  alert.
+ * @end
+ */
+
 function fadeWindow(id, text){
     jQuery('#'+id+'_text').html(text);
     jQuery('#'+id).fadeIn('slow', function(){
@@ -38,6 +69,18 @@ function fadeWindow(id, text){
     });
 }
 
+/**
+ * @author Philip Masek
+ * @doc
+ *  This function is unused.
+ *  When in use it animates
+ *  the ranking of the news.
+ *  When something is voted
+ *  up it animates further
+ *  up the page.
+ * @end
+ */
+/*
 function animate(id){
     closeAllStuff(function(){
         var $filteredData2 = $data.find('li[data-type=right_archive_'+id+']');
@@ -63,14 +106,22 @@ function animate(id){
     var $filteredData2 = $data2.find('li[data-type=left_archive_'+id+']');
     $holder2.quicksand($filteredData2, {
         duration: 1000,
-        easing: 'swing'});*/
- }
+        easing: 'swing'});
+ }*/
 
 function fadeStuffIn(id){
     jQuery('#'+id+'_test_top').animate({opacity : '1.0'}, 'slow');
     jQuery('#'+id+'_test_bottom').animate({opacity : '1.0'}, 'slow');
 }
 
+/**
+ * @author Philip Masek
+ * @doc
+ *  Another part of the 
+ *  ranking-animation.
+ * @end
+ */
+/*
 function updateRight(id){
     $data = $holder.clone();
     var $filteredData1 = $data.find('li[data-type=right_archive_'+(id-1)+']');
@@ -86,8 +137,18 @@ function updateRight(id){
     
     animate(id);
     
-}
+}*/
 
+/**
+ * @author Philip Masek
+ * @doc
+ *  Was used in ealier version.
+ *  A div behind everything would
+ *  appear when everything slides
+ *  to the left.
+ * @end
+ */
+/*
 function slideLeft(){
 
     if(jQuery('#main_div').css('margin-left')=='0px')
@@ -98,8 +159,15 @@ function slideLeft(){
         jQuery('#main_div').animate({
             marginLeft: '0px'
         }, 500);
-}
+}*/
 
+/**
+ * @author Philip Masek
+ * @doc
+ *  Closes all the divs 
+ *  in the right column.
+ * @end
+ */
 function closeAllStuff(cbFunc){
     t = jQuery('#archive').find('div[class="right_content"]');
     a = t.filter(function(){
@@ -111,7 +179,16 @@ function closeAllStuff(cbFunc){
         a.slideUp('slow', function(){setTimeout(cbFunc(),2000,lang)});
  }
 
- 
+/**
+ * @author Philip Masek
+ * @doc
+ *  Opens up the popup
+ *  windows with the 
+ *  selected news. Locks
+ *  the unused scrollbar
+ *  also.
+ * @end
+ */
   function openBox(id,index){
     document.body.scroll = "no";
     document.body.style.overflow = 'hidden';
@@ -179,6 +256,12 @@ function closeAllStuff(cbFunc){
     }
  }
 
+/**
+ * @author Philip Masek
+ * @doc
+ *  Old version of openBox().
+ * @end
+ */
 /*
  function openBox(URL, title, id, datatype){
      alert(URL);
@@ -215,6 +298,13 @@ function closeAllStuff(cbFunc){
  }
 */
 
+/**
+ * @author Philip Masek
+ * @doc
+ *  Closes the popup window 
+ *  and reactivates the scroll.
+ * @end
+ */
  function closeBox(){
     document.body.scroll = "yes";
     document.body.style.overflow = 'visible';
