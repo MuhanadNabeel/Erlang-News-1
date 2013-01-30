@@ -16,7 +16,7 @@ The purpose of the project is to develop a business intelligence (BI) system.
 To run the Erlang-News server follow these steps:
 
 * Open a terminal
-* Navigate to the back-end folder
+* Navigate to the main folder
 * Execute the command "erl -make"
 * Execute the command "erl -pa ebin"
 * After the Erlang shell has started execute the command "application:start(ernews_app)."
